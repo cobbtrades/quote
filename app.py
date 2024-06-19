@@ -2,7 +2,6 @@ import streamlit as st
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import Image
 from reportlab.lib import colors
 import pandas as pd
 
@@ -117,13 +116,6 @@ def generate_pdf(data, filename='quote.pdf'):
     ]))
     
     elements.append(grid_table)
-    elements.append(Spacer(1, 12))
-    
-    # Add terms and conditions image
-    elements.append(Spacer(1, 24))
-    img = Image("Capture.PNG", width=6.5*inch, height=2.5*inch)
-    elements.append(img)
-    elements.append(Spacer(1, 24))
     
     # Add signature lines
     signature_data = [
