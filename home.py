@@ -4,6 +4,11 @@ from reportlab.pdfgen import canvas
 import pandas as pd
 import numpy as np
 
+# Constants for fees
+DOC_FEE = 799
+NON_TAX_FEE = 106.75
+SALES_TAX_RATE = 0.03
+
 # Function to calculate monthly payments
 def calculate_monthly_payment(principal, rate, term):
     rate_monthly = rate / 100 / 12
@@ -57,10 +62,13 @@ if submit_button:
     # Calculate monthly payments for each combination of down payment and term
     quotes = {}
     for dp in down_payments:
-        loan_amount = sale_price - trade_value - dp
+        taxable_amount = sale_price - trade_value + DOC_FEE
+        sales_tax = taxable_amount * SALES_TAX_RATE
+        total_loan_amount = taxable_amount + sales_tax + NON_TAX_FEE - dp
+        
         term_payments = {}
         for term in terms:
-            monthly_payment = calculate_monthly_payment(loan_amount, rates[term], term)
+            monthly_payment = calculate_monthly_payment(total_loan_amount, rates[term], term)
             term_payments[term] = monthly_payment
         quotes[dp] = term_payments
     
@@ -70,6 +78,20 @@ if submit_button:
         'quotes': quotes,
         'rates': rates
     }
+    
+    # Display the quotes in a grid
+    grid_data = []
+    for dp, terms in quotes.items():
+        for term, payment in terms.items():
+            grid_data.append({
+                'Down Payment': dp,
+                'Term (years)': term,
+                'Rate (%)': rates[term],
+                'Monthly Payment': round(payment, 2)
+            })
+    
+    df = pd.DataFrame(grid_data)
+    st.dataframe(df)
     
     pdf_file = generate_pdf(data)
     
