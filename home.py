@@ -10,12 +10,11 @@ NON_TAX_FEE = 106.75
 SALES_TAX_RATE = 0.03
 
 # Function to calculate monthly payments
-def calculate_monthly_payment(principal, rate, term):
-    rate_monthly = rate / 100 / 12
-    term_months = term * 12
-    if rate_monthly == 0:
+def calculate_monthly_payment(principal, annual_rate, term_months):
+    monthly_rate = annual_rate / 100 / 12
+    if monthly_rate == 0:
         return principal / term_months
-    return principal * rate_monthly / (1 - (1 + rate_monthly) ** -term_months)
+    return principal * monthly_rate / (1 - (1 + monthly_rate) ** -term_months)
 
 # Function to generate PDF
 def generate_pdf(data, filename='quote.pdf'):
