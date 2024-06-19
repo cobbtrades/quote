@@ -48,7 +48,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ["CITY", data['city'], "STATE", data['state']],
         ["ZIP", data['zip'], "CELL PHONE", data['cell_phone']],
     ]
-    details_table = Table(details_data, colWidths=[70, 200, 70, 200])
+    details_table = Table(details_data, colWidths=[50, 150, 80, 150])
     details_table.setStyle(TableStyle([
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
@@ -63,7 +63,7 @@ def generate_pdf(data, filename='quote.pdf'):
     selection_data = [
         ["SELECTION:", "NEW", "", "CAR", "", "DEMO"],
         ["YEAR", "MAKE", "MODEL", "BODY STYLE", "STOCK NO.", "COLOR"],
-        ["", data['year'], data['make'], data['model'], data['stock_no'], data['color']]
+        ["", data['year'], data['make'], data['model'], data['body_style'], data['stock_no'], data['color']]
     ]
     selection_table = Table(selection_data, colWidths=[80, 60, 60, 60, 80, 80])
     selection_table.setStyle(TableStyle([
@@ -140,6 +140,7 @@ with st.form(key='deal_form'):
     year = st.text_input("Vehicle Year", key='year')
     make = st.text_input("Vehicle Make", key='make')
     model = st.text_input("Vehicle Model", key='model')
+    body_style = st.text_input("Body Style", key='body_style')
     stock_no = st.text_input("Stock No.", key='stock_no')
     color = st.text_input("Vehicle Color", key='color')
     
@@ -187,6 +188,7 @@ if submit_button:
         'year': year,
         'make': make,
         'model': model,
+        'body_style': body_style,
         'stock_no': stock_no,
         'color': color,
         'sale_price': sale_price,
