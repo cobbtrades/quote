@@ -1,6 +1,6 @@
 import streamlit as st
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 import pandas as pd
@@ -27,13 +27,10 @@ def generate_pdf(data, filename='quote.pdf'):
     # Create input details table
     details_data = [
         ["DATE", data['date'], "SALES PERSON", data['salesperson']],
-        ["BUYER", data['buyer'], "NO.", data['salesperson_no']],
-        ["CO-BUYER", data['co_buyer'], "", ""],
+        ["BUYER", data['buyer'], "", ""],
         ["ADDRESS", data['address'], "", ""],
         ["CITY", data['city'], "STATE", data['state']],
-        ["COUNTY", data['county'], "ZIP", data['zip']],
-        ["RES. PHONE", data['res_phone'], "BUS. PHONE", data['bus_phone']],
-        ["CELL PHONE", data['cell_phone'], "E-MAIL ADDRESS", data['email']],
+        ["ZIP", data['zip'], "CELL PHONE", data['cell_phone']],
     ]
     details_table = Table(details_data, colWidths=[70, 200, 70, 200])
     details_table.setStyle(TableStyle([
@@ -101,18 +98,12 @@ st.title("Quote Generator")
 with st.form(key='deal_form'):
     date = st.date_input("Date", key='date')
     salesperson = st.text_input("Sales Person", key='salesperson')
-    salesperson_no = st.text_input("Salesperson No.", key='salesperson_no')
     buyer = st.text_input("Buyer", key='buyer')
-    co_buyer = st.text_input("Co-Buyer", key='co_buyer')
     address = st.text_input("Address", key='address')
     city = st.text_input("City", key='city')
     state = st.text_input("State", key='state')
-    county = st.text_input("County", key='county')
     zip_code = st.text_input("ZIP", key='zip')
-    res_phone = st.text_input("Residential Phone", key='res_phone')
-    bus_phone = st.text_input("Business Phone", key='bus_phone')
     cell_phone = st.text_input("Cell Phone", key='cell_phone')
-    email = st.text_input("Email Address", key='email')
     
     sale_price = st.number_input("Sale Price of Vehicle", min_value=0, key='sale_price')
     trade_value = st.number_input("Trade Value", min_value=0, key='trade_value')
@@ -149,18 +140,12 @@ if submit_button:
     data = {
         'date': date,
         'salesperson': salesperson,
-        'salesperson_no': salesperson_no,
         'buyer': buyer,
-        'co_buyer': co_buyer,
         'address': address,
         'city': city,
         'state': state,
-        'county': county,
         'zip': zip_code,
-        'res_phone': res_phone,
-        'bus_phone': bus_phone,
         'cell_phone': cell_phone,
-        'email': email,
         'sale_price': sale_price,
         'trade_value': trade_value,
         'trade_payoff': trade_payoff,
