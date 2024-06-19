@@ -28,10 +28,9 @@ def generate_pdf(data, filename='quote.pdf'):
     header_data = [
         ["MODERN AUTOMOTIVE"],
     ]
-    header_table = Table(header_data, colWidths=[150, 50, 150, 50, 150, 100])
+    header_table = Table(header_data, colWidths=[400])
     header_table.setStyle(TableStyle([
-        ('SPAN', (0, 0), (5, 0)),
-        ('SPAN', (0, 1), (5, 1)),
+        ('SPAN', (0, 0), (-1, -1)),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
         ('FONTSIZE', (0, 0), (-1, -1), 14),
@@ -64,7 +63,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ["YEAR", "MAKE", "MODEL", "STOCK NO.", "COLOR"],
         ["", data['year'], data['make'], data['model'], data['stock_no'], data['color']]
     ]
-    selection_table = Table(selection_data, colWidths=[80, 60, 80, 80, 80])
+    selection_table = Table(selection_data, colWidths=[80, 60, 80, 80, 80, 80])
     selection_table.setStyle(TableStyle([
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
