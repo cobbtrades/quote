@@ -96,7 +96,7 @@ if submit_button:
     # Display the quotes in a grid format
     grid_data = []
     for term, payments in quotes.items():
-        row = {'Term (years)': term}
+        row = {'Term (months)': term}
         for dp, payment in payments.items():
             row[f'${dp}'] = round(payment, 2)
         grid_data.append(row)
