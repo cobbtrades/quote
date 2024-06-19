@@ -120,7 +120,7 @@ def generate_pdf(data, filename='quote.pdf'):
     
     # Add terms and conditions image
     elements.append(Spacer(1, 24))
-    img = Image("/mnt/data/Capture.PNG", width=6.5*inch, height=2.5*inch)
+    img = Image("Capture.PNG", width=6.5*inch, height=2.5*inch)
     elements.append(img)
     elements.append(Spacer(1, 24))
     
