@@ -23,12 +23,13 @@ def generate_pdf(data, filename='quote.pdf'):
     c.drawString(100, height - 100, "Vehicle Sale Quote")
     c.drawString(100, height - 120, f"Sale Price: ${data['sale_price']}")
     c.drawString(100, height - 140, f"Trade Value: ${data['trade_value']}")
-    c.drawString(100, height - 160, f"Dealer Service Fee: ${DOC_FEE}")
-    c.drawString(100, height - 180, f"Sales Tax: ${data['sales_tax']:.2f}")
-    c.drawString(100, height - 200, f"TTL: ${NON_TAX_FEE}")
-    c.drawString(100, height - 220, f"Balance: ${data['balance']:.2f}")
+    c.drawString(100, height - 160, f"Trade Payoff: ${data['trade_payoff']}")
+    c.drawString(100, height - 180, f"Dealer Service Fee: ${DOC_FEE}")
+    c.drawString(100, height - 200, f"Sales Tax: ${data['sales_tax']:.2f}")
+    c.drawString(100, height - 220, f"TTL: ${NON_TAX_FEE}")
+    c.drawString(100, height - 240, f"Balance: ${data['balance']:.2f}")
     
-    y = height - 260
+    y = height - 280
     for i, (term, payments) in enumerate(data['quotes'].items()):
         c.drawString(100, y, f"Term: {term} years")
         y -= 20
@@ -46,6 +47,7 @@ st.title("Car Deal Quote Generator")
 with st.form(key='deal_form'):
     sale_price = st.number_input("Sale Price of Vehicle", min_value=0, key='sale_price')
     trade_value = st.number_input("Trade Value", min_value=0, key='trade_value')
+    trade_payoff = st.number_input("Trade Payoff", min_value=0, key='trade_payoff')
     
     down_payments = []
     for i in range(1, 4):
@@ -69,15 +71,16 @@ if submit_button:
         for dp in down_payments:
             taxable_amount = sale_price - trade_value + DOC_FEE
             sales_tax = taxable_amount * SALES_TAX_RATE
-            total_loan_amount = taxable_amount + sales_tax + NON_TAX_FEE - dp
+            total_loan_amount = taxable_amount + sales_tax + NON_TAX_FEE + trade_payoff - dp
             monthly_payment = calculate_monthly_payment(total_loan_amount, rates[term], term)
             term_payments[dp] = monthly_payment
         quotes[term] = term_payments
     
-    balance = sale_price - trade_value + DOC_FEE + sales_tax + NON_TAX_FEE
+    balance = sale_price - trade_value + DOC_FEE + sales_tax + NON_TAX_FEE + trade_payoff
     data = {
         'sale_price': sale_price,
         'trade_value': trade_value,
+        'trade_payoff': trade_payoff,
         'sales_tax': sales_tax,
         'balance': balance,
         'quotes': quotes,
@@ -88,6 +91,7 @@ if submit_button:
     st.write("### Detailed Breakdown")
     st.write(f"**Sales Price:** ${sale_price}")
     st.write(f"**Trade Value:** ${trade_value}")
+    st.write(f"**Trade Payoff:** ${trade_payoff}")
     st.write(f"**Dealer Service Fee:** ${DOC_FEE}")
     st.write(f"**Sales Tax:** ${sales_tax:.2f}")
     st.write(f"**TTL:** ${NON_TAX_FEE}")
