@@ -98,7 +98,7 @@ def generate_pdf(data, filename='quote.pdf'):
     elements.append(Spacer(1, 12))
     
     # Grid data
-    grid_data = [["Term (months)"] + [f"${dp}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
+    grid_data = [["Term"] + [f"${dp}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
     for term, payments in data['quotes'].items():
         row = [term]
         for dp, payment in payments.items():
