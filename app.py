@@ -136,8 +136,8 @@ st.title("Quote Generator")
 
 # Form to input deal details
 with st.form(key='deal_form'):
-    col1, col2 = st.columns(2)
-
+    col1, col2, col3 = st.columns(3)
+    
     with col1:
         date = st.date_input("Date", key='date')
         salesperson = st.text_input("Sales Person", key='salesperson')
@@ -147,7 +147,7 @@ with st.form(key='deal_form'):
         state = st.text_input("State", key='state')
         zip_code = st.text_input("ZIP", key='zip')
         cell_phone = st.text_input("Cell Phone", key='cell_phone')
-        
+    
     with col2:
         year = st.text_input("Vehicle Year", key='year')
         make = st.text_input("Vehicle Make", key='make')
@@ -155,15 +155,14 @@ with st.form(key='deal_form'):
         stock_no = st.text_input("Stock No.", key='stock_no')
         color = st.text_input("Vehicle Color", key='color')
         cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0.0, format="%.2f", key='cost_of_vehicle')
-        
+    
+    with col3:
         sale_price = st.number_input("Sale Price of Vehicle", min_value=0.0, format="%.2f", key='sale_price')
         trade_value = st.number_input("Trade Value", min_value=0.0, format="%.2f", key='trade_value')
         acv_of_trade = st.number_input("ACV of Trade", min_value=0.0, format="%.2f", key='acv_of_trade')
         trade_payoff = st.number_input("Trade Payoff", min_value=0.0, format="%.2f", key='trade_payoff')
         doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
-
-    col1, col2 = st.columns(2)
-
+    
     with col1:
         down_payments = []
         default_down_payments = [1000.0, 2000.0, 3000.0]
