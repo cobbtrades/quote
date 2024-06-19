@@ -36,18 +36,18 @@ st.title("Car Deal Quote Generator")
 
 # Form to input deal details
 with st.form(key='deal_form'):
-    sale_price = st.number_input("Sale Price of Vehicle", min_value=0)
-    trade_value = st.number_input("Trade Value", min_value=0)
+    sale_price = st.number_input("Sale Price of Vehicle", min_value=0, key='sale_price')
+    trade_value = st.number_input("Trade Value", min_value=0, key='trade_value')
     
     down_payments = []
     for i in range(1, 4):
-        down_payments.append(st.number_input(f"Down Payment Option {i}", min_value=0))
+        down_payments.append(st.number_input(f"Down Payment Option {i}", min_value=0, key=f'down_payment_{i}'))
     
     terms = []
     rates = {}
     for i in range(1, 4):
-        term = st.number_input(f"Loan Term {i} (years)", min_value=1)
-        rate = st.number_input(f"Rate for {term} years (%)", min_value=0.0, max_value=100.0)
+        term = st.number_input(f"Loan Term {i} (years)", min_value=1, key=f'term_{i}')
+        rate = st.number_input(f"Rate for Term {i} (years) (%)", min_value=0.0, max_value=100.0, key=f'rate_{i}')
         terms.append(term)
         rates[term] = rate
     
@@ -76,4 +76,3 @@ if submit_button:
     st.success("Quote generated successfully!")
     with open(pdf_file, 'rb') as f:
         st.download_button('Download PDF Quote', f, file_name=pdf_file)
-
