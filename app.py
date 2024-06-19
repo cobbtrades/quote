@@ -132,11 +132,12 @@ def generate_pdf(data, filename='quote.pdf'):
     doc.build(elements)
     return filename
 
+st.set_page_config(layout="wide")
 st.title("Quote Generator")
 
 # Form to input deal details
 with st.form(key='deal_form'):
-    col1, col2, col3, col4, col5 = st.columns(5)
+    col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
     
     with col1:
         date = st.date_input("Date", key='date')
