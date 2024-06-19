@@ -135,6 +135,17 @@ def generate_pdf(data, filename='quote.pdf'):
 st.set_page_config(layout="wide")
 st.title("Quote Generator")
 
+# Initialize session state for form inputs
+if 'gross_profit' not in st.session_state:
+    st.session_state['gross_profit'] = 0.0
+
+def calculate_gross_profit():
+    cost_of_vehicle = st.session_state.get('cost_of_vehicle', 0.0)
+    sale_price = st.session_state.get('sale_price', 0.0)
+    acv_of_trade = st.session_state.get('acv_of_trade', 0.0)
+    trade_value = st.session_state.get('trade_value', 0.0)
+    st.session_state['gross_profit'] = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)
+
 # Form to input deal details
 with st.form(key='deal_form'):
     col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
@@ -157,12 +168,12 @@ with st.form(key='deal_form'):
         model = st.text_input("Vehicle Model", key='model')
         stock_no = st.text_input("Stock No.", key='stock_no')
         color = st.text_input("Vehicle Color", key='color')
-        cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0.0, format="%.2f", key='cost_of_vehicle')
+        cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0.0, format="%.2f", key='cost_of_vehicle', on_change=calculate_gross_profit)
     
     with col4:
-        sale_price = st.number_input("Sale Price of Vehicle", min_value=0.0, format="%.2f", key='sale_price')
-        trade_value = st.number_input("Trade Value", min_value=0.0, format="%.2f", key='trade_value')
-        acv_of_trade = st.number_input("ACV of Trade", min_value=0.0, format="%.2f", key='acv_of_trade')
+        sale_price = st.number_input("Sale Price of Vehicle", min_value=0.0, format="%.2f", key='sale_price', on_change=calculate_gross_profit)
+        trade_value = st.number_input("Trade Value", min_value=0.0, format="%.2f", key='trade_value', on_change=calculate_gross_profit)
+        acv_of_trade = st.number_input("ACV of Trade", min_value=0.0, format="%.2f", key='acv_of_trade', on_change=calculate_gross_profit)
         trade_payoff = st.number_input("Trade Payoff", min_value=0.0, format="%.2f", key='trade_payoff')
         doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
     
@@ -182,6 +193,10 @@ with st.form(key='deal_form'):
     
     submit_button = st.form_submit_button(label='Generate Quote')
 
+# Display the gross profit in real-time
+st.write("### Gross Profit")
+st.write(f"${st.session_state['gross_profit']:.2f}")
+
 if submit_button:
     # Calculate monthly payments for each combination of down payment and term
     quotes = {}
@@ -196,7 +211,6 @@ if submit_button:
         quotes[term] = term_payments
     
     balance = sale_price - trade_value + doc_fee + sales_tax + NON_TAX_FEE + trade_payoff
-    gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)  # Corrected calculation
 
     data = {
         'date': date,
@@ -233,12 +247,9 @@ if submit_button:
     df = pd.DataFrame(grid_data)
     st.write("### Monthly Payments Grid")
     st.dataframe(df, hide_index=True)
-
-    # Display the gross profit
-    st.write("### Gross Profit")
-    st.write(f"${gross_profit:.2f}")
     
     pdf_file = generate_pdf(data)
     
+    st.success("Quote generated successfully!")
     with open(pdf_file, 'rb') as f:
         st.download_button('Download PDF Quote', f, file_name=pdf_file)
