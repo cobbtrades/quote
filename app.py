@@ -116,11 +116,11 @@ def generate_pdf(data, filename='quote.pdf'):
     ]))
     
     elements.append(grid_table)
-    
+    elements.append(Spacer(1, 24))
     # Add signature lines
     signature_data = [
-        ["Customer Signature", "Date", "Salesperson Signature", "Date"],
-        ["_________________________", "_________________", "_________________________", "_________________"]
+        ["Customer Signature", "Date"],
+        ["_________________________", "_________________"]
     ]
     signature_table = Table(signature_data, colWidths=[150, 100, 150, 100])
     signature_table.setStyle(TableStyle([
