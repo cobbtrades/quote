@@ -74,22 +74,15 @@ def generate_pdf(data, filename='quote.pdf'):
     
     # Detailed breakdown table
     breakdown_data = [
-        ["Sales Price", f"${data['sale_price']}"]
-    ]
-    
-    if data['rebate'] != 0:
-        breakdown_data.append(["Rebate", f"${data['rebate']}"])
-    if data['trade_value'] != 0:
-        breakdown_data.append(["Trade Value", f"${data['trade_value']}"])
-        
-    breakdown_data.extend([
+        ["Sales Price", f"${data['sale_price']}"],
+        ["Rebate", f"${data['rebate']}"],
+        ["Trade Value", f"${data['trade_value']}"],
         ["Trade Payoff", f"${data['trade_payoff']}"],
         ["Dealer Service Fee", f"${data['doc_fee']}"],
         ["Sales Tax", f"${data['sales_tax']:.2f}"],
         ["Non Tax Fees", f"${NON_TAX_FEE}"],
-        ["Balance", f"${data['balance']:.2f}"]
-    ])
-    
+        ["Balance", f"${data['balance']:.2f}"],
+    ]
     breakdown_table = Table(breakdown_data, colWidths=[150, 100])
     breakdown_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
@@ -183,7 +176,7 @@ with st.form(key='deal_form'):
         
         terms = []
         rates = {}
-        for i in range(1, 3):
+        for i in range(1, 4):
             term = st.number_input(f"Loan Term {i} (months)", min_value=1, value=[60, 66, 72][i-1], key=f'term_{i}')
             rate = st.number_input(f"Rate for Term {i} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'rate_{i}')
             terms.append(term)
