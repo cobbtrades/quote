@@ -168,12 +168,12 @@ with st.form(key='deal_form'):
         model = st.text_input("Vehicle Model", key='model')
         stock_no = st.text_input("Stock No.", key='stock_no')
         color = st.text_input("Vehicle Color", key='color')
-        cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0.0, format="%.2f", key='cost_of_vehicle', on_change=calculate_gross_profit)
+        cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0.0, format="%.2f", key='cost_of_vehicle')
     
     with col4:
-        sale_price = st.number_input("Sale Price of Vehicle", min_value=0.0, format="%.2f", key='sale_price', on_change=calculate_gross_profit)
-        trade_value = st.number_input("Trade Value", min_value=0.0, format="%.2f", key='trade_value', on_change=calculate_gross_profit)
-        acv_of_trade = st.number_input("ACV of Trade", min_value=0.0, format="%.2f", key='acv_of_trade', on_change=calculate_gross_profit)
+        sale_price = st.number_input("Sale Price of Vehicle", min_value=0.0, format="%.2f", key='sale_price')
+        trade_value = st.number_input("Trade Value", min_value=0.0, format="%.2f", key='trade_value')
+        acv_of_trade = st.number_input("ACV of Trade", min_value=0.0, format="%.2f", key='acv_of_trade')
         trade_payoff = st.number_input("Trade Payoff", min_value=0.0, format="%.2f", key='trade_payoff')
         doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
     
@@ -192,6 +192,9 @@ with st.form(key='deal_form'):
             rates[term] = rate
     
     submit_button = st.form_submit_button(label='Generate Quote')
+
+# Calculate gross profit dynamically
+calculate_gross_profit()
 
 # Display the gross profit in real-time
 st.write("### Gross Profit")
