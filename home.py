@@ -1,8 +1,7 @@
 import streamlit as st
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet
 import pandas as pd
 
 # Constants for fees
@@ -22,23 +21,22 @@ def calculate_monthly_payment(principal, rate, term):
 def generate_pdf(data, filename='quote.pdf'):
     doc = SimpleDocTemplate(filename, pagesize=letter)
     elements = []
-    styles = getSampleStyleSheet()
-    
+
     # Detailed breakdown table
     breakdown_data = [
-        ["SALE PRICE", f"${data['sale_price']}"],
-        ["TRADE VALUE", f"${data['trade_value']}"],
-        ["TRADE PAYOFF", f"${data['trade_payoff']}"],
-        ["DEALER SERVICE FEE", f"${DOC_FEE}"],
-        ["SALES TAX", f"${data['sales_tax']:.2f}"],
-        ["NON TAX FEES", f"${NON_TAX_FEE}"],
-        ["BALANCE", f"${data['balance']:.2f}"],
+        ["Sales Price", f"${data['sale_price']}"],
+        ["Trade Value", f"${data['trade_value']}"],
+        ["Trade Payoff", f"${data['trade_payoff']}"],
+        ["Dealer Service Fee", f"${DOC_FEE}"],
+        ["Sales Tax", f"${data['sales_tax']:.2f}"],
+        ["Non Tax Fees", f"${NON_TAX_FEE}"],
+        ["Balance", f"${data['balance']:.2f}"],
     ]
-    breakdown_table = Table(breakdown_data, colWidths=[200, 100])
+    breakdown_table = Table(breakdown_data)
     breakdown_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
         ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
@@ -46,14 +44,14 @@ def generate_pdf(data, filename='quote.pdf'):
     ]))
     
     # Grid data
-    grid_data = [["TERM (MONTHS)"] + [f"DOWN PAYMENT ${dp}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
+    grid_data = [["Term (months)"] + [f"${dp}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
     for term, payments in data['quotes'].items():
-        row = [f"{term * 12}"]
+        row = [term]
         for dp, payment in payments.items():
             row.append(f"${payment:.2f}")
         grid_data.append(row)
     
-    grid_table = Table(grid_data, colWidths=[100] + [100] * len(data['quotes'][list(data['quotes'].keys())[0]].keys()))
+    grid_table = Table(grid_data)
     grid_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -64,29 +62,6 @@ def generate_pdf(data, filename='quote.pdf'):
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
 
-    # Adding header and form details
-    header = Paragraph("Quote Details", styles['Title'])
-    form_details = [
-        ["Buyer", "The Bancorp Bank"],
-        ["Address", "2127 Espey Ct, Crofton, MD 21114"],
-        ["Year", "2024"],
-        ["Make", "Nissan"],
-        ["Model", "Frontier"],
-        ["VIN", "1N6ED1CL7RN654531"],
-        ["Salesperson", "Mike Smith"],
-    ]
-    form_table = Table(form_details, colWidths=[100, 300])
-    form_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
-    ]))
-
-    elements.append(header)
-    elements.append(form_table)
     elements.append(breakdown_table)
     elements.append(grid_table)
     doc.build(elements)
@@ -107,8 +82,8 @@ with st.form(key='deal_form'):
     terms = []
     rates = {}
     for i in range(1, 4):
-        term = st.number_input(f"Loan Term {i} (years)", min_value=1, key=f'term_{i}')
-        rate = st.number_input(f"Rate for Term {i} (years) (%)", min_value=0.0, max_value=100.0, key=f'rate_{i}')
+        term = st.number_input(f"Loan Term {i} (months)", min_value=1, key=f'term_{i}')
+        rate = st.number_input(f"Rate for Term {i} (months) (%)", min_value=0.0, max_value=100.0, key=f'rate_{i}')
         terms.append(term)
         rates[term] = rate
     
