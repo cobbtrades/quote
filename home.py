@@ -6,7 +6,6 @@ from reportlab.lib import colors
 import pandas as pd
 
 # Constants for fees
-DOC_FEE = 799
 NON_TAX_FEE = 106.75
 SALES_TAX_RATE = 0.03
 
@@ -79,7 +78,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ["Sales Price", f"${data['sale_price']}"],
         ["Trade Value", f"${data['trade_value']}"],
         ["Trade Payoff", f"${data['trade_payoff']}"],
-        ["Dealer Service Fee", f"${DOC_FEE}"],
+        ["Dealer Service Fee", f"${data['doc_fee']}"],
         ["Sales Tax", f"${data['sales_tax']:.2f}"],
         ["Non Tax Fees", f"${NON_TAX_FEE}"],
         ["Balance", f"${data['balance']:.2f}"],
@@ -144,6 +143,7 @@ with st.form(key='deal_form'):
     sale_price = st.number_input("Sale Price of Vehicle", min_value=0, key='sale_price')
     trade_value = st.number_input("Trade Value", min_value=0, key='trade_value')
     trade_payoff = st.number_input("Trade Payoff", min_value=0, key='trade_payoff')
+    doc_fee = st.number_input("Dealer Service Fee", min_value=0, value=799, key='doc_fee')
     
     down_payments = []
     for i in range(1, 4):
@@ -165,14 +165,14 @@ if submit_button:
     for term in terms:
         term_payments = {}
         for dp in down_payments:
-            taxable_amount = sale_price - trade_value + DOC_FEE
+            taxable_amount = sale_price - trade_value + doc_fee
             sales_tax = taxable_amount * SALES_TAX_RATE
             total_loan_amount = taxable_amount + sales_tax + NON_TAX_FEE + trade_payoff - dp
             monthly_payment = calculate_monthly_payment(total_loan_amount, rates[term], term)
             term_payments[dp] = round(monthly_payment, 2)
         quotes[term] = term_payments
     
-    balance = sale_price - trade_value + DOC_FEE + sales_tax + NON_TAX_FEE + trade_payoff
+    balance = sale_price - trade_value + doc_fee + sales_tax + NON_TAX_FEE + trade_payoff
     data = {
         'date': date,
         'salesperson': salesperson,
@@ -190,6 +190,7 @@ if submit_button:
         'sale_price': sale_price,
         'trade_value': trade_value,
         'trade_payoff': trade_payoff,
+        'doc_fee': doc_fee,
         'sales_tax': sales_tax,
         'balance': balance,
         'quotes': quotes,
@@ -201,7 +202,7 @@ if submit_button:
     st.write(f"**Sales Price:** ${sale_price}")
     st.write(f"**Trade Value:** ${trade_value}")
     st.write(f"**Trade Payoff:** ${trade_payoff}")
-    st.write(f"**Dealer Service Fee:** ${DOC_FEE}")
+    st.write(f"**Dealer Service Fee:** ${doc_fee}")
     st.write(f"**Sales Tax:** ${sales_tax:.2f}")
     st.write(f"**Non Tax Fees:** ${NON_TAX_FEE}")
     st.write(f"**Balance:** ${balance:.2f}")
@@ -209,7 +210,7 @@ if submit_button:
     # Display the quotes in a grid format
     grid_data = []
     for term, payments in quotes.items():
-        row = {'Term (months)': term}
+        row = {'Term': term}
         for dp, payment in payments.items():
             row[f'${dp}'] = round(payment, 2)
         grid_data.append(row)
