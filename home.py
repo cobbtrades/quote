@@ -1,7 +1,6 @@
 import streamlit as st
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from reportlab.lib import colors
 import pandas as pd
 
@@ -22,28 +21,7 @@ def calculate_monthly_payment(principal, rate, term):
 def generate_pdf(data, filename='quote.pdf'):
     doc = SimpleDocTemplate(filename, pagesize=letter)
     elements = []
-    styles = getSampleStyleSheet()
-    
-    # Create input details table
-    details_data = [
-        ["DATE", data['date'], "SALES PERSON", data['salesperson']],
-        ["BUYER", data['buyer'], "", ""],
-        ["ADDRESS", data['address'], "", ""],
-        ["CITY", data['city'], "STATE", data['state']],
-        ["ZIP", data['zip'], "CELL PHONE", data['cell_phone']],
-    ]
-    details_table = Table(details_data, colWidths=[70, 200, 70, 200])
-    details_table.setStyle(TableStyle([
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-    ]))
-    
-    elements.append(details_table)
-    elements.append(Spacer(1, 12))
-    
+
     # Detailed breakdown table
     breakdown_data = [
         ["Sales Price", f"${data['sale_price']}"],
@@ -54,7 +32,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ["Non Tax Fees", f"${NON_TAX_FEE}"],
         ["Balance", f"${data['balance']:.2f}"],
     ]
-    breakdown_table = Table(breakdown_data, colWidths=[150, 100])
+    breakdown_table = Table(breakdown_data)
     breakdown_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -65,9 +43,6 @@ def generate_pdf(data, filename='quote.pdf'):
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
     
-    elements.append(breakdown_table)
-    elements.append(Spacer(1, 12))
-    
     # Grid data
     grid_data = [["Term (months)"] + [f"${dp}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
     for term, payments in data['quotes'].items():
@@ -76,7 +51,7 @@ def generate_pdf(data, filename='quote.pdf'):
             row.append(f"${payment:.2f}")
         grid_data.append(row)
     
-    grid_table = Table(grid_data, colWidths=[70] + [70]*len(data['quotes'][list(data['quotes'].keys())[0]].keys()))
+    grid_table = Table(grid_data)
     grid_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -86,9 +61,9 @@ def generate_pdf(data, filename='quote.pdf'):
         ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
-    
+
+    elements.append(breakdown_table)
     elements.append(grid_table)
-    
     doc.build(elements)
     return filename
 
@@ -96,15 +71,6 @@ st.title("Quote Generator")
 
 # Form to input deal details
 with st.form(key='deal_form'):
-    date = st.date_input("Date", key='date')
-    salesperson = st.text_input("Sales Person", key='salesperson')
-    buyer = st.text_input("Buyer", key='buyer')
-    address = st.text_input("Address", key='address')
-    city = st.text_input("City", key='city')
-    state = st.text_input("State", key='state')
-    zip_code = st.text_input("ZIP", key='zip')
-    cell_phone = st.text_input("Cell Phone", key='cell_phone')
-    
     sale_price = st.number_input("Sale Price of Vehicle", min_value=0, key='sale_price')
     trade_value = st.number_input("Trade Value", min_value=0, key='trade_value')
     trade_payoff = st.number_input("Trade Payoff", min_value=0, key='trade_payoff')
@@ -138,14 +104,6 @@ if submit_button:
     
     balance = sale_price - trade_value + DOC_FEE + sales_tax + NON_TAX_FEE + trade_payoff
     data = {
-        'date': date,
-        'salesperson': salesperson,
-        'buyer': buyer,
-        'address': address,
-        'city': city,
-        'state': state,
-        'zip': zip_code,
-        'cell_phone': cell_phone,
         'sale_price': sale_price,
         'trade_value': trade_value,
         'trade_payoff': trade_payoff,
