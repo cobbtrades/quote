@@ -1,6 +1,6 @@
 import streamlit as st
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 import pandas as pd
@@ -26,7 +26,8 @@ def generate_pdf(data, filename='quote.pdf'):
     
     # Header
     header_data = [
-        ["MODERN AUTOMOTIVE"],
+        ["MODERN AUTOMOTIVE", "", "967 Concord Pkwy S", "", "CONCORD, NC 28027", "704-788-2110"],
+        ["A Member of the MODERN AUTOMOTIVE NETWORK", "", "", "", "", ""],
     ]
     header_table = Table(header_data, colWidths=[150, 50, 150, 50, 150, 100])
     header_table.setStyle(TableStyle([
@@ -41,7 +42,7 @@ def generate_pdf(data, filename='quote.pdf'):
     
     # Customer and vehicle details
     details_data = [
-        ["DATE", data['date'], "SALES", data['salesperson']],
+        ["DATE", data['date'], "SALES PERSON", data['salesperson']],
         ["BUYER", data['buyer'], "", ""],
         ["ADDRESS", data['address'], "", ""],
         ["CITY", data['city'], "STATE", data['state']],
@@ -61,10 +62,10 @@ def generate_pdf(data, filename='quote.pdf'):
     # Vehicle selection and trade-in details
     selection_data = [
         ["SELECTION:", "NEW", "", "CAR", "", "DEMO"],
-        ["YEAR", "MAKE", "MODEL", "BODY STYLE", "STOCK NO.", "COLOR"],
-        ["", data['year'], data['make'], data['model'], data['body_style'], data['stock_no'], data['color']]
+        ["YEAR", "MAKE", "MODEL", "STOCK NO.", "COLOR"],
+        ["", data['year'], data['make'], data['model'], data['stock_no'], data['color']]
     ]
-    selection_table = Table(selection_data, colWidths=[80, 60, 60, 60, 80, 80])
+    selection_table = Table(selection_data, colWidths=[80, 60, 60, 80, 80])
     selection_table.setStyle(TableStyle([
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
@@ -139,7 +140,6 @@ with st.form(key='deal_form'):
     year = st.text_input("Vehicle Year", key='year')
     make = st.text_input("Vehicle Make", key='make')
     model = st.text_input("Vehicle Model", key='model')
-    body_style = st.text_input("Body Style", key='body_style')
     stock_no = st.text_input("Stock No.", key='stock_no')
     color = st.text_input("Vehicle Color", key='color')
     
@@ -187,7 +187,6 @@ if submit_button:
         'year': year,
         'make': make,
         'model': model,
-        'body_style': body_style,
         'stock_no': stock_no,
         'color': color,
         'sale_price': sale_price,
