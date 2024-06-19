@@ -233,6 +233,10 @@ if submit_button:
     df = pd.DataFrame(grid_data)
     st.write("### Monthly Payments Grid")
     st.dataframe(df, hide_index=True)
+
+    # Display the gross profit
+    st.write("### Gross Profit")
+    st.write(f"${gross_profit:.2f}")
     
     pdf_file = generate_pdf(data)
     
