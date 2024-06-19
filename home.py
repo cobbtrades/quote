@@ -26,8 +26,7 @@ def generate_pdf(data, filename='quote.pdf'):
     
     # Header
     header_data = [
-        ["MODERN AUTOMOTIVE", "", "967 Concord Pkwy S", "", "CONCORD, NC 28027", "704-788-2110"],
-        ["A Member of the MODERN AUTOMOTIVE NETWORK", "", "", "", "", ""],
+        ["MODERN AUTOMOTIVE"],
     ]
     header_table = Table(header_data, colWidths=[150, 50, 150, 50, 150, 100])
     header_table.setStyle(TableStyle([
@@ -42,7 +41,7 @@ def generate_pdf(data, filename='quote.pdf'):
     
     # Customer and vehicle details
     details_data = [
-        ["DATE", data['date'], "SALES PERSON", data['salesperson']],
+        ["DATE", data['date'], "SALES", data['salesperson']],
         ["BUYER", data['buyer'], "", ""],
         ["ADDRESS", data['address'], "", ""],
         ["CITY", data['city'], "STATE", data['state']],
