@@ -150,24 +150,24 @@ with st.form(key='deal_form'):
     model = st.text_input("Vehicle Model", key='model')
     stock_no = st.text_input("Stock No.", key='stock_no')
     color = st.text_input("Vehicle Color", key='color')
-    cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0, key='cost_of_vehicle')
+    cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0.0, format="%.2f", key='cost_of_vehicle')
     
-    sale_price = st.number_input("Sale Price of Vehicle", min_value=0, key='sale_price')
-    trade_value = st.number_input("Trade Value", min_value=0, key='trade_value')
-    acv_of_trade = st.number_input("ACV of Trade", min_value=0, key='acv_of_trade')
-    trade_payoff = st.number_input("Trade Payoff", min_value=0, key='trade_payoff')
-    doc_fee = st.number_input("Dealer Service Fee", min_value=0, value=799, key='doc_fee')
+    sale_price = st.number_input("Sale Price of Vehicle", min_value=0.0, format="%.2f", key='sale_price')
+    trade_value = st.number_input("Trade Value", min_value=0.0, format="%.2f", key='trade_value')
+    acv_of_trade = st.number_input("ACV of Trade", min_value=0.0, format="%.2f", key='acv_of_trade')
+    trade_payoff = st.number_input("Trade Payoff", min_value=0.0, format="%.2f", key='trade_payoff')
+    doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
     
     down_payments = []
-    default_down_payments = [1000, 2000, 3000]
+    default_down_payments = [1000.0, 2000.0, 3000.0]
     for i in range(3):
-        down_payments.append(st.number_input(f"Down Payment Option {i+1}", min_value=0, value=default_down_payments[i], key=f'down_payment_{i+1}'))
+        down_payments.append(st.number_input(f"Down Payment Option {i+1}", min_value=0.0, value=default_down_payments[i], format="%.2f", key=f'down_payment_{i+1}'))
     
     terms = []
     rates = {}
     for i in range(1, 4):
         term = st.number_input(f"Loan Term {i} (months)", min_value=1, value=[60, 66, 72][i-1], key=f'term_{i}')
-        rate = st.number_input(f"Rate for Term {i} (%)", min_value=0.0, max_value=100.0, value=14.0, key=f'rate_{i}')
+        rate = st.number_input(f"Rate for Term {i} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'rate_{i}')
         terms.append(term)
         rates[term] = rate
 
@@ -215,12 +215,12 @@ if submit_button:
     
     # Display the detailed breakdown
     st.write("### Detailed Breakdown")
-    st.write(f"**Sales Price:** ${sale_price}")
-    st.write(f"**Trade Value:** ${trade_value}")
-    st.write(f"**Trade Payoff:** ${trade_payoff}")
-    st.write(f"**Dealer Service Fee:** ${doc_fee}")
+    st.write(f"**Sales Price:** ${sale_price:.2f}")
+    st.write(f"**Trade Value:** ${trade_value:.2f}")
+    st.write(f"**Trade Payoff:** ${trade_payoff:.2f}")
+    st.write(f"**Dealer Service Fee:** ${doc_fee:.2f}")
     st.write(f"**Sales Tax:** ${sales_tax:.2f}")
-    st.write(f"**Non Tax Fees:** ${NON_TAX_FEE}")
+    st.write(f"**Non Tax Fees:** ${NON_TAX_FEE:.2f}")
     st.write(f"**Balance:** ${balance:.2f}")
     st.write(f"**Gross Profit:** ${gross_profit:.2f}")
     
