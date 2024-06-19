@@ -98,12 +98,12 @@ if submit_button:
     for term, payments in quotes.items():
         row = {'Term (years)': term}
         for dp, payment in payments.items():
-            row[f'Down Payment ${dp}'] = round(payment, 2)
+            row[f'${dp}'] = round(payment, 2)
         grid_data.append(row)
     
     df = pd.DataFrame(grid_data)
     st.write("### Monthly Payments Grid")
-    st.dataframe(df)
+    st.dataframe(df, hide_index=True)
     
     pdf_file = generate_pdf(data)
     
