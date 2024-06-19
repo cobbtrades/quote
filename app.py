@@ -135,20 +135,6 @@ def generate_pdf(data, filename='quote.pdf'):
 st.set_page_config(layout="wide")
 st.title("Quote Generator")
 
-# Initialize session state variables
-if 'gross_profit' not in st.session_state:
-    st.session_state.gross_profit = 0.0
-
-# Function to update gross profit
-def update_gross_profit():
-    sale_price = st.session_state.sale_price
-    cost_of_vehicle = st.session_state.cost_of_vehicle
-    acv_of_trade = st.session_state.acv_of_trade
-    trade_value = st.session_state.trade_value
-    
-    gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)
-    st.session_state.gross_profit = round(gross_profit, 2)
-
 # Form to input deal details
 with st.form(key='deal_form'):
     col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
@@ -171,12 +157,12 @@ with st.form(key='deal_form'):
         model = st.text_input("Vehicle Model", key='model')
         stock_no = st.text_input("Stock No.", key='stock_no')
         color = st.text_input("Vehicle Color", key='color')
-        cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0.0, format="%.2f", key='cost_of_vehicle', on_change=update_gross_profit)
+        cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0.0, format="%.2f", key='cost_of_vehicle')
     
     with col4:
-        sale_price = st.number_input("Sale Price of Vehicle", min_value=0.0, format="%.2f", key='sale_price', on_change=update_gross_profit)
-        trade_value = st.number_input("Trade Value", min_value=0.0, format="%.2f", key='trade_value', on_change=update_gross_profit)
-        acv_of_trade = st.number_input("ACV of Trade", min_value=0.0, format="%.2f", key='acv_of_trade', on_change=update_gross_profit)
+        sale_price = st.number_input("Sale Price of Vehicle", min_value=0.0, format="%.2f", key='sale_price')
+        trade_value = st.number_input("Trade Value", min_value=0.0, format="%.2f", key='trade_value')
+        acv_of_trade = st.number_input("ACV of Trade", min_value=0.0, format="%.2f", key='acv_of_trade')
         trade_payoff = st.number_input("Trade Payoff", min_value=0.0, format="%.2f", key='trade_payoff')
         doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
     
@@ -193,7 +179,7 @@ with st.form(key='deal_form'):
             rate = st.number_input(f"Rate for Term {i} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'rate_{i}')
             terms.append(term)
             rates[term] = rate
-
+    
     submit_button = st.form_submit_button(label='Generate Quote')
 
 if submit_button:
@@ -202,34 +188,34 @@ if submit_button:
     for term in terms:
         term_payments = {}
         for dp in down_payments:
-            taxable_amount = st.session_state.sale_price - st.session_state.trade_value + st.session_state.doc_fee
+            taxable_amount = sale_price - trade_value + doc_fee
             sales_tax = taxable_amount * SALES_TAX_RATE
-            total_loan_amount = taxable_amount + sales_tax + NON_TAX_FEE + st.session_state.trade_payoff - dp
+            total_loan_amount = taxable_amount + sales_tax + NON_TAX_FEE + trade_payoff - dp
             monthly_payment = calculate_monthly_payment(total_loan_amount, rates[term], term)
             term_payments[dp] = round(monthly_payment, 2)
         quotes[term] = term_payments
     
-    balance = st.session_state.sale_price - st.session_state.trade_value + st.session_state.doc_fee + sales_tax + NON_TAX_FEE + st.session_state.trade_payoff
-    gross_profit = st.session_state.gross_profit  # Use updated gross profit from session state
+    balance = sale_price - trade_value + doc_fee + sales_tax + NON_TAX_FEE + trade_payoff
+    gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)  # Corrected calculation
 
     data = {
-        'date': st.session_state.date,
-        'salesperson': st.session_state.salesperson,
-        'buyer': st.session_state.buyer,
-        'address': st.session_state.address,
-        'city': st.session_state.city,
-        'state': st.session_state.state,
-        'zip': st.session_state.zip,
-        'cell_phone': st.session_state.cell_phone,
-        'year': st.session_state.year,
-        'make': st.session_state.make,
-        'model': st.session_state.model,
-        'stock_no': st.session_state.stock_no,
-        'color': st.session_state.color,
-        'sale_price': st.session_state.sale_price,
-        'trade_value': st.session_state.trade_value,
-        'trade_payoff': st.session_state.trade_payoff,
-        'doc_fee': st.session_state.doc_fee,
+        'date': date,
+        'salesperson': salesperson,
+        'buyer': buyer,
+        'address': address,
+        'city': city,
+        'state': state,
+        'zip': zip_code,
+        'cell_phone': cell_phone,
+        'year': year,
+        'make': make,
+        'model': model,
+        'stock_no': stock_no,
+        'color': color,
+        'sale_price': sale_price,
+        'trade_value': trade_value,
+        'trade_payoff': trade_payoff,
+        'doc_fee': doc_fee,
         'sales_tax': sales_tax,
         'balance': balance,
         'quotes': quotes,
@@ -238,10 +224,10 @@ if submit_button:
     
     # Display the detailed breakdown
     st.write("### Detailed Breakdown")
-    st.write(f"**Sales Price:** ${st.session_state.sale_price:.2f}")
-    st.write(f"**Trade Value:** ${st.session_state.trade_value:.2f}")
-    st.write(f"**Trade Payoff:** ${st.session_state.trade_payoff:.2f}")
-    st.write(f"**Dealer Service Fee:** ${st.session_state.doc_fee:.2f}")
+    st.write(f"**Sales Price:** ${sale_price:.2f}")
+    st.write(f"**Trade Value:** ${trade_value:.2f}")
+    st.write(f"**Trade Payoff:** ${trade_payoff:.2f}")
+    st.write(f"**Dealer Service Fee:** ${doc_fee:.2f}")
     st.write(f"**Sales Tax:** ${sales_tax:.2f}")
     st.write(f"**Non Tax Fees:** ${NON_TAX_FEE:.2f}")
     st.write(f"**Balance:** ${balance:.2f}")
@@ -264,6 +250,3 @@ if submit_button:
     st.success("Quote generated successfully!")
     with open(pdf_file, 'rb') as f:
         st.download_button('Download PDF Quote', f, file_name=pdf_file)
-
-# Display the real-time gross profit
-st.sidebar.write(f"**Real-Time Gross Profit:** ${st.session_state.gross_profit:.2f}")
