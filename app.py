@@ -149,10 +149,12 @@ with st.form(key='deal_form'):
     make = st.text_input("Vehicle Make", key='make')
     model = st.text_input("Vehicle Model", key='model')
     stock_no = st.text_input("Stock No.", key='stock_no')
+    cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0, key='cost_of_vehicle')
     color = st.text_input("Vehicle Color", key='color')
     
     sale_price = st.number_input("Sale Price of Vehicle", min_value=0, key='sale_price')
     trade_value = st.number_input("Trade Value", min_value=0, key='trade_value')
+    acv_of_trade = st.number_input("ACV of Trade", min_value=0, key='acv_of_trade')
     trade_payoff = st.number_input("Trade Payoff", min_value=0, key='trade_payoff')
     doc_fee = st.number_input("Dealer Service Fee", min_value=0, value=799, key='doc_fee')
     
@@ -167,11 +169,7 @@ with st.form(key='deal_form'):
         term = st.number_input(f"Loan Term {i} (months)", min_value=1, value=[60, 66, 72][i-1], key=f'term_{i}')
         rate = st.number_input(f"Rate for Term {i} (%)", min_value=0.0, max_value=100.0, value=14.0, key=f'rate_{i}')
         terms.append(term)
-        rates[term] = rate
-
-    # Add Cost of Vehicle and ACV of Trade inputs
-    cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0, key='cost_of_vehicle')
-    acv_of_trade = st.number_input("ACV of Trade", min_value=0, key='acv_of_trade')
+        rates[term] = ratE
 
     submit_button = st.form_submit_button(label='Generate Quote')
 
