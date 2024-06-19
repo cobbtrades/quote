@@ -75,6 +75,7 @@ def generate_pdf(data, filename='quote.pdf'):
     # Detailed breakdown table
     breakdown_data = [
         ["Sales Price", f"${data['sale_price']}"],
+        ["Rebate", f"${data['rebate']}"],
         ["Trade Value", f"${data['trade_value']}"],
         ["Trade Payoff", f"${data['trade_payoff']}"],
         ["Dealer Service Fee", f"${data['doc_fee']}"],
@@ -158,13 +159,14 @@ with st.form(key='deal_form'):
         stock_no = st.text_input("Stock No.", key='stock_no')
         color = st.text_input("Vehicle Color", key='color')
         cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0.0, format="%.2f", key='cost_of_vehicle')
+        doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
     
     with col4:
         sale_price = st.number_input("Sale Price of Vehicle", min_value=0.0, format="%.2f", key='sale_price')
+        rebate = st.number_input("Rebate", min_value=0.0, format="%.2f", key='rebate')
         trade_value = st.number_input("Trade Value", min_value=0.0, format="%.2f", key='trade_value')
         acv_of_trade = st.number_input("ACV of Trade", min_value=0.0, format="%.2f", key='acv_of_trade')
         trade_payoff = st.number_input("Trade Payoff", min_value=0.0, format="%.2f", key='trade_payoff')
-        doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
     
     with col5:
         down_payments = []
@@ -188,14 +190,14 @@ if submit_button:
     for term in terms:
         term_payments = {}
         for dp in down_payments:
-            taxable_amount = sale_price - trade_value + doc_fee
+            taxable_amount = sale_price - trade_value + doc_fee - rebate
             sales_tax = taxable_amount * SALES_TAX_RATE
             total_loan_amount = taxable_amount + sales_tax + NON_TAX_FEE + trade_payoff - dp
             monthly_payment = calculate_monthly_payment(total_loan_amount, rates[term], term)
             term_payments[dp] = round(monthly_payment, 2)
         quotes[term] = term_payments
     
-    balance = sale_price - trade_value + doc_fee + sales_tax + NON_TAX_FEE + trade_payoff
+    balance = sale_price - trade_value + doc_fee - rebate + sales_tax + NON_TAX_FEE + trade_payoff
     gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)  # Corrected calculation
 
     data = {
@@ -213,6 +215,7 @@ if submit_button:
         'stock_no': stock_no,
         'color': color,
         'sale_price': sale_price,
+        'rebate': rebate,
         'trade_value': trade_value,
         'trade_payoff': trade_payoff,
         'doc_fee': doc_fee,
