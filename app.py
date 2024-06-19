@@ -149,8 +149,8 @@ with st.form(key='deal_form'):
     make = st.text_input("Vehicle Make", key='make')
     model = st.text_input("Vehicle Model", key='model')
     stock_no = st.text_input("Stock No.", key='stock_no')
-    cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0, key='cost_of_vehicle')
     color = st.text_input("Vehicle Color", key='color')
+    cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0, key='cost_of_vehicle')
     
     sale_price = st.number_input("Sale Price of Vehicle", min_value=0, key='sale_price')
     trade_value = st.number_input("Trade Value", min_value=0, key='trade_value')
