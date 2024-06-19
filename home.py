@@ -2,7 +2,6 @@ import streamlit as st
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 import pandas as pd
-import numpy as np
 
 # Constants for fees
 DOC_FEE = 799
@@ -24,13 +23,17 @@ def generate_pdf(data, filename='quote.pdf'):
     c.drawString(100, height - 100, "Vehicle Sale Quote")
     c.drawString(100, height - 120, f"Sale Price: ${data['sale_price']}")
     c.drawString(100, height - 140, f"Trade Value: ${data['trade_value']}")
+    c.drawString(100, height - 160, f"Dealer Service Fee: ${DOC_FEE}")
+    c.drawString(100, height - 180, f"Sales Tax: ${data['sales_tax']:.2f}")
+    c.drawString(100, height - 200, f"TTL: ${NON_TAX_FEE}")
+    c.drawString(100, height - 220, f"Balance: ${data['balance']:.2f}")
     
-    y = height - 160
-    for i, (down_payment, terms) in enumerate(data['quotes'].items()):
-        c.drawString(100, y, f"Down Payment Option {i+1}: ${down_payment}")
+    y = height - 260
+    for i, (term, payments) in enumerate(data['quotes'].items()):
+        c.drawString(100, y, f"Term: {term} years")
         y -= 20
-        for term, payment in terms.items():
-            c.drawString(120, y, f"Term: {term} years at {data['rates'][term]}% - Monthly Payment: ${payment:.2f}")
+        for dp, payment in payments.items():
+            c.drawString(120, y, f"Down Payment: ${dp} - Monthly Payment: ${payment:.2f}")
             y -= 20
         y -= 20
     
@@ -61,36 +64,45 @@ with st.form(key='deal_form'):
 if submit_button:
     # Calculate monthly payments for each combination of down payment and term
     quotes = {}
-    for dp in down_payments:
-        taxable_amount = sale_price - trade_value + DOC_FEE
-        sales_tax = taxable_amount * SALES_TAX_RATE
-        total_loan_amount = taxable_amount + sales_tax + NON_TAX_FEE - dp
-        
+    for term in terms:
         term_payments = {}
-        for term in terms:
+        for dp in down_payments:
+            taxable_amount = sale_price - trade_value + DOC_FEE
+            sales_tax = taxable_amount * SALES_TAX_RATE
+            total_loan_amount = taxable_amount + sales_tax + NON_TAX_FEE - dp
             monthly_payment = calculate_monthly_payment(total_loan_amount, rates[term], term)
-            term_payments[term] = monthly_payment
-        quotes[dp] = term_payments
+            term_payments[dp] = monthly_payment
+        quotes[term] = term_payments
     
+    balance = sale_price - trade_value + DOC_FEE + sales_tax + NON_TAX_FEE
     data = {
         'sale_price': sale_price,
         'trade_value': trade_value,
+        'sales_tax': sales_tax,
+        'balance': balance,
         'quotes': quotes,
         'rates': rates
     }
     
-    # Display the quotes in a grid
+    # Display the detailed breakdown
+    st.write("### Detailed Breakdown")
+    st.write(f"**Sales Price:** ${sale_price}")
+    st.write(f"**Trade Value:** ${trade_value}")
+    st.write(f"**Dealer Service Fee:** ${DOC_FEE}")
+    st.write(f"**Sales Tax:** ${sales_tax:.2f}")
+    st.write(f"**TTL:** ${NON_TAX_FEE}")
+    st.write(f"**Balance:** ${balance:.2f}")
+    
+    # Display the quotes in a grid format
     grid_data = []
-    for dp, terms in quotes.items():
-        for term, payment in terms.items():
-            grid_data.append({
-                'Down Payment': dp,
-                'Term (years)': term,
-                'Rate (%)': rates[term],
-                'Monthly Payment': round(payment, 2)
-            })
+    for term, payments in quotes.items():
+        row = {'Term (years)': term}
+        for dp, payment in payments.items():
+            row[f'Down Payment ${dp}'] = round(payment, 2)
+        grid_data.append(row)
     
     df = pd.DataFrame(grid_data)
+    st.write("### Monthly Payments Grid")
     st.dataframe(df)
     
     pdf_file = generate_pdf(data)
