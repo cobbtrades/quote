@@ -1,6 +1,9 @@
 import streamlit as st
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+from reportlab.lib.units import inch
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 import pandas as pd
 
 # Constants for fees
@@ -17,28 +20,52 @@ def calculate_monthly_payment(principal, rate, term):
 
 # Function to generate PDF
 def generate_pdf(data, filename='quote.pdf'):
-    c = canvas.Canvas(filename, pagesize=letter)
-    width, height = letter
+    doc = SimpleDocTemplate(filename, pagesize=letter)
+    elements = []
+
+    # Detailed breakdown table
+    breakdown_data = [
+        ["Sales Price", f"${data['sale_price']}"],
+        ["Trade Value", f"${data['trade_value']}"],
+        ["Trade Payoff", f"${data['trade_payoff']}"],
+        ["Dealer Service Fee", f"${DOC_FEE}"],
+        ["Sales Tax", f"${data['sales_tax']:.2f}"],
+        ["TTL", f"${NON_TAX_FEE}"],
+        ["Balance", f"${data['balance']:.2f}"],
+    ]
+    breakdown_table = Table(breakdown_data)
+    breakdown_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
     
-    c.drawString(100, height - 100, "Vehicle Sale Quote")
-    c.drawString(100, height - 120, f"Sale Price: ${data['sale_price']}")
-    c.drawString(100, height - 140, f"Trade Value: ${data['trade_value']}")
-    c.drawString(100, height - 160, f"Trade Payoff: ${data['trade_payoff']}")
-    c.drawString(100, height - 180, f"Dealer Service Fee: ${DOC_FEE}")
-    c.drawString(100, height - 200, f"Sales Tax: ${data['sales_tax']:.2f}")
-    c.drawString(100, height - 220, f"TTL: ${NON_TAX_FEE}")
-    c.drawString(100, height - 240, f"Balance: ${data['balance']:.2f}")
-    
-    y = height - 280
-    for i, (term, payments) in enumerate(data['quotes'].items()):
-        c.drawString(100, y, f"Term: {term} years")
-        y -= 20
+    # Grid data
+    grid_data = [["Term (years)"] + [f"Down Payment ${dp}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
+    for term, payments in data['quotes'].items():
+        row = [term]
         for dp, payment in payments.items():
-            c.drawString(120, y, f"Down Payment: ${dp} - Monthly Payment: ${payment:.2f}")
-            y -= 20
-        y -= 20
+            row.append(f"${payment:.2f}")
+        grid_data.append(row)
     
-    c.save()
+    grid_table = Table(grid_data)
+    grid_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
+
+    elements.append(breakdown_table)
+    elements.append(grid_table)
+    doc.build(elements)
     return filename
 
 st.title("Car Deal Quote Generator")
