@@ -168,7 +168,11 @@ with st.form(key='deal_form'):
         rate = st.number_input(f"Rate for Term {i} (%)", min_value=0.0, max_value=100.0, value=14.0, key=f'rate_{i}')
         terms.append(term)
         rates[term] = rate
-    
+
+    # Add Cost of Vehicle and ACV of Trade inputs
+    cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0, key='cost_of_vehicle')
+    acv_of_trade = st.number_input("ACV of Trade", min_value=0, key='acv_of_trade')
+
     submit_button = st.form_submit_button(label='Generate Quote')
 
 if submit_button:
@@ -185,6 +189,8 @@ if submit_button:
         quotes[term] = term_payments
     
     balance = sale_price - trade_value + doc_fee + sales_tax + NON_TAX_FEE + trade_payoff
+    gross_profit = sale_price - cost_of_vehicle + trade_value - acv_of_trade
+
     data = {
         'date': date,
         'salesperson': salesperson,
@@ -218,6 +224,7 @@ if submit_button:
     st.write(f"**Sales Tax:** ${sales_tax:.2f}")
     st.write(f"**Non Tax Fees:** ${NON_TAX_FEE}")
     st.write(f"**Balance:** ${balance:.2f}")
+    st.write(f"**Gross Profit:** ${gross_profit:.2f}")
     
     # Display the quotes in a grid format
     grid_data = []
