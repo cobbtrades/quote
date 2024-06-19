@@ -221,18 +221,7 @@ if submit_button:
         'quotes': quotes,
         'rates': rates
     }
-    
-    # Display the detailed breakdown
-    st.write("### Detailed Breakdown")
-    st.write(f"**Sales Price:** ${sale_price:.2f}")
-    st.write(f"**Trade Value:** ${trade_value:.2f}")
-    st.write(f"**Trade Payoff:** ${trade_payoff:.2f}")
-    st.write(f"**Dealer Service Fee:** ${doc_fee:.2f}")
-    st.write(f"**Sales Tax:** ${sales_tax:.2f}")
-    st.write(f"**Non Tax Fees:** ${NON_TAX_FEE:.2f}")
-    st.write(f"**Balance:** ${balance:.2f}")
-    st.write(f"**Gross Profit:** ${gross_profit:.2f}")
-    
+      
     # Display the quotes in a grid format
     grid_data = []
     for term, payments in quotes.items():
