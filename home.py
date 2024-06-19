@@ -29,7 +29,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ["Trade Payoff", f"${data['trade_payoff']}"],
         ["Dealer Service Fee", f"${DOC_FEE}"],
         ["Sales Tax", f"${data['sales_tax']:.2f}"],
-        ["TTL", f"${NON_TAX_FEE}"],
+        ["Non Tax Fees", f"${NON_TAX_FEE}"],
         ["Balance", f"${data['balance']:.2f}"],
     ]
     breakdown_table = Table(breakdown_data)
@@ -82,7 +82,7 @@ with st.form(key='deal_form'):
     terms = []
     rates = {}
     for i in range(1, 4):
-        term = st.number_input(f"Loan Term {i} (years)", min_value=1, key=f'term_{i}')
+        term = st.number_input(f"Loan Term {i} (months)", min_value=1, key=f'term_{i}')
         rate = st.number_input(f"Rate for Term {i} (years) (%)", min_value=0.0, max_value=100.0, key=f'rate_{i}')
         terms.append(term)
         rates[term] = rate
@@ -120,7 +120,7 @@ if submit_button:
     st.write(f"**Trade Payoff:** ${trade_payoff}")
     st.write(f"**Dealer Service Fee:** ${DOC_FEE}")
     st.write(f"**Sales Tax:** ${sales_tax:.2f}")
-    st.write(f"**TTL:** ${NON_TAX_FEE}")
+    st.write(f"**Non Tax Fees:** ${NON_TAX_FEE}")
     st.write(f"**Balance:** ${balance:.2f}")
     
     # Display the quotes in a grid format
