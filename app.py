@@ -187,7 +187,7 @@ if submit_button:
         quotes[term] = term_payments
     
     balance = sale_price - trade_value + doc_fee + sales_tax + NON_TAX_FEE + trade_payoff
-    gross_profit = cost_of_vehicle - sale_price + (acv_of_trade - trade_value)
+    gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)  # Corrected calculation
 
     data = {
         'date': date,
