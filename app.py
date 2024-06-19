@@ -116,6 +116,25 @@ def generate_pdf(data, filename='quote.pdf'):
     ]))
     
     elements.append(grid_table)
+    elements.append(Spacer(1, 12))
+    
+    # Add terms and conditions image
+    elements.append(Spacer(1, 24))
+    img = Image("/mnt/data/Capture.PNG", width=6.5*inch, height=2.5*inch)
+    elements.append(img)
+    elements.append(Spacer(1, 24))
+    
+    # Add signature lines
+    signature_data = [
+        ["Customer Signature", "Date", "Salesperson Signature", "Date"],
+        ["_________________________", "_________________", "_________________________", "_________________"]
+    ]
+    signature_table = Table(signature_data, colWidths=[150, 100, 150, 100])
+    signature_table.setStyle(TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+    ]))
+    elements.append(signature_table)
     
     doc.build(elements)
     return filename
