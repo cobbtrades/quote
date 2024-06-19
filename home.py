@@ -146,8 +146,9 @@ with st.form(key='deal_form'):
     doc_fee = st.number_input("Dealer Service Fee", min_value=0, value=799, key='doc_fee')
     
     down_payments = []
-    for i in range(1, 4):
-        down_payments.append(st.number_input(f"Down Payment Option {i}", min_value=0, key=f'down_payment_{i}'))
+    default_down_payments = [1000, 2000, 3000]
+    for i in range(3):
+        down_payments.append(st.number_input(f"Down Payment Option {i+1}", min_value=0, value=default_down_payments[i], key=f'down_payment_{i+1}'))
     
     terms = []
     rates = {}
