@@ -26,7 +26,8 @@ def generate_pdf(data, filename='quote.pdf'):
     
     # Header
     header_data = [
-        ["MODERN AUTOMOTIVE"],
+        ["MODERN AUTOMOTIVE", "", "967 Concord Pkwy S", "", "CONCORD, NC 28027", "704-788-2110"],
+        ["A Member of the MODERN AUTOMOTIVE NETWORK", "", "", "", "", ""],
     ]
     header_table = Table(header_data, colWidths=[150, 50, 150, 50, 150, 100])
     header_table.setStyle(TableStyle([
@@ -47,7 +48,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ["CITY", data['city'], "STATE", data['state']],
         ["ZIP", data['zip'], "CELL PHONE", data['cell_phone']],
     ]
-    details_table = Table(details_data, colWidths=[50, 150, 80, 150])
+    details_table = Table(details_data, colWidths=[50, 200, 80, 200])
     details_table.setStyle(TableStyle([
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
@@ -64,7 +65,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ["YEAR", "MAKE", "MODEL", "STOCK NO.", "COLOR"],
         ["", data['year'], data['make'], data['model'], data['stock_no'], data['color']]
     ]
-    selection_table = Table(selection_data, colWidths=[80, 60, 60, 80, 80])
+    selection_table = Table(selection_data, colWidths=[80, 60, 80, 80, 80])
     selection_table.setStyle(TableStyle([
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
