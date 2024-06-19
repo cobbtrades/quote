@@ -100,7 +100,7 @@ if submit_button:
             sales_tax = taxable_amount * SALES_TAX_RATE
             total_loan_amount = taxable_amount + sales_tax + NON_TAX_FEE + trade_payoff - dp
             monthly_payment = calculate_monthly_payment(total_loan_amount, rates[term], term)
-            term_payments[dp] = monthly_payment
+            term_payments[dp] = round(monthly_payment, 2)
         quotes[term] = term_payments
     
     balance = sale_price - trade_value + DOC_FEE + sales_tax + NON_TAX_FEE + trade_payoff
