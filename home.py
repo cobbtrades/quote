@@ -1,9 +1,7 @@
 import streamlit as st
 from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
-from reportlab.lib import colors
-from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from reportlab.lib import colors
 import pandas as pd
 
 # Constants for fees
@@ -15,8 +13,9 @@ SALES_TAX_RATE = 0.03
 def calculate_monthly_payment(principal, rate, term):
     rate_monthly = rate / 100 / 12
     term_months = term * 12
-    payment = principal * rate_monthly / (1 - (1 + rate_monthly) ** -term_months)
-    return payment
+    if rate_monthly == 0:
+        return principal / term_months
+    return principal * rate_monthly / (1 - (1 + rate_monthly) ** -term_months)
 
 # Function to generate PDF
 def generate_pdf(data, filename='quote.pdf'):
