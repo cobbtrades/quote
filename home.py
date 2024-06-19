@@ -45,7 +45,7 @@ def generate_pdf(data, filename='quote.pdf'):
     ]))
     
     # Grid data
-    grid_data = [["Term (years)"] + [f"Down Payment ${dp}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
+    grid_data = [["Term (months)"] + [f"${dp}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
     for term, payments in data['quotes'].items():
         row = [term]
         for dp, payment in payments.items():
@@ -68,7 +68,7 @@ def generate_pdf(data, filename='quote.pdf'):
     doc.build(elements)
     return filename
 
-st.title("Car Deal Quote Generator")
+st.title("Quote Generator")
 
 # Form to input deal details
 with st.form(key='deal_form'):
