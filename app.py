@@ -181,7 +181,8 @@ with st.form(key='deal_form'):
             rate = st.number_input(f"Rate for Term {i} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'rate_{i}')
             terms.append(term)
             rates[term] = rate
-    
+    gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)
+    st.write(f"${gross_profit:.2f}")
     submit_button = st.form_submit_button(label='Generate Quote')
 
 if submit_button:
@@ -243,6 +244,5 @@ if submit_button:
     
     pdf_file = generate_pdf(data)
     
-    st.success("Quote generated successfully!")
     with open(pdf_file, 'rb') as f:
         st.download_button('Download PDF Quote', f, file_name=pdf_file)
