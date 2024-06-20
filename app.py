@@ -175,7 +175,7 @@ with st.form(key='deal_form'):
         else:
             color = "white"
         st.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>${gross_profit:.2f}</p>", unsafe_allow_html=True)
-        st.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>Front Gross</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='font-size:24px; text-align:center'>Front Gross</p>", unsafe_allow_html=True)
     
     with col5:
         down_payments = []
