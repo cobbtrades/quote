@@ -27,7 +27,7 @@ def calculate_lease_payment(sale_price, residual_percent, money_factor, term_mon
 
 # Function to generate PDF
 def generate_pdf(data, filename='quote.pdf'):
-    doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=50)
+    doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=30)
     elements = []
     styles = getSampleStyleSheet()
     
