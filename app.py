@@ -160,8 +160,8 @@ def generate_pdf(data, filename='quote.pdf'):
     elements.append(privacy_paragraph)
     # Add signature lines
     signature_data = [
-        ["_________________________", "_________________", "_________________________", "_________________"],
-        ["Buyer's Signature", "Date", "Co-Buyer's Signature", "Date"]
+        ["Customer Approval: ", "_________________________", "Management Approval: ", "_________________________"],
+        ["By signing this authorization form, you certify that the above personal information is correct and accurate, and authorize the release of credit and employment information. By signing above, I provide to the dealership and its affiliates consent to communicate with me about my vehicle or any future vehicles using electronic, verbal and written communications including but not limited to email, text messaging, SMS, phone calls and direct mail. Terms and Conditions subject to credit approval. For Information Only. This is not an offer or contract for sale.]
     ]
     signature_table = Table(signature_data, colWidths=[150, 100, 150, 100])
     signature_table.setStyle(TableStyle([
