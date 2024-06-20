@@ -1,8 +1,9 @@
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph, HRFlowable
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
-import pandas as pd, streamlit as st
+import pandas as pd
+import streamlit as st
 
 # Constants for fees
 NON_TAX_FEE = 106.75
@@ -73,13 +74,13 @@ def generate_pdf(data, filename='quote.pdf'):
     
     # Detailed breakdown table
     breakdown_data = [
-        ["Sales Price", f"${data['sale_price']}"],
-        ["Rebate", f"${data['rebate']}"],
-        ["Trade Value", f"${data['trade_value']}"],
-        ["Trade Payoff", f"${data['trade_payoff']}"],
-        ["Dealer Service Fee", f"${data['doc_fee']}"],
+        ["Sales Price", f"${data['sale_price']:.2f}"],
+        ["Rebate", f"${data['rebate']:.2f}"],
+        ["Trade Value", f"${data['trade_value']:.2f}"],
+        ["Trade Payoff", f"${data['trade_payoff']:.2f}"],
+        ["Dealer Service Fee", f"${data['doc_fee']:.2f}"],
         ["Sales Tax", f"${data['sales_tax']:.2f}"],
-        ["Non Tax Fees", f"${NON_TAX_FEE}"],
+        ["Non Tax Fees", f"${NON_TAX_FEE:.2f}"],
         ["Balance", f"${data['balance']:.2f}"],
     ]
     breakdown_table = Table(breakdown_data, colWidths=[150, 100])
@@ -97,7 +98,7 @@ def generate_pdf(data, filename='quote.pdf'):
     elements.append(Spacer(1, 20))  # Reduced spacing here
     
     # Grid data
-    grid_data = [["Term"] + [f"${dp}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
+    grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
     for term, payments in data['quotes'].items():
         row = [term]
         for dp, payment in payments.items():
