@@ -7,7 +7,6 @@ import streamlit as st
 
 # Constants for fees
 NON_TAX_FEE = 106.75
-SALES_TAX_RATE_NC = 0.03
 
 # Function to calculate monthly payments
 def calculate_monthly_payment(principal, annual_rate, term_months):
@@ -156,7 +155,7 @@ st.title("Quote Generator")
 tab1, tab2 = st.tabs(["NC", "Other"])
 
 with tab1:
-    SALES_TAX_RATE = SALES_TAX_RATE_NC
+    SALES_TAX_RATE = 0.03
     state_selected = "NC"
     sales_tax = None
 
