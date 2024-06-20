@@ -1,13 +1,12 @@
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph, HRFlowable
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
-import pandas as pd
-import streamlit as st
+import pandas as pd, streamlit as st
 
 # Constants for fees
 NON_TAX_FEE = 106.75
-SALES_TAX_RATE_NC = 0.03
+SALES_TAX_RATE = 0.03
 
 # Function to calculate monthly payments
 def calculate_monthly_payment(principal, annual_rate, term_months):
@@ -18,7 +17,7 @@ def calculate_monthly_payment(principal, annual_rate, term_months):
 
 # Function to generate PDF
 def generate_pdf(data, filename='quote.pdf'):
-    doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=50)
+    doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=20)
     elements = []
     styles = getSampleStyleSheet()
     
@@ -53,7 +52,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
     ]))
     elements.append(details_table)
-    elements.append(Spacer(1, 20))  # Reduced spacing here
+    elements.append(Spacer(1, 8))  # Reduced spacing here
     
     # Vehicle selection and trade-in details
     selection_data = [
@@ -70,17 +69,17 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
     ]))
     elements.append(selection_table)
-    elements.append(Spacer(1, 20))  # Reduced spacing here
+    elements.append(Spacer(1, 8))  # Reduced spacing here
     
     # Detailed breakdown table
     breakdown_data = [
-        ["Sales Price", f"${data['sale_price']:.2f}"],
-        ["Rebate", f"${data['rebate']:.2f}"],
-        ["Trade Value", f"${data['trade_value']:.2f}"],
-        ["Trade Payoff", f"${data['trade_payoff']:.2f}"],
-        ["Dealer Service Fee", f"${data['doc_fee']:.2f}"],
+        ["Sales Price", f"${data['sale_price']}"],
+        ["Rebate", f"${data['rebate']}"],
+        ["Trade Value", f"${data['trade_value']}"],
+        ["Trade Payoff", f"${data['trade_payoff']}"],
+        ["Dealer Service Fee", f"${data['doc_fee']}"],
         ["Sales Tax", f"${data['sales_tax']:.2f}"],
-        ["Non Tax Fees", f"${NON_TAX_FEE:.2f}"],
+        ["Non Tax Fees", f"${NON_TAX_FEE}"],
         ["Balance", f"${data['balance']:.2f}"],
     ]
     breakdown_table = Table(breakdown_data, colWidths=[150, 100])
@@ -95,10 +94,10 @@ def generate_pdf(data, filename='quote.pdf'):
     ]))
     
     elements.append(breakdown_table)
-    elements.append(Spacer(1, 20))  # Reduced spacing here
+    elements.append(Spacer(1, 8))  # Reduced spacing here
     
     # Grid data
-    grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
+    grid_data = [["Term"] + [f"${dp}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
     for term, payments in data['quotes'].items():
         row = [term]
         for dp, payment in payments.items():
@@ -125,11 +124,44 @@ def generate_pdf(data, filename='quote.pdf'):
         ('FONTSIZE', (0, 0), (-1, -1), 10),
     ]))
     elements.append(disclaimer_line)
-    elements.append(Spacer(1, 20))  # Reduced spacing here
+    elements.append(Spacer(1, 16))  # Reduced spacing here
 
+    privacy_notice_header = Paragraph("<b>PRIVACY NOTICE</b>", styles['Normal'])
+    elements.append(Spacer(1, 4))
+    elements.append(privacy_notice_header)
+    elements.append(HRFlowable(width="100%", thickness=1, lineCap='round', color=colors.black, spaceBefore=1, spaceAfter=1, hAlign='CENTER', vAlign='BOTTOM', dash=None))
+    elements.append(Spacer(1, 4))  # Reduced spacing here
+    
+    # Add privacy notice with numbered items on their own lines and centered heading
+    privacy_notice = """
+    <ol>
+        <li>In connection with your transaction, Modern Automotive Network and any related/affiliated companies may obtain information about you as described in this notice, which we handle as stated in this notice.</li>
+        <li>We collect nonpublic information about you from the following sources: Information we receive from you on application or other forms; Information about your transactions with us, our affiliates or others; and Information we receive from a consumer reporting agency.</li>
+        <li>We may disclose some or all of the information that we collect, as described above, to companies that perform services or other functions on our behalf to other financial institutions with whom we have dealer agreements. We may make such disclosures about you as a consumer, customer, or former customer.</li>
+        <li>We may also disclose nonpublic personal information about you as a consumer, customer, or former customer, to non-affiliated third parties as permitted by law.</li>
+        <li>We restrict access to nonpublic personal information about you to those employees who need to know that information to provide products or services to you. We maintain physical, electronic, and procedural safeguards that comply with federal regulations to guard your nonpublic personal information.</li>
+    </ol>
+    """
+    
+    privacy_style = ParagraphStyle(
+        'PrivacyNotice',
+        fontSize=6,
+        leading=10,
+        spaceBefore=8,
+        spaceAfter=8,
+        textColor=colors.black,
+        bulletFontName='Helvetic',
+        bulletIndent=0,
+        leftIndent=0,
+        rightIndent=0,
+    )
+
+    privacy_paragraph = Paragraph(privacy_notice, privacy_style)
+    elements.append(privacy_paragraph)
     # Add signature lines
     signature_data = [
-        ["Customer Approval: ", "_________________________", "Management Approval: ", "_________________________"]
+        ["Customer Approval: ", "_________________________", "Management Approval: ", "_________________________"],
+        ["By signing this authorization form, you certify that the above personal information is correct and accurate, and authorize the release of credit and employment information. By signing above, I provide to the dealership and its affiliates consent to communicate with me about my vehicle or any future vehicles using electronic, verbal and written communications including but not limited to email, text messaging, SMS, phone calls and direct mail. Terms and Conditions subject to credit approval. For Information Only. This is not an offer or contract for sale."]
     ]
     signature_table = Table(signature_data, colWidths=[150, 100, 150, 100])
     signature_table.setStyle(TableStyle([
@@ -137,33 +169,12 @@ def generate_pdf(data, filename='quote.pdf'):
         ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
     ]))
     elements.append(signature_table)
-
-    # Add paragraph
-    paragraph_text = "By signing this authorization form, you certify that the above personal information is correct and accurate, and authorize the release of credit and employment information. By signing above, I provide to the dealership and its affiliates consent to communicate with me about my vehicle or any future vehicles using electronic, verbal and written communications including but not limited to email, text messaging, SMS, phone calls and direct mail. Terms and Conditions subject to credit approval. For Information Only. This is not an offer or contract for sale."
-    paragraph_style = styles["Normal"]
-    paragraph_style.fontSize = 6
-    paragraph = Paragraph(paragraph_text, paragraph_style)
-    
-    elements.append(paragraph)
     
     doc.build(elements)
     return filename
 
 st.set_page_config(layout="wide")
 st.title("Quote Generator")
-
-# Tabs
-tab1, tab2 = st.tabs(["NC", "Other"])
-
-with tab1:
-    SALES_TAX_RATE = SALES_TAX_RATE_NC
-    state_selected = "NC"
-    sales_tax = None
-
-with tab2:
-    SALES_TAX_RATE = None
-    sales_tax = st.number_input("Enter Sales Tax Amount", min_value=0.0, format="%.2f")
-    state_selected = st.text_input("State", key='state_other')
 
 # Form to input deal details
 with st.form(key='deal_form'):
@@ -177,6 +188,7 @@ with st.form(key='deal_form'):
         city = st.text_input("City", key='city')
     
     with col2:
+        state = st.text_input("State", key='state')
         zip_code = st.text_input("ZIP", key='zip')
         cell_phone = st.text_input("Phone", key='cell_phone')
         year = st.text_input("Vehicle Year", key='year')
@@ -213,18 +225,13 @@ with st.form(key='deal_form'):
     submit_button = st.form_submit_button(label='Generate Quote')
 
 if submit_button:
-    # Calculate sales tax if in NC
-    if state_selected == "NC":
-        taxable_amount = sale_price - trade_value + doc_fee
-        sales_tax = taxable_amount * SALES_TAX_RATE
-    else:
-        taxable_amount = sale_price - trade_value + doc_fee
-
     # Calculate monthly payments for each combination of down payment and term
     quotes = {}
     for term in terms:
         term_payments = {}
         for dp in down_payments:
+            taxable_amount = sale_price - trade_value + doc_fee
+            sales_tax = taxable_amount * SALES_TAX_RATE
             total_loan_amount = taxable_amount + sales_tax + NON_TAX_FEE + trade_payoff - dp
             monthly_payment = calculate_monthly_payment(total_loan_amount, rates[term], term)
             term_payments[dp] = round(monthly_payment, 2)
@@ -239,7 +246,7 @@ if submit_button:
         'buyer': buyer,
         'address': address,
         'city': city,
-        'state': state_selected,
+        'state': state,
         'zip': zip_code,
         'cell_phone': cell_phone,
         'year': year,
