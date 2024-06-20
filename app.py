@@ -167,14 +167,6 @@ with st.form(key='deal_form'):
         trade_value = st.number_input("Trade Value", min_value=0.0, format="%.2f", key='trade_value')
         acv_of_trade = st.number_input("ACV of Trade", min_value=0.0, format="%.2f", key='acv_of_trade')
         trade_payoff = st.number_input("Trade Payoff", min_value=0.0, format="%.2f", key='trade_payoff')
-        gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)
-        if gross_profit > 0:
-            color = "green"
-        elif gross_profit < 0:
-            color = "red"
-        else:
-            color = "white"
-        st.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
     
     with col5:
         down_payments = []
@@ -247,3 +239,11 @@ if submit_button:
     
     with open(pdf_file, 'rb') as f:
         st.download_button('Download PDF Quote', f, file_name=pdf_file)
+gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)
+if gross_profit > 0:
+    color = "green"
+elif gross_profit < 0:
+    color = "red"
+else:
+    color = "white"
+st.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
