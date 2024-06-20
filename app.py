@@ -107,7 +107,7 @@ def generate_pdf(data, filename='quote.pdf'):
     elements.append(Spacer(1, 20))  # Reduced spacing here
     
     # Financing quotes header
-    elements.append(Paragraph("Monthly Payments Grid (Purchase)", styles['Heading3']))
+    elements.append(Paragraph("Monthly Payments (Purchase)", styles['Normal']))
     elements.append(Spacer(1, 10))
     
     # Grid data for purchase quotes
@@ -133,7 +133,7 @@ def generate_pdf(data, filename='quote.pdf'):
     elements.append(Spacer(1, 20))  # Reduced spacing here
     
     # Leasing quotes header
-    elements.append(Paragraph("Monthly Payments Grid (Lease)", styles['Heading3']))
+    elements.append(Paragraph("Monthly Payments (Lease)", styles['Normal']))
     elements.append(Spacer(1, 10))
     
     # Grid data for lease quotes
