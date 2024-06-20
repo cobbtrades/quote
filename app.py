@@ -131,7 +131,7 @@ def generate_pdf(data, filename='quote.pdf'):
     elements.append(signature_table)
 
     # Add privacy notice header and line
-    privacy_notice_header = Paragraph("<b>PRIVACY NOTICE</b>", styles['Normal'])
+    privacy_notice_header = Paragraph("<b><center>PRIVACY NOTICE</center></b>", styles['Normal'])
     elements.append(Spacer(1, 12))
     elements.append(privacy_notice_header)
     elements.append(HRFlowable(width="100%", thickness=1, lineCap='round', color=colors.black, spaceBefore=1, spaceAfter=1, hAlign='CENTER', vAlign='BOTTOM', dash=None))
