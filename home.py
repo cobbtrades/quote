@@ -42,7 +42,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ["BUYER", data['buyer'], "", ""],
         ["ADDR", data['address'], "", ""],
         ["CITY", data['city'], "STATE", data['state']],
-        ["ZIP", data['zip'], "CELL PHONE", data['cell_phone']],
+        ["ZIP", data['zip'], "PHONE", data['cell_phone']],
     ]
     details_table = Table(details_data, colWidths=[50, 200, 80, 200])
     details_table.setStyle(TableStyle([
