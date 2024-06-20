@@ -95,7 +95,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ["Non Tax Fees", f"${NON_TAX_FEE:.2f}"],
         ["Balance", f"${data['balance']:.2f}"],
     ]
-    breakdown_table = Table(breakdown_data, colWidths=[150, 100])
+    breakdown_table = Table(breakdown_data, colWidths=[100, 80])
     breakdown_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -136,7 +136,7 @@ def generate_pdf(data, filename='quote.pdf'):
     # Combine purchase and lease quotes
     combined_data = grid_data + lease_grid_data
     
-    combined_table = Table(combined_data, colWidths=[70] + [70]*len(data['quotes'][list(data['quotes'].keys())[0]].keys()))
+    combined_table = Table(combined_data, colWidths=[40] + [70]*len(data['quotes'][list(data['quotes'].keys())[0]].keys()))
     combined_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
