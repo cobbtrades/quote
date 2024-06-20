@@ -158,7 +158,6 @@ tab1, tab2 = st.tabs(["NC", "Other"])
 with tab1:
     SALES_TAX_RATE = SALES_TAX_RATE_NC
     state_selected = "NC"
-    sales_tax = None
 
 with tab2:
     SALES_TAX_RATE = None
