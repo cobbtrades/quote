@@ -164,7 +164,7 @@ def generate_pdf(data, filename='quote.pdf'):
     ]))
     
     elements.append(lease_grid_table)
-    elements.append(Spacer(1, 20))  # Reduced spacing here
+    elements.append(Spacer(1, 3))  # Reduced spacing here
 
     # Calculate residual value
     residual_value = data['sale_price'] * (data.get('residual_percent', 0) / 100)
