@@ -4,6 +4,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 import pandas as pd
 import streamlit as st
+import datetime
 
 # Constants for fees
 NON_TAX_FEE = 106.75
@@ -11,7 +12,7 @@ SALES_TAX_RATE_NC = 0.03
 
 # Default values
 default_values = {
-    'date': '',
+    'date': datetime.date.today(),
     'salesperson': '',
     'buyer': '',
     'address': '',
@@ -215,6 +216,9 @@ with tab2:
     sales_tax = st.number_input("Enter Sales Tax Amount", min_value=0.0, format="%.2f", key='sales_tax')
     state_selected = st.text_input("State", key='state_other')
 
+# Reset button outside the form
+reset_button = st.button(label='Reset Form', on_click=reset_form)
+
 # Form to input deal details
 with st.form(key='deal_form'):
     col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
@@ -261,9 +265,6 @@ with st.form(key='deal_form'):
             rates[term] = rate
     
     submit_button = st.form_submit_button(label='Generate Quote')
-
-# Reset button outside the form
-reset_button = st.button(label='Reset Form', on_click=reset_form)
 
 if submit_button:
     # Calculate sales tax if in NC
