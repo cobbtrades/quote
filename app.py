@@ -154,8 +154,8 @@ def generate_pdf(data, filename='quote.pdf'):
     
     # Table for side-by-side layout
     side_by_side_data = [
-        [breakdown_table, grid_table],
-        ['', lease_grid_table]
+        [grid_table, breakdown_table],
+        [lease_grid_table, '']
     ]
     side_by_side_table = Table(side_by_side_data, colWidths=[200, 400])
     side_by_side_table.setStyle(TableStyle([
