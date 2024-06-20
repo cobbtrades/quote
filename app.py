@@ -184,64 +184,65 @@ with st.form(key='deal_form'):
     
     submit_button = st.form_submit_button(label='Generate Quote')
 
-    if submit_button:
-        # Calculate monthly payments for each combination of down payment and term
-        quotes = {}
-        for term in terms:
-            term_payments = {}
-            for dp in down_payments:
-                taxable_amount = sale_price - trade_value + doc_fee - rebate
-                sales_tax = taxable_amount * SALES_TAX_RATE
-                total_loan_amount = taxable_amount + sales_tax + NON_TAX_FEE + trade_payoff - dp
-                monthly_payment = calculate_monthly_payment(total_loan_amount, rates[term], term)
-                term_payments[dp] = round(monthly_payment, 2)
-            quotes[term] = term_payments
-        
-        balance = sale_price - trade_value + doc_fee - rebate + sales_tax + NON_TAX_FEE + trade_payoff
+if submit_button:
+    # Calculate monthly payments for each combination of down payment and term
+    quotes = {}
+    for term in terms:
+        term_payments = {}
+        for dp in down_payments:
+            taxable_amount = sale_price - trade_value + doc_fee - rebate
+            sales_tax = taxable_amount * SALES_TAX_RATE
+            total_loan_amount = taxable_amount + sales_tax + NON_TAX_FEE + trade_payoff - dp
+            monthly_payment = calculate_monthly_payment(total_loan_amount, rates[term], term)
+            term_payments[dp] = round(monthly_payment, 2)
+        quotes[term] = term_payments
+    
+    balance = sale_price - trade_value + doc_fee - rebate + sales_tax + NON_TAX_FEE + trade_payoff
+    gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)  # Corrected calculation
 
-        data = {
-            'date': date,
-            'salesperson': salesperson,
-            'buyer': buyer,
-            'address': address,
-            'city': city,
-            'state': state,
-            'zip': zip_code,
-            'cell_phone': cell_phone,
-            'year': year,
-            'make': make,
-            'model': model,
-            'stock_no': stock_no,
-            'color': color,
-            'sale_price': sale_price,
-            'rebate': rebate,
-            'trade_value': trade_value,
-            'trade_payoff': trade_payoff,
-            'doc_fee': doc_fee,
-            'sales_tax': sales_tax,
-            'balance': balance,
-            'quotes': quotes,
-            'rates': rates
-        }
-        
-        # Display the quotes in a grid format
-        grid_data = []
-        for term, payments in quotes.items():
-            row = {'Term': term}
-            for dp, payment in payments.items():
-                row[f'${dp}'] = round(payment, 2)
-            grid_data.append(row)
-        
-        df = pd.DataFrame(grid_data)
-        st.write("### Monthly Payments Grid")
-        st.dataframe(df, hide_index=True)
-        
-        pdf_file = generate_pdf(data)
-        
-        with open(pdf_file, 'rb') as f:
-            st.download_button('Download PDF Quote', f, file_name=pdf_file)
-        
-        # Calculate and display gross profit
-        gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)
-        color = "green" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
-        st.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
+    data = {
+        'date': date,
+        'salesperson': salesperson,
+        'buyer': buyer,
+        'address': address,
+        'city': city,
+        'state': state,
+        'zip': zip_code,
+        'cell_phone': cell_phone,
+        'year': year,
+        'make': make,
+        'model': model,
+        'stock_no': stock_no,
+        'color': color,
+        'sale_price': sale_price,
+        'rebate': rebate,
+        'trade_value': trade_value,
+        'trade_payoff': trade_payoff,
+        'doc_fee': doc_fee,
+        'sales_tax': sales_tax,
+        'balance': balance,
+        'quotes': quotes,
+        'rates': rates
+    }
+    
+    # Display the quotes in a grid format
+    grid_data = []
+    for term, payments in quotes.items():
+        row = {'Term': term}
+        for dp, payment in payments.items():
+            row[f'${dp}'] = round(payment, 2)
+        grid_data.append(row)
+    
+    df = pd.DataFrame(grid_data)
+    st.write("### Monthly Payments Grid")
+    st.dataframe(df, hide_index=True)
+
+    # Display the gross profit
+    st.write("### Gross Profit")
+    st.write(f"${gross_profit:.2f}")
+    
+    pdf_file = generate_pdf(data)
+    
+    st.success("Quote generated successfully!")
+    with open(pdf_file, 'rb') as f:
+        st.download_button('Download PDF Quote', f, file_name=pdf_file)
