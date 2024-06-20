@@ -7,6 +7,7 @@ import streamlit as st
 
 # Constants for fees
 NON_TAX_FEE = 106.75
+SALES_TAX_RATE_NC = 0.03
 
 # Function to calculate monthly payments
 def calculate_monthly_payment(principal, annual_rate, term_months):
@@ -155,7 +156,7 @@ st.title("Quote Generator")
 tab1, tab2 = st.tabs(["NC", "Other"])
 
 with tab1:
-    SALES_TAX_RATE = 0.03
+    SALES_TAX_RATE = SALES_TAX_RATE_NC
     state_selected = "NC"
     sales_tax = None
 
@@ -221,6 +222,9 @@ if submit_button:
         taxable_amount = sale_price - trade_value + doc_fee
         st.write(f"User Entered Sales Tax: ${sales_tax:.2f}")  # Debug statement
 
+    # Print the calculated sales tax to ensure it is being calculated correctly
+    st.write(f"Sales Tax: {sales_tax}")
+
     # Calculate monthly payments for each combination of down payment and term
     quotes = {}
     for term in terms:
@@ -259,6 +263,9 @@ if submit_button:
         'rates': rates
     }
     
+    # Debug print of the data dictionary to ensure sales tax is included correctly
+    st.write("Data dictionary before generating PDF:", data)
+
     # Display the quotes in a grid format
     grid_data = []
     for term, payments in quotes.items():
