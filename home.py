@@ -18,13 +18,13 @@ def calculate_monthly_payment(principal, annual_rate, term_months):
 
 # Function to generate PDF
 def generate_pdf(data, filename='quote.pdf'):
-    doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=50)
+    doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=30, leftMargin=30, rightMargin=30, bottomMargin=30)
     elements = []
     styles = getSampleStyleSheet()
     
     # Header
     header_data = [
-        ["MODERN AUTOMOTIVE"],
+        [data['dealership_name']],
     ]
     header_table = Table(header_data, colWidths=[400])
     header_table.setStyle(TableStyle([
@@ -70,11 +70,13 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
     ]))
     elements.append(selection_table)
-    elements.append(Spacer(1, 20))  # Reduced spacing here
+    elements.append(Spacer(1, 15))  # Reduced spacing here
     
     # Detailed breakdown table
     breakdown_data = [
-        ["Sales Price", f"${data['sale_price']:.2f}"],
+        ["Retail Price", f"${data['retail_price']:.2f}"],
+        ["Sale Price", f"${data['sale_price']:.2f}"],
+        ["Discount", f"${data['discount']:.2f}"],
         ["Rebate", f"${data['rebate']:.2f}"],
         ["Trade Value", f"${data['trade_value']:.2f}"],
         ["Trade Payoff", f"${data['trade_payoff']:.2f}"],
@@ -87,17 +89,18 @@ def generate_pdf(data, filename='quote.pdf'):
     breakdown_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
         ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
     
-    elements.append(breakdown_table)
-    elements.append(Spacer(1, 20))  # Reduced spacing here
+    # Financing quotes header
+    elements.append(Paragraph("Monthly Payments (Purchase)", styles['Normal']))
+    elements.append(Spacer(1, 10))
     
-    # Grid data
+    # Grid data for purchase quotes
     grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
     for term, payments in data['quotes'].items():
         row = [term]
@@ -105,8 +108,26 @@ def generate_pdf(data, filename='quote.pdf'):
             row.append(f"${payment:.2f}")
         grid_data.append(row)
     
-    grid_table = Table(grid_data, colWidths=[70] + [70]*len(data['quotes'][list(data['quotes'].keys())[0]].keys()))
-    grid_table.setStyle(TableStyle([
+    # Add disclaimer text
+    grid_data.append([f"* A.P.R Subject to equity and credit requirements."] + [None]*(len(grid_data[0]) - 1))
+    
+    # Add blank lines
+    grid_data.append([None]*len(grid_data[0]))
+    grid_data.append([None]*len(grid_data[0]))
+
+    # Grid data for lease quotes
+    lease_grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['lease_quotes'][list(data['lease_quotes'].keys())[0]].keys()]]
+    for term, payments in data['lease_quotes'].items():
+        row = [term]
+        for dp, payment in payments.items():
+            row.append(f"${payment:.2f}")
+        lease_grid_data.append(row)
+    
+    # Combine purchase and lease quotes
+    combined_data = grid_data + lease_grid_data
+    
+    combined_table = Table(combined_data, colWidths=[70] + [70]*len(data['quotes'][list(data['quotes'].keys())[0]].keys()))
+    combined_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
@@ -116,17 +137,28 @@ def generate_pdf(data, filename='quote.pdf'):
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
     
-    elements.append(grid_table)
-    disclaimer_line = Table([["* A.P.R Subject to equity and credit requirements."]], colWidths=[sum([70]*len(data['quotes'][list(data['quotes'].keys())[0]].keys())) + 70])
-    disclaimer_line.setStyle(TableStyle([
-        ('SPAN', (0, 0), (-1, -1)),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 10),
+    # Table for side-by-side layout
+    side_by_side_data = [
+        [breakdown_table, combined_table]
+    ]
+    side_by_side_table = Table(side_by_side_data, colWidths=[200, 400])
+    side_by_side_table.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
     ]))
-    elements.append(disclaimer_line)
-    elements.append(Spacer(1, 20))  # Reduced spacing here
+    
+    elements.append(side_by_side_table)
+    elements.append(Spacer(1, 3))  # Reduced spacing here
 
+    # Calculate residual value
+    residual_value = data['sale_price'] * (data.get('residual_percent', 0) / 100)
+    
+    # Add residual value as a centered paragraph below the lease payments grid
+    residual_text = f"Residual Value: ${residual_value:.2f}"
+    residual_paragraph_style = styles['Normal']
+    residual_paragraph_style.alignment = TA_CENTER
+    elements.append(Paragraph(residual_text, residual_paragraph_style))
+    elements.append(Spacer(1, 20))  # Reduced spacing here
+    
     # Add signature lines
     signature_data = [
         ["Customer Approval: ", "_________________________", "Management Approval: ", "_________________________"]
