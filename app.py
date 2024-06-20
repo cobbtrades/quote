@@ -133,6 +133,18 @@ def generate_pdf(data, filename='quote.pdf'):
     doc.build(elements)
     return filename
 
+# Function to calculate and update gross profit
+def update_gross_profit():
+    sale_price = st.session_state.sale_price
+    cost_of_vehicle = st.session_state.cost_of_vehicle
+    trade_value = st.session_state.trade_value
+    acv_of_trade = st.session_state.acv_of_trade
+
+    gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)
+    color = "green" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
+    st.session_state.gross_profit = gross_profit
+    st.session_state.color = color
+
 st.set_page_config(layout="wide")
 st.title("Quote Generator")
 
@@ -158,14 +170,14 @@ with st.form(key='deal_form'):
         model = st.text_input("Vehicle Model", key='model')
         stock_no = st.text_input("Stock No.", key='stock_no')
         color = st.text_input("Vehicle Color", key='color')
-        cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0.0, format="%.2f", key='cost_of_vehicle')
+        cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0.0, format="%.2f", key='cost_of_vehicle', on_change=update_gross_profit)
         doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
     
     with col4:
-        sale_price = st.number_input("Sale Price of Vehicle", min_value=0.0, format="%.2f", key='sale_price')
+        sale_price = st.number_input("Sale Price of Vehicle", min_value=0.0, format="%.2f", key='sale_price', on_change=update_gross_profit)
         rebate = st.number_input("Rebate", min_value=0.0, format="%.2f", key='rebate')
-        trade_value = st.number_input("Trade Value", min_value=0.0, format="%.2f", key='trade_value')
-        acv_of_trade = st.number_input("ACV of Trade", min_value=0.0, format="%.2f", key='acv_of_trade')
+        trade_value = st.number_input("Trade Value", min_value=0.0, format="%.2f", key='trade_value', on_change=update_gross_profit)
+        acv_of_trade = st.number_input("ACV of Trade", min_value=0.0, format="%.2f", key='acv_of_trade', on_change=update_gross_profit)
         trade_payoff = st.number_input("Trade Payoff", min_value=0.0, format="%.2f", key='trade_payoff')
     
     with col5:
@@ -189,34 +201,34 @@ if submit_button:
     for term in terms:
         term_payments = {}
         for dp in down_payments:
-            taxable_amount = sale_price - trade_value + doc_fee - rebate
+            taxable_amount = st.session_state.sale_price - st.session_state.trade_value + st.session_state.doc_fee - st.session_state.rebate
             sales_tax = taxable_amount * SALES_TAX_RATE
-            total_loan_amount = taxable_amount + sales_tax + NON_TAX_FEE + trade_payoff - dp
+            total_loan_amount = taxable_amount + sales_tax + NON_TAX_FEE + st.session_state.trade_payoff - dp
             monthly_payment = calculate_monthly_payment(total_loan_amount, rates[term], term)
             term_payments[dp] = round(monthly_payment, 2)
         quotes[term] = term_payments
     
-    balance = sale_price - trade_value + doc_fee - rebate + sales_tax + NON_TAX_FEE + trade_payoff
+    balance = st.session_state.sale_price - st.session_state.trade_value + st.session_state.doc_fee - st.session_state.rebate + sales_tax + NON_TAX_FEE + st.session_state.trade_payoff
 
     data = {
-        'date': date,
-        'salesperson': salesperson,
-        'buyer': buyer,
-        'address': address,
-        'city': city,
-        'state': state,
-        'zip': zip_code,
-        'cell_phone': cell_phone,
-        'year': year,
-        'make': make,
-        'model': model,
-        'stock_no': stock_no,
-        'color': color,
-        'sale_price': sale_price,
-        'rebate': rebate,
-        'trade_value': trade_value,
-        'trade_payoff': trade_payoff,
-        'doc_fee': doc_fee,
+        'date': st.session_state.date,
+        'salesperson': st.session_state.salesperson,
+        'buyer': st.session_state.buyer,
+        'address': st.session_state.address,
+        'city': st.session_state.city,
+        'state': st.session_state.state,
+        'zip': st.session_state.zip,
+        'cell_phone': st.session_state.cell_phone,
+        'year': st.session_state.year,
+        'make': st.session_state.make,
+        'model': st.session_state.model,
+        'stock_no': st.session_state.stock_no,
+        'color': st.session_state.color,
+        'sale_price': st.session_state.sale_price,
+        'rebate': st.session_state.rebate,
+        'trade_value': st.session_state.trade_value,
+        'trade_payoff': st.session_state.trade_payoff,
+        'doc_fee': st.session_state.doc_fee,
         'sales_tax': sales_tax,
         'balance': balance,
         'quotes': quotes,
@@ -239,11 +251,6 @@ if submit_button:
     
     with open(pdf_file, 'rb') as f:
         st.download_button('Download PDF Quote', f, file_name=pdf_file)
-gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)
-if gross_profit > 0:
-    color = "green"
-elif gross_profit < 0:
-    color = "red"
-else:
-    color = "white"
-st.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
+
+# Display gross profit
+st.markdown(f"<p style='color:{st.session_state.color}; font-size:24px; text-align:center'>Front Gross ${st.session_state.gross_profit:.2f}</p>", unsafe_allow_html=True)
