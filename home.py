@@ -150,7 +150,7 @@ with st.form(key='deal_form'):
     with col2:
         state = st.text_input("State", key='state')
         zip_code = st.text_input("ZIP", key='zip')
-        cell_phone = st.text_input("Cell Phone", key='cell_phone')
+        cell_phone = st.text_input("Phone", key='cell_phone')
         year = st.text_input("Vehicle Year", key='year')
         make = st.text_input("Vehicle Make", key='make')
     
