@@ -152,19 +152,6 @@ def generate_pdf(data, filename='quote.pdf'):
 st.set_page_config(layout="wide")
 st.title("Quote Generator")
 
-# Tabs
-tab1, tab2 = st.tabs(["NC", "Other"])
-
-with tab1:
-    SALES_TAX_RATE = SALES_TAX_RATE_NC
-    state_selected = "NC"
-    sales_tax = None
-
-with tab2:
-    SALES_TAX_RATE = None
-    sales_tax = st.number_input("Enter Sales Tax Amount", min_value=0.0, format="%.2f")
-    state_selected = st.text_input("State", key='state_other')
-
 # Form to input deal details
 with st.form(key='deal_form'):
     col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
@@ -213,12 +200,9 @@ with st.form(key='deal_form'):
     submit_button = st.form_submit_button(label='Generate Quote')
 
 if submit_button:
-    # Calculate sales tax if in NC
-    if state_selected == "NC":
-        taxable_amount = sale_price - trade_value + doc_fee
-        sales_tax = taxable_amount * SALES_TAX_RATE
-    else:
-        taxable_amount = sale_price - trade_value + doc_fee
+    # Calculate sales tax
+    taxable_amount = sale_price - trade_value + doc_fee
+    sales_tax = taxable_amount * SALES_TAX_RATE_NC
 
     # Calculate monthly payments for each combination of down payment and term
     quotes = {}
@@ -239,7 +223,7 @@ if submit_button:
         'buyer': buyer,
         'address': address,
         'city': city,
-        'state': state_selected,
+        'state': 'NC',
         'zip': zip_code,
         'cell_phone': cell_phone,
         'year': year,
