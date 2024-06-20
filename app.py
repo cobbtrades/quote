@@ -129,6 +129,26 @@ def generate_pdf(data, filename='quote.pdf'):
         ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
     ]))
     elements.append(signature_table)
+    privacy_notice = """
+    In connection with your transaction, Modern Automotive Network and any related/affiliated companies may obtain information about you as described in this notice, which we handle as stated in this notice.
+    1. We collect nonpublic information about you from the following sources: Information we receive from you on application or other forms; Information about your transactions with us, our affiliates or others; and Information we receive from a consumer reporting agency.
+    2. We may disclose some or all of the information that we collect, as described above, to companies that perform services or other functions on our behalf to other financial institutions with whom we have dealer agreements. We may make such disclosures about you as a consumer, customer, or former customer.
+    3. We may also disclose nonpublic personal information about you as a consumer, customer, or former customer, to non-affiliated third parties as permitted by law.
+    4. We restrict access to nonpublic personal information about you to those employees who need to know that information to provide products or services to you. We maintain physical, electronic, and procedural safeguards that comply with federal regulations to guard your nonpublic personal information.
+    """
+
+    privacy_style = ParagraphStyle(
+        'PrivacyNotice',
+        fontSize=10,
+        leading=12,
+        spaceBefore=12,
+        spaceAfter=12,
+        textColor=colors.black
+    )
+
+    privacy_paragraph = Paragraph(privacy_notice, privacy_style)
+    elements.append(Spacer(1, 24))
+    elements.append(privacy_paragraph)
     
     doc.build(elements)
     return filename
