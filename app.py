@@ -118,21 +118,13 @@ def generate_pdf(data, filename='quote.pdf'):
             row.append(f"${payment:.2f}")
         grid_data.append(row)
     
-    grid_table = Table(grid_data, colWidths=[70] + [70]*len(data['quotes'][list(data['quotes'].keys())[0]].keys()))
-    grid_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
-    ]))
+    # Add disclaimer text
+    grid_data.append([f"* A.P.R Subject to equity and credit requirements."] + [None]*(len(grid_data[0]) - 1))
     
-    # Leasing quotes header
-    elements.append(Paragraph("Monthly Payments (Lease)", styles['Normal']))
-    elements.append(Spacer(1, 10))
-    
+    # Add blank lines
+    grid_data.append([None]*len(grid_data[0]))
+    grid_data.append([None]*len(grid_data[0]))
+
     # Grid data for lease quotes
     lease_grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['lease_quotes'][list(data['lease_quotes'].keys())[0]].keys()]]
     for term, payments in data['lease_quotes'].items():
@@ -141,8 +133,11 @@ def generate_pdf(data, filename='quote.pdf'):
             row.append(f"${payment:.2f}")
         lease_grid_data.append(row)
     
-    lease_grid_table = Table(lease_grid_data, colWidths=[70] + [70]*len(data['lease_quotes'][list(data['lease_quotes'].keys())[0]].keys()))
-    lease_grid_table.setStyle(TableStyle([
+    # Combine purchase and lease quotes
+    combined_data = grid_data + lease_grid_data
+    
+    combined_table = Table(combined_data, colWidths=[70] + [70]*len(data['quotes'][list(data['quotes'].keys())[0]].keys()))
+    combined_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
@@ -154,13 +149,11 @@ def generate_pdf(data, filename='quote.pdf'):
     
     # Table for side-by-side layout
     side_by_side_data = [
-        [breakdown_table, grid_table],
-        ['', lease_grid_table]
+        [breakdown_table, combined_table]
     ]
-    side_by_side_table = Table(side_by_side_data, colWidths=[250, 250])
+    side_by_side_table = Table(side_by_side_data, colWidths=[200, 400])
     side_by_side_table.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ('SPAN', (0, 1), (0, 1)),
     ]))
     
     elements.append(side_by_side_table)
