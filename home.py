@@ -149,7 +149,7 @@ def generate_pdf(data, filename='quote.pdf'):
     doc.build(elements)
     return filename
 
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide", page_title="Quote Generator", page_icon="📝")
 st.title("Quote Generator")
 
 # Form to input deal details
