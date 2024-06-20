@@ -167,6 +167,14 @@ with st.form(key='deal_form'):
         trade_value = st.number_input("Trade Value", min_value=0.0, format="%.2f", key='trade_value')
         acv_of_trade = st.number_input("ACV of Trade", min_value=0.0, format="%.2f", key='acv_of_trade')
         trade_payoff = st.number_input("Trade Payoff", min_value=0.0, format="%.2f", key='trade_payoff')
+        gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)
+        if gross_profit > 0:
+            color = "green"
+        elif gross_profit < 0:
+            color = "red"
+        else:
+            color = "white"
+        st.markdown(f"<p style='color:{color}; font-size:24px;'>${gross_profit:.2f}</p>", unsafe_allow_html=True)
     
     with col5:
         down_payments = []
@@ -181,8 +189,6 @@ with st.form(key='deal_form'):
             rate = st.number_input(f"Rate for Term {i} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'rate_{i}')
             terms.append(term)
             rates[term] = rate
-    gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)
-    st.write(f"${gross_profit:.2f}")
     submit_button = st.form_submit_button(label='Generate Quote')
 
 if submit_button:
