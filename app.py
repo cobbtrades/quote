@@ -149,8 +149,8 @@ def generate_pdf(data, filename='quote.pdf'):
     elements.append(privacy_paragraph)
     # Add signature lines
     signature_data = [
-        ["Buyer's Signature", "Date", "Co-Buyer's Signature", "Date"],
-        ["_________________________", "_________________", "_________________________", "_________________"]
+        ["_________________________", "_________________", "_________________________", "_________________"],
+        ["Buyer's Signature", "Date", "Co-Buyer's Signature", "Date"]
     ]
     signature_table = Table(signature_data, colWidths=[150, 100, 150, 100])
     signature_table.setStyle(TableStyle([
