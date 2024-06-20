@@ -17,7 +17,7 @@ def calculate_monthly_payment(principal, annual_rate, term_months):
 
 # Function to generate PDF
 def generate_pdf(data, filename='quote.pdf'):
-    doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=100)
+    doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=50)
     elements = []
     styles = getSampleStyleSheet()
     
@@ -52,7 +52,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
     ]))
     elements.append(details_table)
-    elements.append(Spacer(1, 8))  # Reduced spacing here
+    elements.append(Spacer(1, 16))  # Reduced spacing here
     
     # Vehicle selection and trade-in details
     selection_data = [
@@ -69,7 +69,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
     ]))
     elements.append(selection_table)
-    elements.append(Spacer(1, 8))  # Reduced spacing here
+    elements.append(Spacer(1, 16))  # Reduced spacing here
     
     # Detailed breakdown table
     breakdown_data = [
