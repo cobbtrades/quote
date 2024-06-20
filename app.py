@@ -313,7 +313,8 @@ if submit_button:
         'balance': balance,
         'quotes': quotes,
         'lease_quotes': lease_quotes,
-        'rates': rates
+        'rates': rates,
+        'residual_percent': residual_percent
     }
     
     # Display the purchase quotes in a grid format
