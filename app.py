@@ -79,7 +79,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ["Trade Value", f"${data['trade_value']:.2f}"],
         ["Trade Payoff", f"${data['trade_payoff']:.2f}"],
         ["Dealer Service Fee", f"${data['doc_fee']:.2f}"],
-        ["Sales Tax", f"${data['sales_tax']:.2f}"],
+        ["Sales Tax", f"${data['sales_tax']:.2f}"],  # Ensure sales tax is included here
         ["Non Tax Fees", f"${NON_TAX_FEE:.2f}"],
         ["Balance", f"${data['balance']:.2f}"],
     ]
@@ -158,7 +158,7 @@ tab1, tab2 = st.tabs(["NC", "Other"])
 with tab1:
     SALES_TAX_RATE = SALES_TAX_RATE_NC
     state_selected = "NC"
-    sales_tax = SALES_TAX_RATE_NC
+    sales_tax = None
 
 with tab2:
     SALES_TAX_RATE = None
