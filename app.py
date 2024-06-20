@@ -119,10 +119,10 @@ def generate_pdf(data, filename='quote.pdf'):
     elements.append(Spacer(1, 16))  # Reduced spacing here
 
     privacy_notice_header = Paragraph("<b>PRIVACY NOTICE</b>", styles['Normal'])
-    elements.append(Spacer(1, 6))
+    elements.append(Spacer(1, 4))
     elements.append(privacy_notice_header)
     elements.append(HRFlowable(width="100%", thickness=1, lineCap='round', color=colors.black, spaceBefore=1, spaceAfter=1, hAlign='CENTER', vAlign='BOTTOM', dash=None))
-    elements.append(Spacer(1, 8))  # Reduced spacing here
+    elements.append(Spacer(1, 4))  # Reduced spacing here
     
     # Add privacy notice with numbered items on their own lines and centered heading
     privacy_notice = """
@@ -161,6 +161,32 @@ def generate_pdf(data, filename='quote.pdf'):
         ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
     ]))
     elements.append(signature_table)
+
+    consumer_notice_header = Paragraph("<b>CONSUMER INFORMATION</b>", styles['Normal'])
+    elements.append(Spacer(1, 4))
+    elements.append(consumer_notice_header)
+    elements.append(HRFlowable(width="100%", thickness=1, lineCap='round', color=colors.black, spaceBefore=1, spaceAfter=1, hAlign='CENTER', vAlign='BOTTOM', dash=None))
+    elements.append(Spacer(1, 4))
+    consumer_notice = """
+    <ol>
+        <li>DEALER MAY CHARGE A DEALER SERVICES FEE IN THE AMOUNT SET FORTH ABOVE. THE DEALER SERVICES FEE MAY INCLUDE ADDITIONAL PROFIT.</li>
+        <li>DEALER MAY RECEIVE A FEE, COMMISSION, OR OTHER COMPENSATION FOR PROVIDING, PROCURING, OR ARRANGING FINANCING FOR THE RETAIL LEASE OR PURCHASE OF A MOTOR VEHICLE, FOR WHICH THE CUSTOMER MAY BE RESPONSIBLE.</li>
+    </ol>
+    """
+    consumer_style = ParagraphStyle(
+        'ConsumerNotice',
+        fontSize=6,
+        leading=10,
+        spaceBefore=8,
+        spaceAfter=8,
+        textColor=colors.black,
+        bulletFontName='Helvetic',
+        bulletIndent=0,
+        leftIndent=0,
+        rightIndent=0,
+    )
+    consumer_paragraph = Paragraph(consumer_notice, consumer_style)
+    elements.append(consumer_paragraph)
     
     doc.build(elements)
     return filename
