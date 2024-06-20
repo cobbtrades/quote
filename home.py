@@ -243,6 +243,5 @@ if submit_button:
     
     pdf_file = generate_pdf(data)
     
-    st.success("Quote generated successfully!")
     with open(pdf_file, 'rb') as f:
         st.download_button('Download PDF Quote', f, file_name=pdf_file)
