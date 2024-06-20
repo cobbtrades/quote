@@ -2,7 +2,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph, HRFlowable
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
-import pandas as pd
+import pandas as pd, streamlit as st
 
 # Constants for fees
 NON_TAX_FEE = 106.75
