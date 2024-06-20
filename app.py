@@ -167,11 +167,11 @@ def generate_pdf(data, filename='quote.pdf'):
     elements.append(Spacer(1, 20))  # Reduced spacing here
 
     # Calculate residual value
-    residual_value = data['sale_price'] * (data['residual_percent'] / 100)
+    residual_value = data['sale_price'] * (data.get('residual_percent', 0) / 100)
     
-    # Add residual value below the lease payments grid
-    residual_data = [["Residual Value", f"${residual_value:.2f}"]]
-    elements.append(Paragraph("Residual Value: " + {residual_data}, styles['Normal']))
+    # Add residual value as a paragraph below the lease payments grid
+    residual_text = f"Residual Value: ${residual_value:.2f}"
+    elements.append(Paragraph(residual_text, styles['Normal']))
     elements.append(Spacer(1, 20))  # Reduced spacing here
     
     # Add signature lines
