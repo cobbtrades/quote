@@ -106,6 +106,10 @@ def generate_pdf(data, filename='quote.pdf'):
     elements.append(breakdown_table)
     elements.append(Spacer(1, 20))  # Reduced spacing here
     
+    # Financing quotes header
+    elements.append(Paragraph("Monthly Payments Grid (Purchase)", styles['Heading3']))
+    elements.append(Spacer(1, 10))
+    
     # Grid data for purchase quotes
     grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
     for term, payments in data['quotes'].items():
@@ -126,6 +130,11 @@ def generate_pdf(data, filename='quote.pdf'):
     ]))
     
     elements.append(grid_table)
+    elements.append(Spacer(1, 20))  # Reduced spacing here
+    
+    # Leasing quotes header
+    elements.append(Paragraph("Monthly Payments Grid (Lease)", styles['Heading3']))
+    elements.append(Spacer(1, 10))
     
     # Grid data for lease quotes
     lease_grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['lease_quotes'][list(data['lease_quotes'].keys())[0]].keys()]]
@@ -217,7 +226,7 @@ with st.form(key='deal_form'):
     
     with col5:
         down_payments = []
-        default_down_payments = [1000.00, 2000.00, 3000.00]
+        default_down_payments = [1000.0, 2000.0, 3000.0]
         for i in range(3):
             down_payments.append(st.number_input(f"Down Payment Option {i+1}", min_value=0.0, value=default_down_payments[i], format="%.2f", key=f'down_payment_{i+1}'))
         
@@ -230,9 +239,9 @@ with st.form(key='deal_form'):
             rates[term] = rate
     
     with col6:
-        lease_term = st.number_input("Lease Term (months)", min_value=12, value=36, key='lease_term')
-        residual_percent = st.number_input("Residual Percent", min_value=0.0, max_value=100.0, value=70.0, format="%.2f", key='residual_percent')
-        money_factor = st.number_input("Money Factor", min_value=0.0, max_value=1.0, value=0.00383, format="%.5f", key='money_factor')
+        lease_term = st.number_input("Lease Term (months)", min_value=1, value=36, key='lease_term')
+        residual_percent = st.number_input("Residual Percent", min_value=0.0, max_value=100.0, value=50.0, format="%.2f", key='residual_percent')
+        money_factor = st.number_input("Money Factor", min_value=0.0, max_value=1.0, value=0.0025, format="%.5f", key='money_factor')
     
     submit_button = st.form_submit_button(label='Generate Quote')
 
@@ -290,6 +299,7 @@ if submit_button:
     }
     
     # Display the purchase quotes in a grid format
+    st.write("### Monthly Payments Grid (Purchase)")
     grid_data = []
     for term, payments in quotes.items():
         row = {'Term': term}
@@ -298,10 +308,10 @@ if submit_button:
         grid_data.append(row)
     
     df = pd.DataFrame(grid_data)
-    st.write("### Monthly Payments Grid (Purchase)")
     st.dataframe(df, hide_index=True)
 
     # Display the lease quotes in a grid format
+    st.write("### Monthly Payments Grid (Lease)")
     lease_grid_data = []
     for term, payments in lease_quotes.items():
         row = {'Term': term}
@@ -310,7 +320,6 @@ if submit_button:
         lease_grid_data.append(row)
     
     lease_df = pd.DataFrame(lease_grid_data)
-    st.write("### Monthly Payments Grid (Lease)")
     st.dataframe(lease_df, hide_index=True)
 
     # Display the gross profit
