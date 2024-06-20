@@ -157,7 +157,6 @@ tab1, tab2 = st.tabs(["NC", "Other"])
 
 with tab1:
     SALES_TAX_RATE = SALES_TAX_RATE_NC
-    st.write("Sales tax rate for NC is hard-coded to 3%")
     state_selected = "NC"
     sales_tax = None
 
