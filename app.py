@@ -56,7 +56,7 @@ def generate_pdf(data, filename='quote.pdf'):
     
     # Vehicle selection and trade-in details
     selection_data = [
-        ["SELECTION:", "NEW", "", "CAR", ""],
+        ["SELECTION:", "", "", "", ""],
         ["YEAR", "MAKE", "MODEL", "STOCK NO.", "COLOR"],
         [data['year'], data['make'], data['model'], data['stock_no'], data['color']]
     ]
