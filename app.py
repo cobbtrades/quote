@@ -94,7 +94,7 @@ def generate_pdf(data, filename='quote.pdf'):
     ]))
     
     elements.append(breakdown_table)
-    elements.append(Spacer(1, 8))  # Reduced spacing here
+    elements.append(Spacer(1, 20))  # Reduced spacing here
     
     # Grid data
     grid_data = [["Term"] + [f"${dp}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
@@ -124,7 +124,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('FONTSIZE', (0, 0), (-1, -1), 10),
     ]))
     elements.append(disclaimer_line)
-    elements.append(Spacer(1, 16))  # Reduced spacing here
+    elements.append(Spacer(1, 20))  # Reduced spacing here
 
     # Add signature lines
     signature_data = [
