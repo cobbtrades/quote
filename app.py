@@ -158,6 +158,7 @@ tab1, tab2 = st.tabs(["NC", "Other"])
 with tab1:
     SALES_TAX_RATE = SALES_TAX_RATE_NC
     state_selected = "NC"
+    sales_tax = None
 
 with tab2:
     SALES_TAX_RATE = None
@@ -216,8 +217,10 @@ if submit_button:
     if state_selected == "NC":
         taxable_amount = sale_price - trade_value + doc_fee
         sales_tax = taxable_amount * SALES_TAX_RATE
+        st.write(f"Calculated Sales Tax (NC): ${sales_tax:.2f}")  # Debug statement
     else:
         taxable_amount = sale_price - trade_value + doc_fee
+        st.write(f"User Entered Sales Tax: ${sales_tax:.2f}")  # Debug statement
 
     # Calculate monthly payments for each combination of down payment and term
     quotes = {}
