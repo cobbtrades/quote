@@ -1,4 +1,3 @@
-import streamlit as st
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -34,7 +33,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('FONTSIZE', (0, 0), (-1, -1), 14),
     ]))
     elements.append(header_table)
-    elements.append(Spacer(1, 12))
+    elements.append(Spacer(1, 8))  # Reduced spacing here
     
     # Customer and vehicle details
     details_data = [
@@ -53,7 +52,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
     ]))
     elements.append(details_table)
-    elements.append(Spacer(1, 12))
+    elements.append(Spacer(1, 8))  # Reduced spacing here
     
     # Vehicle selection and trade-in details
     selection_data = [
@@ -70,7 +69,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
     ]))
     elements.append(selection_table)
-    elements.append(Spacer(1, 12))
+    elements.append(Spacer(1, 8))  # Reduced spacing here
     
     # Detailed breakdown table
     breakdown_data = [
@@ -95,7 +94,7 @@ def generate_pdf(data, filename='quote.pdf'):
     ]))
     
     elements.append(breakdown_table)
-    elements.append(Spacer(1, 12))
+    elements.append(Spacer(1, 8))  # Reduced spacing here
     
     # Grid data
     grid_data = [["Term"] + [f"${dp}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
@@ -117,7 +116,7 @@ def generate_pdf(data, filename='quote.pdf'):
     ]))
     
     elements.append(grid_table)
-    elements.append(Spacer(1, 24))
+    elements.append(Spacer(1, 16))  # Reduced spacing here
     
     # Add signature lines
     signature_data = [
@@ -142,15 +141,15 @@ def generate_pdf(data, filename='quote.pdf'):
 
     privacy_style = ParagraphStyle(
         'PrivacyNotice',
-        fontSize=8,
-        leading=10,
-        spaceBefore=12,
-        spaceAfter=12,
+        fontSize=6,
+        leading=8,
+        spaceBefore=8,
+        spaceAfter=8,
         textColor=colors.black
     )
 
     privacy_paragraph = Paragraph(privacy_notice, privacy_style)
-    elements.append(Spacer(1, 24))
+    elements.append(Spacer(1, 16))
     elements.append(privacy_paragraph)
     
     doc.build(elements)
