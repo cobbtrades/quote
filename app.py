@@ -261,7 +261,9 @@ with st.form(key='deal_form'):
             rates[term] = rate
     
     submit_button = st.form_submit_button(label='Generate Quote')
-    reset_button = st.button(label='Reset Form', on_click=reset_form)
+
+# Reset button outside the form
+reset_button = st.button(label='Reset Form', on_click=reset_form)
 
 if submit_button:
     # Calculate sales tax if in NC
