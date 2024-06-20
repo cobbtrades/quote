@@ -9,6 +9,55 @@ import streamlit as st
 NON_TAX_FEE = 106.75
 SALES_TAX_RATE_NC = 0.03
 
+# Default values
+default_values = {
+    'date': '',
+    'salesperson': '',
+    'buyer': '',
+    'address': '',
+    'city': '',
+    'state': '',
+    'zip': '',
+    'cell_phone': '',
+    'year': '',
+    'make': '',
+    'model': '',
+    'stock_no': '',
+    'color': '',
+    'cost_of_vehicle': 0.0,
+    'doc_fee': 799.0,
+    'sale_price': 0.0,
+    'rebate': 0.0,
+    'trade_value': 0.0,
+    'acv_of_trade': 0.0,
+    'trade_payoff': 0.0,
+    'down_payment_1': 1000.0,
+    'down_payment_2': 2000.0,
+    'down_payment_3': 3000.0,
+    'term_1': 60,
+    'term_2': 66,
+    'term_3': 72,
+    'rate_1': 14.0,
+    'rate_2': 14.0,
+    'rate_3': 14.0,
+    'sales_tax': 0.03,
+    'state_other': ''
+}
+
+# Function to initialize session state
+def init_session_state():
+    for key, value in default_values.items():
+        if key not in st.session_state:
+            st.session_state[key] = value
+
+# Initialize session state
+init_session_state()
+
+# Function to reset form
+def reset_form():
+    for key, value in default_values.items():
+        st.session_state[key] = value
+
 # Function to calculate monthly payments
 def calculate_monthly_payment(principal, annual_rate, term_months):
     monthly_rate = annual_rate / 100 / 12
@@ -157,12 +206,13 @@ tab1, tab2 = st.tabs(["NC", "Other"])
 
 with tab1:
     SALES_TAX_RATE = SALES_TAX_RATE_NC
+    st.write("Sales tax rate for NC is hard-coded to 3%")
     state_selected = "NC"
     sales_tax = None
 
 with tab2:
     SALES_TAX_RATE = None
-    sales_tax = st.number_input("Enter Sales Tax Amount", min_value=0.0, format="%.2f")
+    sales_tax = st.number_input("Enter Sales Tax Amount", min_value=0.0, format="%.2f", key='sales_tax')
     state_selected = st.text_input("State", key='state_other')
 
 # Form to input deal details
@@ -211,6 +261,7 @@ with st.form(key='deal_form'):
             rates[term] = rate
     
     submit_button = st.form_submit_button(label='Generate Quote')
+    reset_button = st.button(label='Reset Form', on_click=reset_form)
 
 if submit_button:
     # Calculate sales tax if in NC
