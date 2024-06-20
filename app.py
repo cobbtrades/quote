@@ -4,6 +4,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 import pandas as pd
 import streamlit as st
+from datetime import datetime
 
 # Constants for fees
 NON_TAX_FEE = 106.75
@@ -210,7 +211,7 @@ with st.form(key='deal_form'):
     
     with col1:
         dealership_name = st.text_input("Dealership Name", key='dealership_name')
-        date = st.date_input("Date", key='date')
+        date = st.date_input("Date", key='date', value=datetime.today())
         salesperson = st.text_input("Sales Person", key='salesperson')
         buyer = st.text_input("Buyer", key='buyer')
         address = st.text_input("Address", key='address')
@@ -255,12 +256,21 @@ with st.form(key='deal_form'):
         residual_percent = st.number_input("Residual Percent", min_value=0.0, max_value=100.0, value=50.0, format="%.2f", key='residual_percent')
         money_factor = st.number_input("Money Factor", min_value=0.0, max_value=1.0, value=0.0025, format="%.5f", key='money_factor')
     
+    use_custom_tax = st.checkbox("Use Custom Sales Tax Amount")
+    if use_custom_tax:
+        custom_sales_tax = st.number_input("Custom Sales Tax Amount", min_value=0.0, format="%.2f", key='custom_sales_tax')
+    else:
+        sales_tax_rate = st.number_input("Sales Tax Rate (%)", min_value=0.0, max_value=100.0, value=3.0, format="%.2f", key='sales_tax_rate') / 100
+    
     submit_button = st.form_submit_button(label='Generate Quote')
 
 if submit_button:
     # Calculate sales tax
     taxable_amount = sale_price - trade_value + doc_fee
-    sales_tax = taxable_amount * SALES_TAX_RATE_NC
+    if use_custom_tax:
+        sales_tax = custom_sales_tax
+    else:
+        sales_tax = taxable_amount * sales_tax_rate
 
     # Calculate monthly payments for each combination of down payment and term
     quotes = {}
@@ -285,7 +295,7 @@ if submit_button:
 
     data = {
         'dealership_name': dealership_name,
-        'date': date,
+        'date': date.strftime("%Y-%m-%d"),
         'salesperson': salesperson,
         'buyer': buyer,
         'address': address,
