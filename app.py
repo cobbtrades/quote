@@ -126,42 +126,10 @@ def generate_pdf(data, filename='quote.pdf'):
     elements.append(disclaimer_line)
     elements.append(Spacer(1, 16))  # Reduced spacing here
 
-    privacy_notice_header = Paragraph("<b>PRIVACY NOTICE</b>", styles['Normal'])
-    elements.append(Spacer(1, 4))
-    elements.append(privacy_notice_header)
-    elements.append(HRFlowable(width="100%", thickness=1, lineCap='round', color=colors.black, spaceBefore=1, spaceAfter=1, hAlign='CENTER', vAlign='BOTTOM', dash=None))
-    elements.append(Spacer(1, 4))  # Reduced spacing here
-    
-    # Add privacy notice with numbered items on their own lines and centered heading
-    privacy_notice = """
-    <ol>
-        <li>In connection with your transaction, Modern Automotive Network and any related/affiliated companies may obtain information about you as described in this notice, which we handle as stated in this notice.</li>
-        <li>We collect nonpublic information about you from the following sources: Information we receive from you on application or other forms; Information about your transactions with us, our affiliates or others; and Information we receive from a consumer reporting agency.</li>
-        <li>We may disclose some or all of the information that we collect, as described above, to companies that perform services or other functions on our behalf to other financial institutions with whom we have dealer agreements. We may make such disclosures about you as a consumer, customer, or former customer.</li>
-        <li>We may also disclose nonpublic personal information about you as a consumer, customer, or former customer, to non-affiliated third parties as permitted by law.</li>
-        <li>We restrict access to nonpublic personal information about you to those employees who need to know that information to provide products or services to you. We maintain physical, electronic, and procedural safeguards that comply with federal regulations to guard your nonpublic personal information.</li>
-    </ol>
-    """
-    
-    privacy_style = ParagraphStyle(
-        'PrivacyNotice',
-        fontSize=6,
-        leading=10,
-        spaceBefore=8,
-        spaceAfter=8,
-        textColor=colors.black,
-        bulletFontName='Helvetic',
-        bulletIndent=0,
-        leftIndent=0,
-        rightIndent=0,
-    )
-
-    privacy_paragraph = Paragraph(privacy_notice, privacy_style)
-    elements.append(privacy_paragraph)
     # Add signature lines
     signature_data = [
         ["Customer Approval: ", "_________________________", "Management Approval: ", "_________________________"],
-        ["By signing this authorization form, you certify that the above personal information is correct and accurate, and authorize the release of credit and employment information. By signing above, I provide to the dealership and its affiliates consent to communicate with me about my vehicle or any future vehicles using electronic, verbal and written communications including but not limited to email, text messaging, SMS, phone calls and direct mail. Terms and Conditions subject to credit approval. For Information Only. This is not an offer or contract for sale."]
+        [Paragraph("By signing this authorization form, you certify that the above personal information is correct and accurate, and authorize the release of credit and employment information. By signing above, I provide to the dealership and its affiliates consent to communicate with me about my vehicle or any future vehicles using electronic, verbal and written communications including but not limited to email, text messaging, SMS, phone calls and direct mail. Terms and Conditions subject to credit approval. For Information Only. This is not an offer or contract for sale.", styles["Normal"])]
     ]
     signature_table = Table(signature_data, colWidths=[150, 100, 150, 100])
     signature_table.setStyle(TableStyle([
