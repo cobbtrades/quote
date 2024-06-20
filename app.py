@@ -7,7 +7,7 @@ import streamlit as st
 
 # Constants for fees
 NON_TAX_FEE = 106.75
-SALES_TAX_RATE = 0.03
+SALES_TAX_RATE_NC = 0.03
 
 # Function to calculate monthly payments
 def calculate_monthly_payment(principal, annual_rate, term_months):
@@ -152,6 +152,18 @@ def generate_pdf(data, filename='quote.pdf'):
 st.set_page_config(layout="wide")
 st.title("Quote Generator")
 
+# Tabs
+tab1, tab2 = st.tabs(["NC", "Other"])
+
+with tab1:
+    SALES_TAX_RATE = SALES_TAX_RATE_NC
+    st.write("Sales tax rate for NC is hard-coded to 3%")
+    state_selected = "NC"
+
+with tab2:
+    SALES_TAX_RATE = st.number_input("Enter Sales Tax Rate", min_value=0.0, max_value=1.0, value=0.03, format="%.2f")
+    state_selected = st.text_input("State", key='state_other')
+
 # Form to input deal details
 with st.form(key='deal_form'):
     col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
@@ -164,7 +176,6 @@ with st.form(key='deal_form'):
         city = st.text_input("City", key='city')
     
     with col2:
-        state = st.text_input("State", key='state')
         zip_code = st.text_input("ZIP", key='zip')
         cell_phone = st.text_input("Phone", key='cell_phone')
         year = st.text_input("Vehicle Year", key='year')
@@ -222,7 +233,7 @@ if submit_button:
         'buyer': buyer,
         'address': address,
         'city': city,
-        'state': state,
+        'state': state_selected,
         'zip': zip_code,
         'cell_phone': cell_phone,
         'year': year,
