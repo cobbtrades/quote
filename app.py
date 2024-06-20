@@ -118,7 +118,7 @@ def generate_pdf(data, filename='quote.pdf'):
     elements.append(grid_table)
     elements.append(Spacer(1, 16))  # Reduced spacing here
 
-    privacy_notice_header = Paragraph("<b>PRIVACY NOTICE</b>", styles['Heading1'])
+    privacy_notice_header = Paragraph("<b>PRIVACY NOTICE</b>", styles['normal'])
     elements.append(Spacer(1, 6))
     elements.append(privacy_notice_header)
     elements.append(HRFlowable(width="100%", thickness=1, lineCap='round', color=colors.black, spaceBefore=1, spaceAfter=1, hAlign='CENTER', vAlign='BOTTOM', dash=None))
@@ -137,7 +137,7 @@ def generate_pdf(data, filename='quote.pdf'):
     
     privacy_style = ParagraphStyle(
         'PrivacyNotice',
-        fontSize=8,
+        fontSize=6,
         leading=10,
         spaceBefore=8,
         spaceAfter=8,
