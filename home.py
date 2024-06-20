@@ -1,9 +1,8 @@
-import streamlit as st
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph, HRFlowable
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
-import pandas as pd
+import pandas as pd, streamlit as st
 
 # Constants for fees
 NON_TAX_FEE = 106.75
@@ -18,7 +17,7 @@ def calculate_monthly_payment(principal, annual_rate, term_months):
 
 # Function to generate PDF
 def generate_pdf(data, filename='quote.pdf'):
-    doc = SimpleDocTemplate(filename, pagesize=letter)
+    doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=20)
     elements = []
     styles = getSampleStyleSheet()
     
@@ -34,7 +33,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('FONTSIZE', (0, 0), (-1, -1), 14),
     ]))
     elements.append(header_table)
-    elements.append(Spacer(1, 12))
+    elements.append(Spacer(1, 8))  # Reduced spacing here
     
     # Customer and vehicle details
     details_data = [
@@ -53,11 +52,11 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
     ]))
     elements.append(details_table)
-    elements.append(Spacer(1, 12))
+    elements.append(Spacer(1, 8))  # Reduced spacing here
     
     # Vehicle selection and trade-in details
     selection_data = [
-        ["SELECTION:", "NEW", "", "CAR", "", "DEMO"],
+        ["SELECTION:", "", "", "", ""],
         ["YEAR", "MAKE", "MODEL", "STOCK NO.", "COLOR"],
         [data['year'], data['make'], data['model'], data['stock_no'], data['color']]
     ]
@@ -70,7 +69,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
     ]))
     elements.append(selection_table)
-    elements.append(Spacer(1, 12))
+    elements.append(Spacer(1, 8))  # Reduced spacing here
     
     # Detailed breakdown table
     breakdown_data = [
@@ -90,12 +89,12 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
     
     elements.append(breakdown_table)
-    elements.append(Spacer(1, 12))
+    elements.append(Spacer(1, 8))  # Reduced spacing here
     
     # Grid data
     grid_data = [["Term"] + [f"${dp}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
@@ -112,16 +111,49 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
     
     elements.append(grid_table)
-    elements.append(Spacer(1, 24))
+    elements.append(Spacer(1, 16))  # Reduced spacing here
+
+    privacy_notice_header = Paragraph("<b>PRIVACY NOTICE</b>", styles['Normal'])
+    elements.append(Spacer(1, 6))
+    elements.append(privacy_notice_header)
+    elements.append(HRFlowable(width="100%", thickness=1, lineCap='round', color=colors.black, spaceBefore=1, spaceAfter=1, hAlign='CENTER', vAlign='BOTTOM', dash=None))
+    elements.append(Spacer(1, 8))  # Reduced spacing here
+    
+    # Add privacy notice with numbered items on their own lines and centered heading
+    privacy_notice = """
+    <ol>
+        <li>In connection with your transaction, Modern Automotive Network and any related/affiliated companies may obtain information about you as described in this notice, which we handle as stated in this notice.</li>
+        <li>We collect nonpublic information about you from the following sources: Information we receive from you on application or other forms; Information about your transactions with us, our affiliates or others; and Information we receive from a consumer reporting agency.</li>
+        <li>We may disclose some or all of the information that we collect, as described above, to companies that perform services or other functions on our behalf to other financial institutions with whom we have dealer agreements. We may make such disclosures about you as a consumer, customer, or former customer.</li>
+        <li>We may also disclose nonpublic personal information about you as a consumer, customer, or former customer, to non-affiliated third parties as permitted by law.</li>
+        <li>We restrict access to nonpublic personal information about you to those employees who need to know that information to provide products or services to you. We maintain physical, electronic, and procedural safeguards that comply with federal regulations to guard your nonpublic personal information.</li>
+    </ol>
+    """
+    
+    privacy_style = ParagraphStyle(
+        'PrivacyNotice',
+        fontSize=6,
+        leading=10,
+        spaceBefore=8,
+        spaceAfter=8,
+        textColor=colors.black,
+        bulletFontName='Helvetic',
+        bulletIndent=0,
+        leftIndent=0,
+        rightIndent=0,
+    )
+
+    privacy_paragraph = Paragraph(privacy_notice, privacy_style)
+    elements.append(privacy_paragraph)
     # Add signature lines
     signature_data = [
-        ["Customer Signature", "Date"],
-        ["_________________________", "_________________"]
+        ["_________________________", "_________________", "_________________________", "_________________"],
+        ["Buyer's Signature", "Date", "Co-Buyer's Signature", "Date"]
     ]
     signature_table = Table(signature_data, colWidths=[150, 100, 150, 100])
     signature_table.setStyle(TableStyle([
