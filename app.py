@@ -86,7 +86,9 @@ def generate_pdf(data, filename='quote.pdf'):
     
     # Detailed breakdown table
     breakdown_data = [
-        ["Sales Price", f"${data['sale_price']:.2f}"],
+        ["Retail Price", f"${data['retail_price']:.2f}"],
+        ["Sale Price", f"${data['sale_price']:.2f}"],
+        ["Discount", f"${data['discount']:.2f}"],
         ["Rebate", f"${data['rebate']:.2f}"],
         ["Trade Value", f"${data['trade_value']:.2f}"],
         ["Trade Payoff", f"${data['trade_payoff']:.2f}"],
@@ -232,7 +234,6 @@ with st.form(key='deal_form'):
     
     with col4:
         retail_price = st.number_input("Retail Price of Vehicle", min_value=0.0, format="%.2f", key='retail_price')
-        discount = st.number_input("Discount", min_value=0.0, format="%.2f", key='discount')
         rebate = st.number_input("Rebate", min_value=0.0, format="%.2f", key='rebate')
         sale_price = st.number_input("Sale Price of Vehicle", min_value=0.0, format="%.2f", key='sale_price')
         trade_value = st.number_input("Trade Value", min_value=0.0, format="%.2f", key='trade_value')
@@ -267,6 +268,9 @@ with st.form(key='deal_form'):
     submit_button = st.form_submit_button(label='Generate Quote')
 
 if submit_button:
+    # Calculate discount
+    discount = retail_price - sale_price
+    
     # Calculate sales tax
     taxable_amount = sale_price - trade_value + doc_fee
     if use_custom_tax:
@@ -310,7 +314,9 @@ if submit_button:
         'model': model,
         'stock_no': stock_no,
         'color': color,
+        'retail_price': retail_price,
         'sale_price': sale_price,
+        'discount': discount,
         'rebate': rebate,
         'trade_value': trade_value,
         'trade_payoff': trade_payoff,
