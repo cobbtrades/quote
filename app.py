@@ -95,7 +95,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ["Non Tax Fees", f"${NON_TAX_FEE:.2f}"],
         ["Balance", f"${data['balance']:.2f}"],
     ]
-    breakdown_table = Table(breakdown_data, colWidths=[100, 75])
+    breakdown_table = Table(breakdown_data, colWidths=[150, 100])
     breakdown_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -118,7 +118,7 @@ def generate_pdf(data, filename='quote.pdf'):
             row.append(f"${payment:.2f}")
         grid_data.append(row)
     
-    grid_table = Table(grid_data, colWidths=[40] + [70]*len(data['quotes'][list(data['quotes'].keys())[0]].keys()))
+    grid_table = Table(grid_data, colWidths=[70] + [70]*len(data['quotes'][list(data['quotes'].keys())[0]].keys()))
     grid_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -154,12 +154,13 @@ def generate_pdf(data, filename='quote.pdf'):
     
     # Table for side-by-side layout
     side_by_side_data = [
-        [grid_table, breakdown_table],
-        [lease_grid_table, '']
+        [breakdown_table, grid_table],
+        ['', lease_grid_table]
     ]
-    side_by_side_table = Table(side_by_side_data, colWidths=[200, 400])
+    side_by_side_table = Table(side_by_side_data, colWidths=[250, 250])
     side_by_side_table.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('SPAN', (0, 1), (0, 1)),
     ]))
     
     elements.append(side_by_side_table)
