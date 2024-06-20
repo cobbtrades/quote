@@ -143,8 +143,8 @@ def generate_pdf(data, filename='quote.pdf'):
 
     privacy_style = ParagraphStyle(
         'PrivacyNotice',
-        fontSize=10,
-        leading=12,
+        fontSize=8,
+        leading=10,
         spaceBefore=12,
         spaceAfter=12,
         textColor=colors.black
