@@ -238,7 +238,7 @@ if submit_button:
     st.dataframe(df, hide_index=True)
 
     # Display the gross profit
-    color = "green" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
+    color = "lightgreen" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
     st.markdown(f"<p style='color:{color}; font-size:24px;'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
     
     pdf_file = generate_pdf(data)
