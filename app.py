@@ -140,15 +140,11 @@ def generate_pdf(data, filename='quote.pdf'):
     # Add privacy notice with numbered items on their own lines and centered heading
     privacy_notice = """
     <ol>
-        <li>We collect nonpublic information about you from the following sources:</li>
-            <ul>
-                <li>Information we receive from you on application or other forms;</li>
-                <li>Information about your transactions with us, our affiliates or others; and</li>
-                <li>Information we receive from a consumer reporting agency.</li>
-            </ul>
-        <li>We may disclose some or all of the information that we collect, as described above, to companies that perform services or other functions on our behalf to other financial institutions with whom we have dealer agreements. We may make such disclosures about you as a consumer, customer, or former customer.</li>
-        <li>We may also disclose nonpublic personal information about you as a consumer, customer, or former customer, to non-affiliated third parties as permitted by law.</li>
-        <li>We restrict access to nonpublic personal information about you to those employees who need to know that information to provide products or services to you. We maintain physical, electronic, and procedural safeguards that comply with federal regulations to guard your nonpublic personal information.</li>
+        <li>In connection with your transaction, Modern Automotive Network and any related/affiliated companies may obtain information about you as described in this notice, which we handle as stated in this notice.</li>
+        <li>1. We collect nonpublic information about you from the following sources: Information we receive from you on application or other forms; Information about your transactions with us, our affiliates or others; and Information we receive from a consumer reporting agency.</li>
+        <li>2. We may disclose some or all of the information that we collect, as described above, to companies that perform services or other functions on our behalf to other financial institutions with whom we have dealer agreements. We may make such disclosures about you as a consumer, customer, or former customer.</li>
+        <li>3. We may also disclose nonpublic personal information about you as a consumer, customer, or former customer, to non-affiliated third parties as permitted by law.</li>
+        <li>4. We restrict access to nonpublic personal information about you to those employees who need to know that information to provide products or services to you. We maintain physical, electronic, and procedural safeguards that comply with federal regulations to guard your nonpublic personal information.</li>
     </ol>
     """
     
