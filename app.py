@@ -1,6 +1,7 @@
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.enums import TA_CENTER
 from reportlab.lib import colors
 import pandas as pd
 import streamlit as st
@@ -26,11 +27,8 @@ def calculate_lease_payment(sale_price, residual_percent, money_factor, term_mon
     total_payment = monthly_payment - down_payment / term_months
     return total_payment
 
-# Function to generate PDF
-from reportlab.lib.enums import TA_CENTER
-
 def generate_pdf(data, filename='quote.pdf'):
-    doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=30)
+    doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=30, leftMargin=30, rightMargin=30, bottomMargin=30)
     elements = []
     styles = getSampleStyleSheet()
     
@@ -108,9 +106,6 @@ def generate_pdf(data, filename='quote.pdf'):
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
     
-    elements.append(breakdown_table)
-    elements.append(Spacer(1, 15))  # Reduced spacing here
-    
     # Financing quotes header
     elements.append(Paragraph("Monthly Payments (Purchase)", styles['Normal']))
     elements.append(Spacer(1, 10))
@@ -133,17 +128,6 @@ def generate_pdf(data, filename='quote.pdf'):
         ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
-    
-    elements.append(grid_table)
-    disclaimer_line = Table([["* A.P.R Subject to equity and credit requirements."]], colWidths=[sum([70]*len(data['quotes'][list(data['quotes'].keys())[0]].keys())) + 70])
-    disclaimer_line.setStyle(TableStyle([
-        ('SPAN', (0, 0), (-1, -1)),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 10),
-    ]))
-    elements.append(disclaimer_line)
-    elements.append(Spacer(1, 15))  # Reduced spacing here
     
     # Leasing quotes header
     elements.append(Paragraph("Monthly Payments (Lease)", styles['Normal']))
@@ -168,7 +152,17 @@ def generate_pdf(data, filename='quote.pdf'):
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
     
-    elements.append(lease_grid_table)
+    # Table for side-by-side layout
+    side_by_side_data = [
+        [breakdown_table, grid_table],
+        ['', lease_grid_table]
+    ]
+    side_by_side_table = Table(side_by_side_data, colWidths=[200, 400])
+    side_by_side_table.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+    ]))
+    
+    elements.append(side_by_side_table)
     elements.append(Spacer(1, 3))  # Reduced spacing here
 
     # Calculate residual value
@@ -202,7 +196,6 @@ def generate_pdf(data, filename='quote.pdf'):
     
     doc.build(elements)
     return filename
-
 
 st.set_page_config(layout="wide", page_title="Quote Generator", page_icon="📝")
 st.title("Quote Generator")
