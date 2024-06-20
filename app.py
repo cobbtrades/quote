@@ -79,7 +79,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ["Trade Value", f"${data['trade_value']:.2f}"],
         ["Trade Payoff", f"${data['trade_payoff']:.2f}"],
         ["Dealer Service Fee", f"${data['doc_fee']:.2f}"],
-        ["Sales Tax", f"${data['sales_tax']:.2f}"],  # Ensure sales tax is included here
+        ["Sales Tax", f"${data['sales_tax']:.2f}"],
         ["Non Tax Fees", f"${NON_TAX_FEE:.2f}"],
         ["Balance", f"${data['balance']:.2f}"],
     ]
@@ -217,13 +217,8 @@ if submit_button:
     if state_selected == "NC":
         taxable_amount = sale_price - trade_value + doc_fee
         sales_tax = taxable_amount * SALES_TAX_RATE
-        st.write(f"Calculated Sales Tax (NC): ${sales_tax:.2f}")  # Debug statement
     else:
         taxable_amount = sale_price - trade_value + doc_fee
-        st.write(f"User Entered Sales Tax: ${sales_tax:.2f}")  # Debug statement
-
-    # Print the calculated sales tax to ensure it is being calculated correctly
-    st.write(f"Sales Tax: {sales_tax}")
 
     # Calculate monthly payments for each combination of down payment and term
     quotes = {}
@@ -263,9 +258,6 @@ if submit_button:
         'rates': rates
     }
     
-    # Debug print of the data dictionary to ensure sales tax is included correctly
-    st.write("Data dictionary before generating PDF:", data)
-
     # Display the quotes in a grid format
     grid_data = []
     for term, payments in quotes.items():
