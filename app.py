@@ -26,6 +26,8 @@ def calculate_lease_payment(sale_price, residual_percent, money_factor, term_mon
     return total_payment
 
 # Function to generate PDF
+from reportlab.lib.enums import TA_CENTER
+
 def generate_pdf(data, filename='quote.pdf'):
     doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=30)
     elements = []
@@ -62,7 +64,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
     ]))
     elements.append(details_table)
-    elements.append(Spacer(1, 15))  # Reduced spacing here
+    elements.append(Spacer(1, 20))  # Reduced spacing here
     
     # Vehicle selection and trade-in details
     selection_data = [
@@ -79,7 +81,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
     ]))
     elements.append(selection_table)
-    elements.append(Spacer(1, 15))  # Reduced spacing here
+    elements.append(Spacer(1, 20))  # Reduced spacing here
     
     # Detailed breakdown table
     breakdown_data = [
@@ -104,11 +106,11 @@ def generate_pdf(data, filename='quote.pdf'):
     ]))
     
     elements.append(breakdown_table)
-    elements.append(Spacer(1, 15))  # Reduced spacing here
+    elements.append(Spacer(1, 20))  # Reduced spacing here
     
     # Financing quotes header
     elements.append(Paragraph("Monthly Payments (Purchase)", styles['Normal']))
-    elements.append(Spacer(1, 5))
+    elements.append(Spacer(1, 10))
     
     # Grid data for purchase quotes
     grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
@@ -138,11 +140,11 @@ def generate_pdf(data, filename='quote.pdf'):
         ('FONTSIZE', (0, 0), (-1, -1), 10),
     ]))
     elements.append(disclaimer_line)
-    elements.append(Spacer(1, 15))  # Reduced spacing here
+    elements.append(Spacer(1, 20))  # Reduced spacing here
     
     # Leasing quotes header
     elements.append(Paragraph("Monthly Payments (Lease)", styles['Normal']))
-    elements.append(Spacer(1, 5))
+    elements.append(Spacer(1, 10))
     
     # Grid data for lease quotes
     lease_grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['lease_quotes'][list(data['lease_quotes'].keys())[0]].keys()]]
@@ -164,14 +166,16 @@ def generate_pdf(data, filename='quote.pdf'):
     ]))
     
     elements.append(lease_grid_table)
-    elements.append(Spacer(1, 3))  # Reduced spacing here
+    elements.append(Spacer(1, 20))  # Reduced spacing here
 
     # Calculate residual value
     residual_value = data['sale_price'] * (data.get('residual_percent', 0) / 100)
     
-    # Add residual value as a paragraph below the lease payments grid
+    # Add residual value as a centered paragraph below the lease payments grid
     residual_text = f"Residual Value: ${residual_value:.2f}"
-    elements.append(Paragraph(residual_text, styles['Normal']))
+    residual_paragraph_style = styles['Normal']
+    residual_paragraph_style.alignment = TA_CENTER
+    elements.append(Paragraph(residual_text, residual_paragraph_style))
     elements.append(Spacer(1, 20))  # Reduced spacing here
     
     # Add signature lines
@@ -195,6 +199,7 @@ def generate_pdf(data, filename='quote.pdf'):
     
     doc.build(elements)
     return filename
+
 
 st.set_page_config(layout="wide", page_title="Quote Generator", page_icon="📝")
 st.title("Quote Generator")
