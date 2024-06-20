@@ -224,15 +224,17 @@ with st.form(key='deal_form'):
         make = st.text_input("Vehicle Make", key='make')
     
     with col3:
+        retail_price = st.number_input("Retail Price of Vehicle", min_value=0.0, format="%.2f", key='retail_price')
+        discount = st.number_input("Discount", min_value=0.0, format="%.2f", key='discount')
+        rebate = st.number_input("Rebate", min_value=0.0, format="%.2f", key='rebate')
+        sale_price = st.number_input("Sale Price of Vehicle", min_value=0.0, format="%.2f", key='sale_price')
         model = st.text_input("Vehicle Model", key='model')
         stock_no = st.text_input("Stock No.", key='stock_no')
         color = st.text_input("Vehicle Color", key='color')
         cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0.0, format="%.2f", key='cost_of_vehicle')
-        doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
     
     with col4:
-        sale_price = st.number_input("Sale Price of Vehicle", min_value=0.0, format="%.2f", key='sale_price')
-        rebate = st.number_input("Rebate", min_value=0.0, format="%.2f", key='rebate')
+        doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
         trade_value = st.number_input("Trade Value", min_value=0.0, format="%.2f", key='trade_value')
         acv_of_trade = st.number_input("ACV of Trade", min_value=0.0, format="%.2f", key='acv_of_trade')
         trade_payoff = st.number_input("Trade Payoff", min_value=0.0, format="%.2f", key='trade_payoff')
