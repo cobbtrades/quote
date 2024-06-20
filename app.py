@@ -159,9 +159,11 @@ with tab1:
     SALES_TAX_RATE = SALES_TAX_RATE_NC
     st.write("Sales tax rate for NC is hard-coded to 3%")
     state_selected = "NC"
+    sales_tax = None
 
 with tab2:
-    SALES_TAX_RATE = st.number_input("Enter Sales Tax Rate", min_value=0.0, max_value=1.0, value=0.03, format="%.2f")
+    SALES_TAX_RATE = None
+    sales_tax = st.number_input("Enter Sales Tax Amount", min_value=0.0, format="%.2f")
     state_selected = st.text_input("State", key='state_other')
 
 # Form to input deal details
@@ -212,13 +214,18 @@ with st.form(key='deal_form'):
     submit_button = st.form_submit_button(label='Generate Quote')
 
 if submit_button:
+    # Calculate sales tax if in NC
+    if state_selected == "NC":
+        taxable_amount = sale_price - trade_value + doc_fee
+        sales_tax = taxable_amount * SALES_TAX_RATE
+    else:
+        taxable_amount = sale_price - trade_value + doc_fee
+
     # Calculate monthly payments for each combination of down payment and term
     quotes = {}
     for term in terms:
         term_payments = {}
         for dp in down_payments:
-            taxable_amount = sale_price - trade_value + doc_fee
-            sales_tax = taxable_amount * SALES_TAX_RATE
             total_loan_amount = taxable_amount + sales_tax + NON_TAX_FEE + trade_payoff - dp
             monthly_payment = calculate_monthly_payment(total_loan_amount, rates[term], term)
             term_payments[dp] = round(monthly_payment, 2)
