@@ -96,7 +96,7 @@ def generate_pdf(data, filename='quote.pdf'):
     breakdown_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
         ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
@@ -230,6 +230,7 @@ with st.form(key='deal_form'):
             rates[term] = rate
     
     with col6:
+        lease_term = st.number_input("Lease Term (months)", min_value=1, value=36, key='lease_term')
         residual_percent = st.number_input("Residual Percent", min_value=0.0, max_value=100.0, value=50.0, format="%.2f", key='residual_percent')
         money_factor = st.number_input("Money Factor", min_value=0.0, max_value=1.0, value=0.0025, format="%.4f", key='money_factor')
     
@@ -253,14 +254,13 @@ if submit_button:
     balance = sale_price - trade_value + doc_fee - rebate + sales_tax + NON_TAX_FEE + trade_payoff
     gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)  # Corrected calculation
 
-    # Calculate lease payments for each combination of down payment and term
+    # Calculate lease payments for each down payment
     lease_quotes = {}
-    for term in terms:
-        term_payments = {}
-        for dp in down_payments:
-            monthly_payment = calculate_lease_payment(sale_price, residual_percent, money_factor, term, dp)
-            term_payments[dp] = round(monthly_payment, 2)
-        lease_quotes[term] = term_payments
+    term_payments = {}
+    for dp in down_payments:
+        monthly_payment = calculate_lease_payment(sale_price, residual_percent, money_factor, lease_term, dp)
+        term_payments[dp] = round(monthly_payment, 2)
+    lease_quotes[lease_term] = term_payments
 
     data = {
         'dealership_name': dealership_name,
