@@ -16,6 +16,15 @@ def calculate_monthly_payment(principal, annual_rate, term_months):
         return principal / term_months
     return principal * monthly_rate / (1 - (1 + monthly_rate) ** -term_months)
 
+# Function to calculate lease payments
+def calculate_lease_payment(sale_price, residual_percent, money_factor, term_months, down_payment):
+    residual_value = sale_price * (residual_percent / 100)
+    depreciation_fee = (sale_price - residual_value) / term_months
+    finance_fee = (sale_price + residual_value) * money_factor
+    monthly_payment = depreciation_fee + finance_fee
+    total_payment = monthly_payment - down_payment / term_months
+    return total_payment
+
 # Function to generate PDF
 def generate_pdf(data, filename='quote.pdf'):
     doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=50)
@@ -24,7 +33,7 @@ def generate_pdf(data, filename='quote.pdf'):
     
     # Header
     header_data = [
-        ["MODERN AUTOMOTIVE"],
+        [data['dealership_name']],
     ]
     header_table = Table(header_data, colWidths=[400])
     header_table.setStyle(TableStyle([
@@ -42,7 +51,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ["BUYER", data['buyer'], "", ""],
         ["ADDR", data['address'], "", ""],
         ["CITY", data['city'], "STATE", data['state']],
-        ["ZIP", data['zip'], "CELL PHONE", data['cell_phone']],
+        ["ZIP", data['zip'], "PHONE", data['cell_phone']],
     ]
     details_table = Table(details_data, colWidths=[50, 200, 80, 200])
     details_table.setStyle(TableStyle([
@@ -97,7 +106,7 @@ def generate_pdf(data, filename='quote.pdf'):
     elements.append(breakdown_table)
     elements.append(Spacer(1, 20))  # Reduced spacing here
     
-    # Grid data
+    # Grid data for purchase quotes
     grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
     for term, payments in data['quotes'].items():
         row = [term]
@@ -117,6 +126,28 @@ def generate_pdf(data, filename='quote.pdf'):
     ]))
     
     elements.append(grid_table)
+    
+    # Grid data for lease quotes
+    lease_grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['lease_quotes'][list(data['lease_quotes'].keys())[0]].keys()]]
+    for term, payments in data['lease_quotes'].items():
+        row = [term]
+        for dp, payment in payments.items():
+            row.append(f"${payment:.2f}")
+        lease_grid_data.append(row)
+    
+    lease_grid_table = Table(lease_grid_data, colWidths=[70] + [70]*len(data['lease_quotes'][list(data['lease_quotes'].keys())[0]].keys()))
+    lease_grid_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
+    
+    elements.append(lease_grid_table)
+    
     disclaimer_line = Table([["* A.P.R Subject to equity and credit requirements."]], colWidths=[sum([70]*len(data['quotes'][list(data['quotes'].keys())[0]].keys())) + 70])
     disclaimer_line.setStyle(TableStyle([
         ('SPAN', (0, 0), (-1, -1)),
@@ -154,9 +185,10 @@ st.title("Quote Generator")
 
 # Form to input deal details
 with st.form(key='deal_form'):
-    col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
+    col1, col2, col3, col4, col5, col6 = st.columns([1, 1, 1, 1, 1, 1])
     
     with col1:
+        dealership_name = st.text_input("Dealership Name", key='dealership_name')
         date = st.date_input("Date", key='date')
         salesperson = st.text_input("Sales Person", key='salesperson')
         buyer = st.text_input("Buyer", key='buyer')
@@ -197,6 +229,10 @@ with st.form(key='deal_form'):
             terms.append(term)
             rates[term] = rate
     
+    with col6:
+        residual_percent = st.number_input("Residual Percent", min_value=0.0, max_value=100.0, value=50.0, format="%.2f", key='residual_percent')
+        money_factor = st.number_input("Money Factor", min_value=0.0, max_value=1.0, value=0.0025, format="%.4f", key='money_factor')
+    
     submit_button = st.form_submit_button(label='Generate Quote')
 
 if submit_button:
@@ -217,7 +253,17 @@ if submit_button:
     balance = sale_price - trade_value + doc_fee - rebate + sales_tax + NON_TAX_FEE + trade_payoff
     gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)  # Corrected calculation
 
+    # Calculate lease payments for each combination of down payment and term
+    lease_quotes = {}
+    for term in terms:
+        term_payments = {}
+        for dp in down_payments:
+            monthly_payment = calculate_lease_payment(sale_price, residual_percent, money_factor, term, dp)
+            term_payments[dp] = round(monthly_payment, 2)
+        lease_quotes[term] = term_payments
+
     data = {
+        'dealership_name': dealership_name,
         'date': date,
         'salesperson': salesperson,
         'buyer': buyer,
@@ -239,10 +285,11 @@ if submit_button:
         'sales_tax': sales_tax,
         'balance': balance,
         'quotes': quotes,
+        'lease_quotes': lease_quotes,
         'rates': rates
     }
     
-    # Display the quotes in a grid format
+    # Display the purchase quotes in a grid format
     grid_data = []
     for term, payments in quotes.items():
         row = {'Term': term}
@@ -251,8 +298,20 @@ if submit_button:
         grid_data.append(row)
     
     df = pd.DataFrame(grid_data)
-    st.write("### Monthly Payments Grid")
+    st.write("### Monthly Payments Grid (Purchase)")
     st.dataframe(df, hide_index=True)
+
+    # Display the lease quotes in a grid format
+    lease_grid_data = []
+    for term, payments in lease_quotes.items():
+        row = {'Term': term}
+        for dp, payment in payments.items():
+            row[f'${dp}'] = round(payment, 2)
+        lease_grid_data.append(row)
+    
+    lease_df = pd.DataFrame(lease_grid_data)
+    st.write("### Monthly Payments Grid (Lease)")
+    st.dataframe(lease_df, hide_index=True)
 
     # Display the gross profit
     color = "lightgreen" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
