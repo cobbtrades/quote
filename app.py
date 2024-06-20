@@ -117,18 +117,6 @@ def generate_pdf(data, filename='quote.pdf'):
     
     elements.append(grid_table)
     elements.append(Spacer(1, 16))  # Reduced spacing here
-    
-    # Add signature lines
-    signature_data = [
-        ["Customer Signature", "Date"],
-        ["_________________________", "_________________"]
-    ]
-    signature_table = Table(signature_data, colWidths=[150, 100, 150, 100])
-    signature_table.setStyle(TableStyle([
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
-    ]))
-    elements.append(signature_table)
 
     # Add privacy notice header and line
     privacy_notice_header = Paragraph("<b>PRIVACY NOTICE</b>", styles['Normal'])
@@ -159,6 +147,17 @@ def generate_pdf(data, filename='quote.pdf'):
 
     privacy_paragraph = Paragraph(privacy_notice, privacy_style)
     elements.append(privacy_paragraph)
+    # Add signature lines
+    signature_data = [
+        ["Buyer's Signature", "Date", "Co-Buyer's Signature", "Date"],
+        ["_________________________", "_________________", "_________________________", "_________________"]
+    ]
+    signature_table = Table(signature_data, colWidths=[150, 100, 150, 100])
+    signature_table.setStyle(TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+    ]))
+    elements.append(signature_table)
     
     doc.build(elements)
     return filename
