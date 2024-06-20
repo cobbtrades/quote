@@ -1,5 +1,5 @@
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph, HRFlowable
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 import pandas as pd
@@ -129,6 +129,13 @@ def generate_pdf(data, filename='quote.pdf'):
         ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
     ]))
     elements.append(signature_table)
+
+    # Add privacy notice header and line
+    privacy_notice_header = Paragraph("<b>PRIVACY NOTICE</b>", styles['Normal'])
+    elements.append(Spacer(1, 12))
+    elements.append(privacy_notice_header)
+    elements.append(HRFlowable(width="100%", thickness=1, lineCap='round', color=colors.black, spaceBefore=1, spaceAfter=1, hAlign='CENTER', vAlign='BOTTOM', dash=None))
+    elements.append(Spacer(1, 8))  # Reduced spacing here
     
     # Add privacy notice
     privacy_notice = """
@@ -149,7 +156,6 @@ def generate_pdf(data, filename='quote.pdf'):
     )
 
     privacy_paragraph = Paragraph(privacy_notice, privacy_style)
-    elements.append(Spacer(1, 16))
     elements.append(privacy_paragraph)
     
     doc.build(elements)
