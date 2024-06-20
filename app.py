@@ -128,8 +128,7 @@ def generate_pdf(data, filename='quote.pdf'):
 
     # Add signature lines
     signature_data = [
-        ["Customer Approval: ", "_________________________", "Management Approval: ", "_________________________"],
-        [Paragraph("By signing this authorization form, you certify that the above personal information is correct and accurate, and authorize the release of credit and employment information. By signing above, I provide to the dealership and its affiliates consent to communicate with me about my vehicle or any future vehicles using electronic, verbal and written communications including but not limited to email, text messaging, SMS, phone calls and direct mail. Terms and Conditions subject to credit approval. For Information Only. This is not an offer or contract for sale.", styles["Normal"])]
+        ["Customer Approval: ", "_________________________", "Management Approval: ", "_________________________"]
     ]
     signature_table = Table(signature_data, colWidths=[150, 100, 150, 100])
     signature_table.setStyle(TableStyle([
@@ -137,6 +136,14 @@ def generate_pdf(data, filename='quote.pdf'):
         ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
     ]))
     elements.append(signature_table)
+
+    # Add paragraph
+    paragraph_text = "By signing this authorization form, you certify that the above personal information is correct and accurate, and authorize the release of credit and employment information. By signing above, I provide to the dealership and its affiliates consent to communicate with me about my vehicle or any future vehicles using electronic, verbal and written communications including but not limited to email, text messaging, SMS, phone calls and direct mail. Terms and Conditions subject to credit approval. For Information Only. This is not an offer or contract for sale."
+    paragraph_style = styles["Normal"]
+    paragraph_style.fontSize = 6
+    paragraph = Paragraph(paragraph_text, paragraph_style)
+    
+    elements.append(paragraph)
     
     doc.build(elements)
     return filename
