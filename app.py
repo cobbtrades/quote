@@ -175,6 +175,7 @@ with st.form(key='deal_form'):
         else:
             color = "white"
         st.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>${gross_profit:.2f}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>Front Gross</p>", unsafe_allow_html=True)
     
     with col5:
         down_payments = []
@@ -205,7 +206,6 @@ if submit_button:
         quotes[term] = term_payments
     
     balance = sale_price - trade_value + doc_fee - rebate + sales_tax + NON_TAX_FEE + trade_payoff
-    gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)  # Corrected calculation
 
     data = {
         'date': date,
@@ -243,10 +243,6 @@ if submit_button:
     df = pd.DataFrame(grid_data)
     st.write("### Monthly Payments Grid")
     st.dataframe(df, hide_index=True)
-
-    # Display the gross profit
-    st.write("### Gross Profit")
-    st.write(f"${gross_profit:.2f}")
     
     pdf_file = generate_pdf(data)
     
