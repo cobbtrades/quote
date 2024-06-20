@@ -130,6 +130,14 @@ def generate_pdf(data, filename='quote.pdf'):
     ]))
     
     elements.append(grid_table)
+    disclaimer_line = Table([["* A.P.R Subject to equity and credit requirements."]], colWidths=[sum([70]*len(data['quotes'][list(data['quotes'].keys())[0]].keys())) + 70])
+    disclaimer_line.setStyle(TableStyle([
+        ('SPAN', (0, 0), (-1, -1)),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+    ]))
+    elements.append(disclaimer_line)
     elements.append(Spacer(1, 20))  # Reduced spacing here
     
     # Leasing quotes header
@@ -156,15 +164,6 @@ def generate_pdf(data, filename='quote.pdf'):
     ]))
     
     elements.append(lease_grid_table)
-    
-    disclaimer_line = Table([["* A.P.R Subject to equity and credit requirements."]], colWidths=[sum([70]*len(data['quotes'][list(data['quotes'].keys())[0]].keys())) + 70])
-    disclaimer_line.setStyle(TableStyle([
-        ('SPAN', (0, 0), (-1, -1)),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 10),
-    ]))
-    elements.append(disclaimer_line)
     elements.append(Spacer(1, 20))  # Reduced spacing here
 
     # Add signature lines
