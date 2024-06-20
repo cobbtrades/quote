@@ -232,7 +232,7 @@ with st.form(key='deal_form'):
     with col6:
         lease_term = st.number_input("Lease Term (months)", min_value=1, value=36, key='lease_term')
         residual_percent = st.number_input("Residual Percent", min_value=0.0, max_value=100.0, value=50.0, format="%.2f", key='residual_percent')
-        money_factor = st.number_input("Money Factor", min_value=0.0, max_value=1.0, value=0.0025, format="%.4f", key='money_factor')
+        money_factor = st.number_input("Money Factor", min_value=0.0, max_value=1.0, value=0.0025, format="%.5f", key='money_factor')
     
     submit_button = st.form_submit_button(label='Generate Quote')
 
