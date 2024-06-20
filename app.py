@@ -119,6 +119,7 @@ def generate_pdf(data, filename='quote.pdf'):
     
     elements.append(grid_table)
     elements.append(Spacer(1, 24))
+    
     # Add signature lines
     signature_data = [
         ["Customer Signature", "Date"],
@@ -130,6 +131,8 @@ def generate_pdf(data, filename='quote.pdf'):
         ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
     ]))
     elements.append(signature_table)
+    
+    # Add privacy notice
     privacy_notice = """
     In connection with your transaction, Modern Automotive Network and any related/affiliated companies may obtain information about you as described in this notice, which we handle as stated in this notice.
     1. We collect nonpublic information about you from the following sources: Information we receive from you on application or other forms; Information about your transactions with us, our affiliates or others; and Information we receive from a consumer reporting agency.
