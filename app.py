@@ -45,7 +45,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ["CITY", data['city'], "STATE", data['state']],
         ["ZIP", data['zip'], "PHONE", data['cell_phone']]
     ]
-    details_table = Table(details_data, colWidths=[80, 180, 60, 150])
+    details_table = Table(details_data, colWidths=[80, 150, 60, 180])
     details_table.setStyle(TableStyle([
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
