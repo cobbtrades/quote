@@ -215,7 +215,7 @@ with st.form(key='deal_form'):
         
         terms = []
         rates = {}
-        for i in range(1, 3):
+        for i in range(1, 4):  # Changed range to 4 to include the third term and rate
             term = st.number_input(f"Loan Term {i} (months)", min_value=1, value=[60, 66, 72][i-1], key=f'term_{i}')
             rate = st.number_input(f"Rate for Term {i} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'rate_{i}')
             terms.append(term)
