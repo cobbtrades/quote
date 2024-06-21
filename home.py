@@ -57,11 +57,11 @@ def generate_pdf(data, filename='quote.pdf'):
     
     # Vehicle selection and trade-in details
     selection_data = [
-        ["SELECTION:", "", "", "", ""],
-        ["YEAR", "MAKE", "MODEL", "STOCK NO.", "COLOR"],
-        [data['year'], data['make'], data['model'], data['stock_no'], data['color']]
+        ["SELECTION:", "", "", "", "", ""],
+        ["YEAR", "MAKE", "MODEL", "STOCK NO.", "VIN", "COLOR"],
+        [data['year'], data['make'], data['model'], data['stock_no'], data['vin'], data['color']]
     ]
-    selection_table = Table(selection_data, colWidths=[80, 60, 80, 80, 80, 80])
+    selection_table = Table(selection_data, colWidths=[65, 60, 80, 80, 110, 80])
     selection_table.setStyle(TableStyle([
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
@@ -168,13 +168,14 @@ with st.form(key='deal_form'):
         cell_phone = st.text_input("Phone", key='cell_phone')
         year = st.text_input("Vehicle Year", key='year')
         make = st.text_input("Vehicle Make", key='make')
+        doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
     
     with col3:
         model = st.text_input("Vehicle Model", key='model')
         stock_no = st.text_input("Stock No.", key='stock_no')
+        vin = st.text_input("VIN", key='vin')
         color = st.text_input("Vehicle Color", key='color')
         cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0.0, format="%.2f", key='cost_of_vehicle')
-        doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
     
     with col4:
         sale_price = st.number_input("Sale Price of Vehicle", min_value=0.0, format="%.2f", key='sale_price')
@@ -230,6 +231,7 @@ if submit_button:
         'make': make,
         'model': model,
         'stock_no': stock_no,
+        'vin': vin,
         'color': color,
         'sale_price': sale_price,
         'rebate': rebate,
