@@ -58,8 +58,8 @@ def generate_pdf(data, filename='quote.pdf'):
     # Vehicle selection and trade-in details
     selection_data = [
         ["SELECTION:", "", "", "", "", ""],
-        ["YEAR", "MAKE", "MODEL", "STOCK NO.", "VIN", "COLOR"],
-        [data['year'], data['make'], data['model'], data['stock_no'], data['vin'], data['color']]
+        ["YEAR", "MAKE", "MODEL", "STOCK NO.", "VIN", "MILES"],
+        [data['year'], data['make'], data['model'], data['stock_no'], data['vin'], data['miles']]
     ]
     selection_table = Table(selection_data, colWidths=[65, 60, 80, 80, 110, 80])
     selection_table.setStyle(TableStyle([
@@ -72,6 +72,23 @@ def generate_pdf(data, filename='quote.pdf'):
     elements.append(selection_table)
     elements.append(Spacer(1, 20))  # Reduced spacing here
     
+    # Trade-in vehicle details
+    trade_data = [
+        ["TRADE-IN DETAILS:", "", "", "", ""],
+        ["YEAR", "MAKE", "MODEL", "VIN", "MILES"],
+        [data['trade_year'], data['trade_make'], data['trade_model'], data['trade_vin'], data['trade_miles']]
+    ]
+    trade_table = Table(trade_data, colWidths=[65, 60, 80, 110, 80])
+    trade_table.setStyle(TableStyle([
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+    ]))
+    elements.append(trade_table)
+    elements.append(Spacer(1, 20))  # Reduced spacing here
+
     # Detailed breakdown table
     breakdown_data = [
         ["Sales Price", f"${data['sale_price']:.2f}"],
@@ -174,7 +191,7 @@ with st.form(key='deal_form'):
         model = st.text_input("Vehicle Model", key='model')
         stock_no = st.text_input("Stock No.", key='stock_no')
         vin = st.text_input("VIN", key='vin')
-        color = st.text_input("Vehicle Color", key='color')
+        miles = st.text_input("Vehicle Miles", key='miles')
         cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0.0, format="%.2f", key='cost_of_vehicle')
     
     with col4:
@@ -185,6 +202,11 @@ with st.form(key='deal_form'):
         trade_payoff = st.number_input("Trade Payoff", min_value=0.0, format="%.2f", key='trade_payoff')
     
     with col5:
+        trade_year = st.text_input("Trade Vehicle Year", key='trade_year')
+        trade_make = st.text_input("Trade Vehicle Make", key='trade_make')
+        trade_model = st.text_input("Trade Vehicle Model", key='trade_model')
+        trade_vin = st.text_input("Trade Vehicle VIN", key='trade_vin')
+        trade_miles = st.text_input("Trade Vehicle Miles", key='trade_miles')
         down_payments = []
         default_down_payments = [1000.0, 2000.0, 3000.0]
         for i in range(3):
@@ -232,7 +254,12 @@ if submit_button:
         'model': model,
         'stock_no': stock_no,
         'vin': vin,
-        'color': color,
+        'miles': miles,
+        'trade_year': trade_year,
+        'trade_make': trade_make,
+        'trade_model': trade_model,
+        'trade_vin': trade_vin,
+        'trade_miles': trade_miles,
         'sale_price': sale_price,
         'rebate': rebate,
         'trade_value': trade_value,
