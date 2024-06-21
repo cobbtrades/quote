@@ -40,7 +40,7 @@ def generate_pdf(data, filename='quote.pdf'):
     details_data = [
         ["DATE", data['date'], "SALES", data['salesperson']],
         ["BUYER", data['buyer'], "", ""],
-        ["ADDRESS", data['address'], "EMAIL", data['email_add'],
+        ["ADDRESS", data['address'], "EMAIL", data['email_add']],
         ["CITY", data['city'], "STATE", data['state']],
         ["ZIP", data['zip'], "PHONE", data['cell_phone']]
     ]
