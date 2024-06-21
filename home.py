@@ -4,6 +4,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 import pandas as pd
 import streamlit as st
+from datetime import datetime
 
 # Constants for fees
 NON_TAX_FEE = 106.75
@@ -40,11 +41,11 @@ def generate_pdf(data, filename='quote.pdf'):
     details_data = [
         ["DATE", data['date'], "SALES", data['salesperson']],
         ["BUYER", data['buyer'], "", ""],
-        ["ADDRESS", data['address'], "", ""],
+        ["ADDRESS", data['address'], "EMAIL", data['email_add']],
         ["CITY", data['city'], "STATE", data['state']],
-        ["ZIP", data['zip'], "PHONE", data['cell_phone']],
+        ["ZIP", data['zip'], "PHONE", data['cell_phone']]
     ]
-    details_table = Table(details_data, colWidths=[80, 180, 60, 150])
+    details_table = Table(details_data, colWidths=[80, 150, 60, 180])
     details_table.setStyle(TableStyle([
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
@@ -106,7 +107,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
         ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
@@ -128,7 +129,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
         ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
@@ -174,13 +175,13 @@ with st.form(key='deal_form'):
     col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
     
     with col1:
-        date = st.date_input("Date", key='date')
         salesperson = st.text_input("Sales Person", key='salesperson')
         buyer = st.text_input("Buyer", key='buyer')
         address = st.text_input("Address", key='address')
         city = st.text_input("City", key='city')
         zip_code = st.text_input("ZIP", key='zip')
         cell_phone = st.text_input("Phone", key='cell_phone')
+        email_add = st.text_input("Email", key='email_add')
         doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
     
     with col2:
@@ -214,7 +215,7 @@ with st.form(key='deal_form'):
         
         terms = []
         rates = {}
-        for i in range(1, 4):
+        for i in range(1, 4):  # Changed range to 4 to include the third term and rate
             term = st.number_input(f"Loan Term {i} (months)", min_value=1, value=[60, 66, 72][i-1], key=f'term_{i}')
             rate = st.number_input(f"Rate for Term {i} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'rate_{i}')
             terms.append(term)
@@ -241,7 +242,7 @@ if submit_button:
     gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)  # Corrected calculation
 
     data = {
-        'date': date,
+        'date': datetime.today().strftime('%B %d, %Y').upper(),
         'salesperson': salesperson,
         'buyer': buyer,
         'address': address,
@@ -249,6 +250,7 @@ if submit_button:
         'state': 'NC',
         'zip': zip_code,
         'cell_phone': cell_phone,
+        'email_add': email_add,
         'year': year,
         'make': make,
         'model': model,
