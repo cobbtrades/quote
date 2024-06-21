@@ -44,13 +44,13 @@ def generate_pdf(data, filename='quote.pdf'):
         ["CITY", data['city'], "STATE", data['state']],
         ["ZIP", data['zip'], "PHONE", data['cell_phone']],
     ]
-    details_table = Table(details_data, colWidths=[100, 180, 80, 170])
+    details_table = Table(details_data, colWidths=[100, 180, 60, 170])
     details_table.setStyle(TableStyle([
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
     ]))
     elements.append(details_table)
     elements.append(Spacer(1, 20))  # Reduced spacing here
