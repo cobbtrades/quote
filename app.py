@@ -179,20 +179,25 @@ with st.form(key='deal_form'):
         buyer = st.text_input("Buyer", key='buyer')
         address = st.text_input("Address", key='address')
         city = st.text_input("City", key='city')
-    
-    with col2:
         zip_code = st.text_input("ZIP", key='zip')
         cell_phone = st.text_input("Phone", key='cell_phone')
-        year = st.text_input("Vehicle Year", key='year')
-        make = st.text_input("Vehicle Make", key='make')
         doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
     
-    with col3:
+    with col2:
+        year = st.text_input("Vehicle Year", key='year')
+        make = st.text_input("Vehicle Make", key='make')
         model = st.text_input("Vehicle Model", key='model')
         stock_no = st.text_input("Stock No.", key='stock_no')
         vin = st.text_input("VIN", key='vin')
         miles = st.text_input("Vehicle Miles", key='miles')
         cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0.0, format="%.2f", key='cost_of_vehicle')
+    
+    with col3:
+        trade_year = st.text_input("Trade Vehicle Year", key='trade_year')
+        trade_make = st.text_input("Trade Vehicle Make", key='trade_make')
+        trade_model = st.text_input("Trade Vehicle Model", key='trade_model')
+        trade_vin = st.text_input("Trade Vehicle VIN", key='trade_vin')
+        trade_miles = st.text_input("Trade Vehicle Miles", key='trade_miles')
     
     with col4:
         sale_price = st.number_input("Sale Price of Vehicle", min_value=0.0, format="%.2f", key='sale_price')
@@ -202,11 +207,6 @@ with st.form(key='deal_form'):
         trade_payoff = st.number_input("Trade Payoff", min_value=0.0, format="%.2f", key='trade_payoff')
     
     with col5:
-        trade_year = st.text_input("Trade Vehicle Year", key='trade_year')
-        trade_make = st.text_input("Trade Vehicle Make", key='trade_make')
-        trade_model = st.text_input("Trade Vehicle Model", key='trade_model')
-        trade_vin = st.text_input("Trade Vehicle VIN", key='trade_vin')
-        trade_miles = st.text_input("Trade Vehicle Miles", key='trade_miles')
         down_payments = []
         default_down_payments = [1000.0, 2000.0, 3000.0]
         for i in range(3):
