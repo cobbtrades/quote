@@ -184,10 +184,10 @@ with st.form(key='deal_form'):
         doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
     
     with col2:
+        stock_no = st.text_input("Stock No.", key='stock_no')
         year = st.text_input("Vehicle Year", key='year')
         make = st.text_input("Vehicle Make", key='make')
         model = st.text_input("Vehicle Model", key='model')
-        stock_no = st.text_input("Stock No.", key='stock_no')
         vin = st.text_input("VIN", key='vin')
         miles = st.text_input("Vehicle Miles", key='miles')
         cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0.0, format="%.2f", key='cost_of_vehicle')
