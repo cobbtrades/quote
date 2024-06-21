@@ -40,9 +40,9 @@ def generate_pdf(data, filename='quote.pdf'):
     details_data = [
         ["DATE", data['date'], "SALES", data['salesperson']],
         ["BUYER", data['buyer'], "", ""],
-        ["ADDRESS", data['address'], "EMAIL", data['email_add']],
+        ["ADDRESS", data['address'], "", ""],
         ["CITY", data['city'], "STATE", data['state']],
-        ["ZIP", data['zip'], "PHONE", data['cell_phone']]
+        ["ZIP", data['zip'], "PHONE", data['cell_phone']],
     ]
     details_table = Table(details_data, colWidths=[80, 180, 60, 150])
     details_table.setStyle(TableStyle([
@@ -122,7 +122,7 @@ def generate_pdf(data, filename='quote.pdf'):
             row.append(f"${payment:.2f}")
         grid_data.append(row)
     
-    grid_table = Table(grid_data, colWidths=[70] + [70]*len(data['quotes'][list(data['quotes'].keys'])[0]].keys()))
+    grid_table = Table(grid_data, colWidths=[70] + [70]*len(data['quotes'][list(data['quotes'].keys())[0]].keys()))
     grid_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -166,7 +166,11 @@ def generate_pdf(data, filename='quote.pdf'):
     doc.build(elements)
     return filename
 
-def generate_form():
+st.set_page_config(layout="wide", page_title="Quote Generator", page_icon="📝")
+st.title("Quote Generator")
+
+# Form to input deal details
+with st.form(key='deal_form'):
     col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
     
     with col1:
@@ -177,7 +181,6 @@ def generate_form():
         city = st.text_input("City", key='city')
         zip_code = st.text_input("ZIP", key='zip')
         cell_phone = st.text_input("Phone", key='cell_phone')
-        email_add = st.text_input("Email", key='email_add')
         doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
     
     with col2:
@@ -211,64 +214,15 @@ def generate_form():
         
         terms = []
         rates = {}
-        for i in range(1, 3):
+        for i in range(1, 4):
             term = st.number_input(f"Loan Term {i} (months)", min_value=1, value=[60, 66, 72][i-1], key=f'term_{i}')
             rate = st.number_input(f"Rate for Term {i} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'rate_{i}')
             terms.append(term)
             rates[term] = rate
     
-    return {
-        'date': date,
-        'salesperson': salesperson,
-        'buyer': buyer,
-        'address': address,
-        'city': city,
-        'state': 'NC',
-        'zip': zip_code,
-        'cell_phone': cell_phone,
-        'email_add': email_add,
-        'stock_no': stock_no,
-        'year': year,
-        'make': make,
-        'model': model,
-        'vin': vin,
-        'miles': miles,
-        'trade_year': trade_year,
-        'trade_make': trade_make,
-        'trade_model': trade_model,
-        'trade_vin': trade_vin,
-        'trade_miles': trade_miles,
-        'sale_price': sale_price,
-        'rebate': rebate,
-        'trade_value': trade_value,
-        'acv_of_trade': acv_of_trade,
-        'trade_payoff': trade_payoff,
-        'doc_fee': doc_fee,
-        'down_payments': down_payments,
-        'terms': terms,
-        'rates': rates,
-        'cost_of_vehicle': cost_of_vehicle
-    }
-
-st.set_page_config(layout="wide", page_title="Quote Generator", page_icon="📝")
-st.title("Quote Generator")
-
-# Form to input deal details
-with st.form(key='deal_form'):
-    form_data = generate_form()
     submit_button = st.form_submit_button(label='Generate Quote')
 
 if submit_button:
-    sale_price = form_data['sale_price']
-    trade_value = form_data['trade_value']
-    doc_fee = form_data['doc_fee']
-    rebate = form_data['rebate']
-    trade_payoff = form_data['trade_payoff']
-    cost_of_vehicle = form_data['cost_of_vehicle']
-    down_payments = form_data['down_payments']
-    terms = form_data['terms']
-    rates = form_data['rates']
-
     # Calculate sales tax
     taxable_amount = sale_price - trade_value + doc_fee
     sales_tax = taxable_amount * SALES_TAX_RATE_NC
@@ -284,15 +238,39 @@ if submit_button:
         quotes[term] = term_payments
     
     balance = sale_price - trade_value + doc_fee - rebate + sales_tax + NON_TAX_FEE + trade_payoff
-    gross_profit = sale_price - cost_of_vehicle + (form_data['acv_of_trade'] - trade_value)  # Corrected calculation
+    gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)  # Corrected calculation
 
-    data = form_data
-    data.update({
+    data = {
+        'date': date,
+        'salesperson': salesperson,
+        'buyer': buyer,
+        'address': address,
+        'city': city,
+        'state': 'NC',
+        'zip': zip_code,
+        'cell_phone': cell_phone,
+        'year': year,
+        'make': make,
+        'model': model,
+        'stock_no': stock_no,
+        'vin': vin,
+        'miles': miles,
+        'trade_year': trade_year,
+        'trade_make': trade_make,
+        'trade_model': trade_model,
+        'trade_vin': trade_vin,
+        'trade_miles': trade_miles,
+        'sale_price': sale_price,
+        'rebate': rebate,
+        'trade_value': trade_value,
+        'trade_payoff': trade_payoff,
+        'doc_fee': doc_fee,
         'sales_tax': sales_tax,
         'balance': balance,
         'quotes': quotes,
-    })
-
+        'rates': rates
+    }
+    
     # Display the quotes in a grid format
     grid_data = []
     for term, payments in quotes.items():
