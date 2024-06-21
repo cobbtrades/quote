@@ -40,9 +40,9 @@ def generate_pdf(data, filename='quote.pdf'):
     details_data = [
         ["DATE", data['date'], "SALES", data['salesperson']],
         ["BUYER", data['buyer'], "", ""],
-        ["ADDRESS", data['address'], "EMAIL", data['email_add']],
+        ["ADDRESS", data['address'], "", ""],
         ["CITY", data['city'], "STATE", data['state']],
-        ["ZIP", data['zip'], "PHONE", data['cell_phone']]
+        ["ZIP", data['zip'], "PHONE", data['cell_phone']],
     ]
     details_table = Table(details_data, colWidths=[80, 180, 60, 150])
     details_table.setStyle(TableStyle([
@@ -181,7 +181,6 @@ with st.form(key='deal_form'):
         city = st.text_input("City", key='city')
         zip_code = st.text_input("ZIP", key='zip')
         cell_phone = st.text_input("Phone", key='cell_phone')
-        email_add = st.text_input("Email", key='email_add')
         doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
     
     with col2:
@@ -215,7 +214,7 @@ with st.form(key='deal_form'):
         
         terms = []
         rates = {}
-        for i in range(1, 3):
+        for i in range(1, 4):
             term = st.number_input(f"Loan Term {i} (months)", min_value=1, value=[60, 66, 72][i-1], key=f'term_{i}')
             rate = st.number_input(f"Rate for Term {i} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'rate_{i}')
             terms.append(term)
@@ -250,7 +249,6 @@ if submit_button:
         'state': 'NC',
         'zip': zip_code,
         'cell_phone': cell_phone,
-        'email_add': email_add,
         'year': year,
         'make': make,
         'model': model,
