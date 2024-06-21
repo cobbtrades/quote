@@ -4,6 +4,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 import pandas as pd
 import streamlit as st
+from datetime import datetime
 
 # Constants for fees
 NON_TAX_FEE = 106.75
@@ -174,7 +175,6 @@ with st.form(key='deal_form'):
     col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
     
     with col1:
-        date = st.date_input("Date", key='date')
         salesperson = st.text_input("Sales Person", key='salesperson')
         buyer = st.text_input("Buyer", key='buyer')
         address = st.text_input("Address", key='address')
@@ -242,7 +242,7 @@ if submit_button:
     gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)  # Corrected calculation
 
     data = {
-        'date': date,
+        'date': datetime.today().strftime('%Y-%m-%d'),
         'salesperson': salesperson,
         'buyer': buyer,
         'address': address,
