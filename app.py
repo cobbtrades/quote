@@ -40,17 +40,17 @@ def generate_pdf(data, filename='quote.pdf'):
     details_data = [
         ["DATE", data['date'], "SALES", data['salesperson']],
         ["BUYER", data['buyer'], "", ""],
-        ["ADDR", data['address'], "", ""],
+        ["ADDRESS", data['address'], "", ""],
         ["CITY", data['city'], "STATE", data['state']],
         ["ZIP", data['zip'], "PHONE", data['cell_phone']],
     ]
-    details_table = Table(details_data, colWidths=[50, 200, 80, 200])
+    details_table = Table(details_data, colWidths=[100, 180, 80, 170])
     details_table.setStyle(TableStyle([
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
     ]))
     elements.append(details_table)
     elements.append(Spacer(1, 20))  # Reduced spacing here
@@ -109,7 +109,7 @@ def generate_pdf(data, filename='quote.pdf'):
     grid_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
         ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
