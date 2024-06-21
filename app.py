@@ -40,7 +40,7 @@ def generate_pdf(data, filename='quote.pdf'):
     details_data = [
         ["DATE", data['date'], "SALES", data['salesperson']],
         ["BUYER", data['buyer'], "", ""],
-        ["ADDRESS", data['address'], "", ""],
+        ["ADDRESS", data['address'], "EMAIL", data['email']],
         ["CITY", data['city'], "STATE", data['state']],
         ["ZIP", data['zip'], "PHONE", data['cell_phone']],
     ]
@@ -181,6 +181,7 @@ with st.form(key='deal_form'):
         city = st.text_input("City", key='city')
         zip_code = st.text_input("ZIP", key='zip')
         cell_phone = st.text_input("Phone", key='cell_phone')
+        email = st.text_input("Email", key='email')
         doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
     
     with col2:
@@ -249,6 +250,7 @@ if submit_button:
         'state': 'NC',
         'zip': zip_code,
         'cell_phone': cell_phone,
+        'email': email,
         'year': year,
         'make': make,
         'model': model,
