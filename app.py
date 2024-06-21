@@ -242,7 +242,7 @@ if submit_button:
     gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)  # Corrected calculation
 
     data = {
-        'date': datetime.today().strftime('%B %d, %Y'),
+        'date': datetime.today().strftime('%B %d, %Y').upper(),
         'salesperson': salesperson,
         'buyer': buyer,
         'address': address,
