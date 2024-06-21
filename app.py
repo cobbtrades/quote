@@ -61,7 +61,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ["YEAR", "MAKE", "MODEL", "STOCK NO.", "VIN", "COLOR"],
         [data['year'], data['make'], data['model'], data['stock_no'], data['vin'], data['color']]
     ]
-    selection_table = Table(selection_data, colWidths=[60, 60, 80, 80, 80, 80])
+    selection_table = Table(selection_data, colWidths=[60, 60, 80, 80, 110, 80])
     selection_table.setStyle(TableStyle([
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
