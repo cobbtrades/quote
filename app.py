@@ -56,9 +56,9 @@ def generate_pdf(data, filename='quote.pdf'):
     # Customer and vehicle details
     details_data = [
         ["CUSTOMER", data['buyer'], "", ""],
-        ["", data['address'], "EMAIL", data['email_add']],
-        ["", data['city'], "STATE", data['state']],
-        ["", data['zip'], "PHONE", data['cell_phone']]
+        ["", data['address'], "", ""],
+        ["", data['city'], data['state'], data['zip']],
+        ["EMAIL", data['email_add'], "PHONE", data['cell_phone']]
     ]
     details_table = Table(details_data, colWidths=[80, 150, 60, 180])
     details_table.setStyle(TableStyle([
