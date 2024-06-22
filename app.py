@@ -1,6 +1,6 @@
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph, Image
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 import pandas as pd
 import streamlit as st
@@ -23,15 +23,12 @@ def generate_pdf(data, filename='quote.pdf'):
     elements = []
     styles = getSampleStyleSheet()
     
-    # Custom style for the title
-    styles.add(ParagraphStyle(name='CustomTitle', fontSize=18, leading=22, alignment=1))
-
     logo = Image('Modern.png', width=100, height=50)  # Adjust size as needed
     header_data = [
         [logo],
-        [Paragraph('AUTOMOTIVE', styles['CustomTitle'])]
+        [Paragraph('AUTOMOTIVE', styles['Title'])]
     ]
-    header_table = Table(header_data, colWidths=[125], hAlign='LEFT')
+    header_table = Table(header_data, colWidths=[125], hAlign='CENTER')
     header_table.setStyle(TableStyle([
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('VALIGN', (0, 0), (0, 0), 'TOP'),
