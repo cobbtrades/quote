@@ -110,7 +110,7 @@ def generate_pdf(data, filename='quote.pdf'):
     # Filter out None values
     breakdown_data = [row for row in breakdown_data if row is not None]
     
-    breakdown_table = Table(breakdown_data, colWidths=[150, 100])
+    breakdown_table = Table(breakdown_data, colWidths=[100, 80])
     breakdown_table.setStyle(TableStyle([
         ('ALIGN', (0, 0), (0, -1), 'LEFT'),
         ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
