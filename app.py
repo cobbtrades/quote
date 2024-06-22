@@ -19,7 +19,7 @@ def calculate_monthly_payment(principal, annual_rate, term_months):
 
 # Function to generate PDF
 def generate_pdf(data, filename='quote.pdf'):
-    doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=50)
+    doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=50, leftMargin=36, rightMargin=36)
     elements = []
     styles = getSampleStyleSheet()
     
@@ -130,11 +130,11 @@ def generate_pdf(data, filename='quote.pdf'):
         [
             [
                 grid_table,
-                Spacer(1, 20),
+                Spacer(1, 10),  # Adjusted the spacer width
                 breakdown_table
             ]
         ],
-        colWidths=[250, 20, 150]
+        colWidths=[270, 10, 150]  # Adjusted the column widths
     )
 
     elements.append(combined_table)
@@ -171,7 +171,6 @@ def generate_pdf(data, filename='quote.pdf'):
     
     doc.build(elements)
     return filename
-
 
 st.set_page_config(layout="wide", page_title="Quote Generator", page_icon="📝")
 st.title("Quote Generator")
