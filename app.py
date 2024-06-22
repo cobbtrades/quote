@@ -24,9 +24,7 @@ def generate_pdf(data, filename='quote.pdf'):
     styles = getSampleStyleSheet()
     
     # Header
-    header_data = [
-        ["MODERN AUTOMOTIVE"],
-    ]
+    header_data = [["MODERN AUTOMOTIVE"]]
     header_table = Table(header_data, colWidths=[400])
     header_table.setStyle(TableStyle([
         ('SPAN', (0, 0), (-1, -1)),
@@ -35,7 +33,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('FONTSIZE', (0, 0), (-1, -1), 14),
     ]))
     elements.append(header_table)
-    elements.append(Spacer(1, 8))  # Reduced spacing here
+    elements.append(Spacer(1, 8))
     
     # Customer and vehicle details
     details_data = [
@@ -54,7 +52,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
     ]))
     elements.append(details_table)
-    elements.append(Spacer(1, 20))  # Reduced spacing here
+    elements.append(Spacer(1, 20))
     
     # Vehicle selection and trade-in details
     selection_data = [
@@ -71,7 +69,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
     ]))
     elements.append(selection_table)
-    elements.append(Spacer(1, 20))  # Reduced spacing here
+    elements.append(Spacer(1, 20))
     
     # Trade-in vehicle details
     trade_data = [
@@ -88,7 +86,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
     ]))
     elements.append(trade_table)
-    elements.append(Spacer(1, 20))  # Reduced spacing here
+    elements.append(Spacer(1, 20))
 
     # Detailed breakdown table
     breakdown_data = [
@@ -113,7 +111,7 @@ def generate_pdf(data, filename='quote.pdf'):
     ]))
     
     elements.append(breakdown_table)
-    elements.append(Spacer(1, 20))  # Reduced spacing here
+    elements.append(Spacer(1, 20))
     
     # Grid data
     grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
@@ -143,7 +141,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('FONTSIZE', (0, 0), (-1, -1), 10),
     ]))
     elements.append(disclaimer_line)
-    elements.append(Spacer(1, 20))  # Reduced spacing here
+    elements.append(Spacer(1, 20))
 
     # Add signature lines
     signature_data = [
@@ -179,6 +177,7 @@ with st.form(key='deal_form'):
         buyer = st.text_input("Buyer", key='buyer')
         address = st.text_input("Address", key='address')
         city = st.text_input("City", key='city')
+        state = st.text_input("State", key='state')  # Added state field
         zip_code = st.text_input("ZIP", key='zip')
         cell_phone = st.text_input("Phone", key='cell_phone')
         email_add = st.text_input("Email", key='email_add')
@@ -215,7 +214,7 @@ with st.form(key='deal_form'):
         
         terms = []
         rates = {}
-        for i in range(1, 4):  # Changed range to 4 to include the third term and rate
+        for i in range(1, 4):
             term = st.number_input(f"Loan Term {i} (months)", min_value=1, value=[60, 66, 72][i-1], key=f'term_{i}')
             rate = st.number_input(f"Rate for Term {i} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'rate_{i}')
             terms.append(term)
@@ -239,7 +238,7 @@ if submit_button:
         quotes[term] = term_payments
     
     balance = sale_price - trade_value + doc_fee - rebate + sales_tax + NON_TAX_FEE + trade_payoff
-    gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)  # Corrected calculation
+    gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)
 
     data = {
         'date': datetime.today().strftime('%B %d, %Y').upper(),
@@ -247,7 +246,7 @@ if submit_button:
         'buyer': buyer,
         'address': address,
         'city': city,
-        'state': 'NC',
+        'state': state,
         'zip': zip_code,
         'cell_phone': cell_phone,
         'email_add': email_add,
