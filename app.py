@@ -264,7 +264,7 @@ if submit_button:
         quotes[term] = term_payments
     
     balance = sale_price - trade_value + doc_fee - rebate - discount + sales_tax + NON_TAX_FEE + trade_payoff
-    gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)
+    gross_profit = sale_price - discount - cost_of_vehicle + (acv_of_trade - trade_value)
 
     data = {
         'date': datetime.today().strftime('%B %d, %Y').upper(),
