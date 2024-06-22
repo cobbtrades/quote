@@ -115,8 +115,8 @@ def generate_pdf(data, filename='quote.pdf'):
 
     # Detailed breakdown table
     breakdown_data = [
-        ["Sales Price", f"${data['sale_price']:.2f}"] if data['sale_price'] != 0 else None,
-        ["Rebate", f"${data['rebate']:.2f}"] if data['rebate'] != 0 else None,
+        ["Market Value", f"${data['sale_price']:.2f}"] if data['sale_price'] != 0 else None,
+        ["Savings", f"${data['rebate'] + data['discount']:.2f}"] if data['rebate'] + data['discount'] != 0 else None,
         ["Trade Value", f"${data['trade_value']:.2f}"] if data['trade_value'] != 0 else None,
         ["Trade Payoff", f"${data['trade_payoff']:.2f}"] if data['trade_payoff'] != 0 else None,
         ["Doc Fee", f"${data['doc_fee']:.2f}"] if data['doc_fee'] != 0 else None,
@@ -225,7 +225,8 @@ with st.form(key='deal_form'):
         trade_miles = st.text_input("Trade Vehicle Miles", key='trade_miles')
     
     with col4:
-        sale_price = st.number_input("Sale Price of Vehicle", min_value=0.0, format="%.2f", key='sale_price')
+        sale_price = st.number_input("Market Value of Vehicle", min_value=0.0, format="%.2f", key='sale_price')
+        discount = st.number_input("Discount", min_value=0.0, format="%.2f", key='discount')
         rebate = st.number_input("Rebate", min_value=0.0, format="%.2f", key='rebate')
         trade_value = st.number_input("Trade Value", min_value=0.0, format="%.2f", key='trade_value')
         acv_of_trade = st.number_input("ACV of Trade", min_value=0.0, format="%.2f", key='acv_of_trade')
@@ -249,7 +250,7 @@ with st.form(key='deal_form'):
 
 if submit_button:
     # Calculate sales tax
-    taxable_amount = sale_price - trade_value + doc_fee
+    taxable_amount = sale_price - discount - trade_value + doc_fee
     sales_tax = taxable_amount * SALES_TAX_RATE_NC
 
     # Calculate monthly payments for each combination of down payment and term
@@ -262,8 +263,8 @@ if submit_button:
             term_payments[dp] = round(monthly_payment, 2)
         quotes[term] = term_payments
     
-    balance = sale_price - trade_value + doc_fee - rebate + sales_tax + NON_TAX_FEE + trade_payoff
-    gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)
+    balance = sale_price - trade_value + doc_fee - rebate - discount + sales_tax + NON_TAX_FEE + trade_payoff
+    gross_profit = sale_price - discount - cost_of_vehicle + (acv_of_trade - trade_value)
 
     data = {
         'date': datetime.today().strftime('%B %d, %Y').upper(),
@@ -287,6 +288,7 @@ if submit_button:
         'trade_vin': trade_vin,
         'trade_miles': trade_miles,
         'sale_price': sale_price,
+        'discount': discount,
         'rebate': rebate,
         'trade_value': trade_value,
         'trade_payoff': trade_payoff,
