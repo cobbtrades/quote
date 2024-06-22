@@ -28,11 +28,13 @@ def generate_pdf(data, filename='quote.pdf'):
         [logo],
         [Paragraph('AUTOMOTIVE', styles['Title'])]
     ]
-    header_table = Table(header_data, colWidths=[120], hAlign='LEFT')
+    header_table = Table(header_data, colWidths=[125], hAlign='LEFT')
     header_table.setStyle(TableStyle([
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ('SPAN', (0, 0), (-1, -1)),
+        ('VALIGN', (0, 0), (0, 0), 'TOP'),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('VALIGN', (0, 1), (0, 1), 'BOTTOM'),
+        ('SPAN', (0, 0), (-1, 0)),
         ('LEFTPADDING', (0, 0), (0, 0), 10),
         ('BOTTOMPADDING', (0, 0), (0, 0), 5),
     ]))
