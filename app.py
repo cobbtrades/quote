@@ -287,6 +287,7 @@ if submit_button:
         'doc_fee': doc_fee,
         'sales_tax': sales_tax,
         'balance': balance,
+        'non_tax_fee': NON_TAX_FEE,
         'quotes': quotes,
         'rates': rates
     }
