@@ -1,5 +1,5 @@
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph, Image
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 import pandas as pd
@@ -23,18 +23,14 @@ def generate_pdf(data, filename='quote.pdf'):
     elements = []
     styles = getSampleStyleSheet()
     
-    logo = Image('Modern.png', width=100, height=50)  # Adjust size as needed
-    header_data = [
-        [logo],
-        [Paragraph('AUTOMOTIVE', styles['Title'])]
-    ]
-    header_table = Table(header_data, colWidths=[120], hAlign='LEFT')
+    # Header
+    header_data = [["MODERN AUTOMOTIVE"]]
+    header_table = Table(header_data, colWidths=[400])
     header_table.setStyle(TableStyle([
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ('SPAN', (0, 0), (-1, -1)),
-        ('LEFTPADDING', (0, 0), (0, 0), 10),
-        ('BOTTOMPADDING', (0, 0), (0, 0), 5),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 14),
     ]))
     elements.append(header_table)
     elements.append(Spacer(1, 8))
