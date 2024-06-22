@@ -42,11 +42,11 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
     ]))
-    spacer = Spacer(width=50, height=0)
+    spacer = Spacer(width=80, height=0)
     combined_header_data = [
         [header_table_left, spacer, header_table_right]
     ]
-    combined_header_table = Table(combined_header_data, colWidths=[200, 50, 260])
+    combined_header_table = Table(combined_header_data, colWidths=[200, 80, 260])
     combined_header_table.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'TOP')
     ]))
