@@ -57,7 +57,7 @@ def generate_pdf(data, filename='quote.pdf'):
     details_data = [
         ["CUSTOMER", data['buyer'], "", ""],
         ["", data['address'], "", ""],
-        ["", data['city'], data['state'], data['zip']],
+        ["", f"{data['city']}, {data['state']} {data['zip']}", "", ""],
         ["EMAIL", data['email_add'], "PHONE", data['cell_phone']]
     ]
     details_table = Table(details_data, colWidths=[70, 170, 55, 160])
