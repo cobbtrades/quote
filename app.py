@@ -60,7 +60,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ["", f"{data['city']}, {data['state']} {data['zip']}", "", ""],
         ["EMAIL", data['email_add'], "PHONE", data['cell_phone']]
     ]
-    details_table = Table(details_data, colWidths=[70, 190, 55, 160])
+    details_table = Table(details_data, colWidths=[70, 210, 55, 160])
     details_table.setStyle(TableStyle([
         ('GRID', (0, 0), (-1, -1), 1, colors.white),
         ('BACKGROUND', (0, 0), (-1, 0), colors.whitesmoke),
