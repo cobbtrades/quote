@@ -287,7 +287,6 @@ if submit_button:
         grid_data.append(row)
     
     df = pd.DataFrame(grid_data)
-    st.write("### Monthly Payments Grid")
     st.dataframe(df, hide_index=True)
 
     # Display the gross profit
