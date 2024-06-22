@@ -93,14 +93,17 @@ def generate_pdf(data, filename='quote.pdf'):
     
     breakdown_table = Table(breakdown_data, colWidths=[150, 100])
     breakdown_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.whitesmoke),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
         ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica'),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
         ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
+    
+    # Add underlines to the values
+    for row_idx in range(len(breakdown_data)):
+        breakdown_table.setStyle(TableStyle([
+            ('LINEBELOW', (1, row_idx), (1, row_idx), 1, colors.black)
+        ]))
     
     elements.append(breakdown_table)
     elements.append(Spacer(1, 20))
