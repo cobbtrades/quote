@@ -23,14 +23,18 @@ def generate_pdf(data, filename='quote.pdf'):
     elements = []
     styles = getSampleStyleSheet()
     
-    # Header
-    header_data = [["MODERN AUTOMOTIVE"]]
-    header_table = Table(header_data, colWidths=[400])
+    logo = Image('Modern.png', width=100, height=50)  # Adjust size as needed
+    header_data = [
+        [logo],
+        [Paragraph('AUTOMOTIVE', styles['Title'])]
+    ]
+    header_table = Table(header_data, colWidths=[400], hAlign='LEFT')
     header_table.setStyle(TableStyle([
-        ('SPAN', (0, 0), (-1, -1)),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 14),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('SPAN', (0, 0), (-1, -1)),
+        ('LEFTPADDING', (0, 0), (0, 0), 20),
+        ('BOTTOMPADDING', (0, 0), (0, 0), 10),
     ]))
     elements.append(header_table)
     elements.append(Spacer(1, 8))
