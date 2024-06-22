@@ -140,7 +140,8 @@ def generate_pdf(data, filename='quote.pdf'):
     # Center the combined table
     outer_table = Table([[combined_table]], colWidths=[470])  # Adjust the width as needed
     outer_table.setStyle(TableStyle([
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER')
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP')  # Align to the top
     ]))
 
     elements.append(outer_table)
