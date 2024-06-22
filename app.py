@@ -62,7 +62,7 @@ def generate_pdf(data, filename='quote.pdf'):
     ]
     details_table = Table(details_data, colWidths=[80, 150, 60, 180])
     details_table.setStyle(TableStyle([
-        ('GRID', (0, 0), (-1, -1), 1, colors.white),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('BACKGROUND', (0, 0), (-1, 0), colors.whitesmoke),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica'),
