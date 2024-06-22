@@ -24,15 +24,33 @@ def generate_pdf(data, filename='quote.pdf'):
     styles = getSampleStyleSheet()
     
     # Header
-    header_data = [["MODERN AUTOMOTIVE"]]
-    header_table = Table(header_data, colWidths=[400])
-    header_table.setStyle(TableStyle([
+    header_data_left = [["MODERN AUTOMOTIVE"]]
+    header_table_left = Table(header_data_left, colWidths=[200])
+    header_table_left.setStyle(TableStyle([
         ('SPAN', (0, 0), (-1, -1)),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
         ('FONTSIZE', (0, 0), (-1, -1), 14),
     ]))
-    elements.append(header_table)
+    
+    header_data_right = [
+        ["Date:", data['date']],
+        ["Salesperson:", data['salesperson']]
+    ]
+    header_table_right = Table(header_data_right, colWidths=[80, 150])
+    header_table_right.setStyle(TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+    ]))
+    
+    combined_header_data = [
+        [header_table_left, header_table_right]
+    ]
+    combined_header_table = Table(combined_header_data, colWidths=[200, 260])
+    combined_header_table.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'TOP')
+    ]))
+    elements.append(combined_header_table)
     elements.append(Spacer(1, 8))
     
     # Customer and vehicle details
