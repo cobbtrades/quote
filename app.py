@@ -19,7 +19,7 @@ def calculate_monthly_payment(principal, annual_rate, term_months):
 
 # Function to generate PDF
 def generate_pdf(data, filename='quote.pdf'):
-    doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=50, leftMargin=36, rightMargin=36)
+    doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=50)
     elements = []
     styles = getSampleStyleSheet()
     
