@@ -94,7 +94,6 @@ def generate_pdf(data, filename='quote.pdf'):
         ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
         ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
-        ('VALIGN', (0, 0), (-1, -1), 'TOP')
     ]))
 
     # Detailed breakdown table
@@ -128,31 +127,19 @@ def generate_pdf(data, filename='quote.pdf'):
         ]))
 
     # Combine the payment grid and breakdown tables side by side
-    combined_table = Table(
-        [
-            [
-                grid_table,
-                Spacer(1, 10),  # Adjusted the spacer width
-                breakdown_table
-            ]
-        ],
-        colWidths=[290, 10, 170],  # Adjusted the column widths
-        rowHeights=[None],  # Ensure rows have the same height
-        hAlign='CENTER',
-        vAlign='TOP'  # Ensure vertical alignment at the top
-    )
-
-    # Center the combined table
-    outer_table = Table([[combined_table]], colWidths=[470])  # Adjust the width as needed
-    outer_table.setStyle(TableStyle([
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+    combined_data = [
+        [grid_table, breakdown_table]
+    ]
+    
+    combined_table = Table(combined_data, colWidths=[300, 170], rowHeights=None, hAlign='LEFT')
+    combined_table.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'TOP')  # Align to the top
     ]))
 
-    elements.append(outer_table)
+    elements.append(combined_table)
     elements.append(Spacer(1, 20))
     
-    disclaimer_line = Table([["* A.P.R Subject to equity and credit requirements."]], colWidths=[sum([70]*len(data['quotes'][list(data['quotes'].keys())[0]].keys())) + 70])
+    disclaimer_line = Table([["* A.P.R Subject to equity and credit requirements."]], colWidths=[470])
     disclaimer_line.setStyle(TableStyle([
         ('SPAN', (0, 0), (-1, -1)),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
