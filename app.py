@@ -1,5 +1,5 @@
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph, Image
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 import pandas as pd
