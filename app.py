@@ -136,7 +136,9 @@ def generate_pdf(data, filename='quote.pdf'):
             ]
         ],
         colWidths=[290, 10, 170],  # Adjusted the column widths
-        vAlign='TOP'
+        rowHeights=[None],  # Ensure rows have the same height
+        hAlign='CENTER',
+        vAlign='TOP'  # Ensure vertical alignment at the top
     )
 
     # Center the combined table
