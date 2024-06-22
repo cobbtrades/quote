@@ -76,39 +76,8 @@ def generate_pdf(data, filename='quote.pdf'):
     ]))
     elements.append(selection_table)
     elements.append(Spacer(1, 20))
-    
-    # Detailed breakdown table
-    breakdown_data = [
-        ["Sales Price", f"${data['sale_price']:.2f}"] if data['sale_price'] != 0 else None,
-        ["Rebate", f"${data['rebate']:.2f}"] if data['rebate'] != 0 else None,
-        ["Trade Value", f"${data['trade_value']:.2f}"] if data['trade_value'] != 0 else None,
-        ["Trade Payoff", f"${data['trade_payoff']:.2f}"] if data['trade_payoff'] != 0 else None,
-        ["Dealer Service Fee", f"${data['doc_fee']:.2f}"] if data['doc_fee'] != 0 else None,
-        ["Sales Tax", f"${data['sales_tax']:.2f}"] if data['sales_tax'] != 0 else None,
-        ["Non Tax Fees", f"${NON_TAX_FEE:.2f}"] if NON_TAX_FEE != 0 else None,
-        ["Balance", f"${data['balance']:.2f}"] if data['balance'] != 0 else None,
-    ]
-    # Filter out None values
-    breakdown_data = [row for row in breakdown_data if row is not None]
-    
-    breakdown_table = Table(breakdown_data, colWidths=[150, 100])
-    breakdown_table.setStyle(TableStyle([
-        ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
-    ]))
-    
-    # Add underlines to the values
-    for row_idx in range(len(breakdown_data)):
-        breakdown_table.setStyle(TableStyle([
-            ('LINEBELOW', (1, row_idx), (1, row_idx), 1, colors.black)
-        ]))
-    
-    elements.append(breakdown_table)
-    elements.append(Spacer(1, 20))
-    
-    # Grid data
+
+    # Payment Grid Data
     grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
     for term, payments in data['quotes'].items():
         row = [term]
@@ -126,8 +95,39 @@ def generate_pdf(data, filename='quote.pdf'):
         ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
+
+    # Detailed breakdown table
+    breakdown_data = [
+        ["Sales Price", f"${data['sale_price']:.2f}"] if data['sale_price'] != 0 else None,
+        ["Rebate", f"${data['rebate']:.2f}"] if data['rebate'] != 0 else None,
+        ["Trade Value", f"${data['trade_value']:.2f}"] if data['trade_value'] != 0 else None,
+        ["Trade Payoff", f"${data['trade_payoff']:.2f}"] if data['trade_payoff'] != 0 else None,
+        ["Dealer Service Fee", f"${data['doc_fee']:.2f}"] if data['doc_fee'] != 0 else None,
+        ["Sales Tax", f"${data['sales_tax']:.2f}"] if data['sales_tax'] != 0 else None,
+        ["Non Tax Fees", f"${NON_TAX_FEE:.2f}"] if NON_TAX_FEE != 0 else None,
+        ["Balance", f"${data['balance']:.2f}"] if data['balance'] != 0 else None,
+    ]
+    # Filter out None values
+    breakdown_data = [row for row in breakdown_data if row is not None]
     
-    elements.append(grid_table)
+    breakdown_table = Table(breakdown_data, colWidths=[150, 100])
+    breakdown_table.setStyle(TableStyle([
+        ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+        ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
+    ]))
+    
+    # Add underlines to the values
+    for row_idx in range(len(breakdown_data)):
+        breakdown_table.setStyle(TableStyle([
+            ('LINEBELOW', (1, row_idx), (1, row_idx), 1, colors.black)
+        ]))
+    
+    elements.append(Table([[grid_table, breakdown_table]], colWidths=[300, 200]))
+    elements.append(Spacer(1, 20))
+    
     disclaimer_line = Table([["* A.P.R Subject to equity and credit requirements."]], colWidths=[sum([70]*len(data['quotes'][list(data['quotes'].keys())[0]].keys())) + 70])
     disclaimer_line.setStyle(TableStyle([
         ('SPAN', (0, 0), (-1, -1)),
