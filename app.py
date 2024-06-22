@@ -70,6 +70,9 @@ def generate_pdf(data, filename='quote.pdf'):
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('BACKGROUND', (0, 3), (-1, 3), colors.grey),  # This line styles the "TRADE-IN:" row
+        ('TEXTCOLOR', (0, 3), (-1, 3), colors.whitesmoke),
+        ('FONTNAME', (0, 3), (-1, 3), 'Helvetica-Bold')
     ]))
     elements.append(selection_table)
     elements.append(Spacer(1, 20))
