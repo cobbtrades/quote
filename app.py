@@ -28,7 +28,7 @@ def generate_pdf(data, filename='quote.pdf'):
         [logo],
         [Paragraph('AUTOMOTIVE', styles['Title'])]
     ]
-    header_table = Table(header_data, colWidths=[125], hAlign='CENTER')
+    header_table = Table(header_data, colWidths=[125], hAlign='LEFT')
     header_table.setStyle(TableStyle([
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('VALIGN', (0, 0), (0, 0), 'TOP'),
