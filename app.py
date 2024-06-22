@@ -112,6 +112,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('FONTSIZE', (0, 0), (-1, 0), 14),  # Increase font size for the header row
         ('FONTSIZE', (0, 1), (-1, -1), 14),
         ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
 
