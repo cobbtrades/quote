@@ -130,14 +130,20 @@ def generate_pdf(data, filename='quote.pdf'):
         [
             [
                 grid_table,
-                Spacer(1, 0),  # Adjusted the spacer width
+                Spacer(1, 10),  # Adjusted the spacer width
                 breakdown_table
             ]
         ],
         colWidths=[270, 10, 150]  # Adjusted the column widths
     )
 
-    elements.append(combined_table)
+    # Center the combined table
+    outer_table = Table([[combined_table]], colWidths=[470])  # Adjust the width as needed
+    outer_table.setStyle(TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER')
+    ]))
+
+    elements.append(outer_table)
     elements.append(Spacer(1, 20))
     
     disclaimer_line = Table([["* A.P.R Subject to equity and credit requirements."]], colWidths=[sum([70]*len(data['quotes'][list(data['quotes'].keys())[0]].keys())) + 70])
