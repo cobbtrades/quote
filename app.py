@@ -109,10 +109,9 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
-        ('FONTSIZE', (0, 0), (-1, 0), 14),  # Increase font size for the header row
-        ('FONTSIZE', (0, 1), (-1, -1), 14),
+        ('FONTSIZE', (0, 0), (-1, 0), 12),  # Increase font size for the header row
+        ('FONTSIZE', (0, 1), (-1, -1), 12),
         ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
 
