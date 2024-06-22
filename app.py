@@ -60,7 +60,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ["YEAR", "MAKE", "MODEL", "STOCK NO.", "VIN", "MILES"],
         [data['year'], data['make'], data['model'], data['stock_no'], data['vin'], data['miles']],
         ["TRADE-IN:", "", "", "", ""],
-        ["YEAR", "MAKE", "MODEL", "VIN", "MILES"],
+        ["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"],
         [data['trade_year'], data['trade_make'], data['trade_model'], "", data['trade_vin'], data['trade_miles']]
     ]
     selection_table = Table(selection_data, colWidths=[65, 60, 80, 80, 110, 80])
