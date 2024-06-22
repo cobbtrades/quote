@@ -250,7 +250,7 @@ with st.form(key='deal_form'):
 
 if submit_button:
     # Calculate sales tax
-    taxable_amount = sale_price - trade_value + doc_fee
+    taxable_amount = sale_price - discount - trade_value + doc_fee
     sales_tax = taxable_amount * SALES_TAX_RATE_NC
 
     # Calculate monthly payments for each combination of down payment and term
