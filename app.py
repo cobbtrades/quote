@@ -56,14 +56,14 @@ def generate_pdf(data, filename='quote.pdf'):
     
     # Vehicle selection and trade-in details
     selection_data = [
-        ["SELECTION:", "", "", "", "", ""],
+        ["SELECTION", "", "", "", "", ""],
         ["YEAR", "MAKE", "MODEL", "STOCK NO.", "VIN", "MILES"],
         [data['year'], data['make'], data['model'], data['stock_no'], data['vin'], data['miles']],
-        ["TRADE-IN:", "", "", "", ""],
+        ["TRADE-IN", "", "", "", ""],
         ["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"],
         [data['trade_year'], data['trade_make'], data['trade_model'], "", data['trade_vin'], data['trade_miles']]
     ]
-    selection_table = Table(selection_data, colWidths=[65, 60, 80, 80, 110, 80])
+    selection_table = Table(selection_data, colWidths=[65, 60, 80, 80, 115, 80])
     selection_table.setStyle(TableStyle([
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
