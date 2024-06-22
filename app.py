@@ -277,7 +277,9 @@ if submit_button:
         'quotes': quotes,
         'rates': rates
     }
-    
+    # Display the gross profit
+    color = "lightgreen" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
+    st.markdown(f"<p style='color:{color}; font-size:24px;'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
     # Display the quotes in a grid format
     grid_data = []
     for term, payments in quotes.items():
@@ -288,10 +290,6 @@ if submit_button:
     
     df = pd.DataFrame(grid_data)
     st.dataframe(df, hide_index=True)
-
-    # Display the gross profit
-    color = "lightgreen" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
-    st.markdown(f"<p style='color:{color}; font-size:24px;'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
     
     pdf_file = generate_pdf(data)
     
