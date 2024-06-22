@@ -32,7 +32,7 @@ def generate_pdf(data, filename='quote.pdf'):
     header_table.setStyle(TableStyle([
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('VALIGN', (0, 0), (0, 0), 'TOP'),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('TEXT-ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('VALIGN', (0, 1), (0, 1), 'BOTTOM'),
         ('SPAN', (0, 0), (-1, 0)),
         ('LEFTPADDING', (0, 0), (0, 0), 10),
