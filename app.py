@@ -19,7 +19,7 @@ def calculate_monthly_payment(principal, annual_rate, term_months):
 
 # Function to generate PDF
 def generate_pdf(data, filename='quote.pdf'):
-    doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=50)
+    doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=50, rightMargin=50, leftMargin=50)
     elements = []
     styles = getSampleStyleSheet()
     
@@ -110,7 +110,7 @@ def generate_pdf(data, filename='quote.pdf'):
     # Filter out None values
     breakdown_data = [row for row in breakdown_data if row is not None]
     
-    breakdown_table = Table(breakdown_data, colWidths=[150, 100])
+    breakdown_table = Table(breakdown_data, colWidths=[180, 150])
     breakdown_table.setStyle(TableStyle([
         ('ALIGN', (0, 0), (0, -1), 'LEFT'),
         ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
@@ -125,7 +125,7 @@ def generate_pdf(data, filename='quote.pdf'):
             ('LINEBELOW', (1, row_idx), (1, row_idx), 1, colors.black)
         ]))
     
-    elements.append(Table([[grid_table, breakdown_table]], colWidths=[300, 200]))
+    elements.append(Table([[grid_table, breakdown_table]], colWidths=[270, 220]))
     elements.append(Spacer(1, 20))
     
     disclaimer_line = Table([["* A.P.R Subject to equity and credit requirements."]], colWidths=[sum([70]*len(data['quotes'][list(data['quotes'].keys())[0]].keys())) + 70])
