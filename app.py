@@ -117,6 +117,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica'),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
         ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP')  # Align to the top
     ]))
     
     # Add underlines to the values
