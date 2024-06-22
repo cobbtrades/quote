@@ -94,6 +94,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
         ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP')
     ]))
 
     # Detailed breakdown table
