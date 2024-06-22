@@ -135,7 +135,8 @@ def generate_pdf(data, filename='quote.pdf'):
                 breakdown_table
             ]
         ],
-        colWidths=[290, 10, 170]  # Adjusted the column widths
+        colWidths=[290, 10, 170],  # Adjusted the column widths
+        vAlign='TOP'
     )
 
     # Center the combined table
