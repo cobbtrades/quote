@@ -42,11 +42,11 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
     ]))
-    spacer = Spacer(width=20, height=0)
+    spacer = Spacer(width=30, height=0)
     combined_header_data = [
         [header_table_left, spacer, header_table_right]
     ]
-    combined_header_table = Table(combined_header_data, colWidths=[200, 20, 260])
+    combined_header_table = Table(combined_header_data, colWidths=[200, 30, 260])
     combined_header_table.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'TOP')
     ]))
@@ -55,7 +55,6 @@ def generate_pdf(data, filename='quote.pdf'):
     
     # Customer and vehicle details
     details_data = [
-        ["DATE", data['date'], "SALES", data['salesperson']],
         ["BUYER", data['buyer'], "", ""],
         ["ADDRESS", data['address'], "EMAIL", data['email_add']],
         ["CITY", data['city'], "STATE", data['state']],
