@@ -75,7 +75,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('FONTNAME', (0, 3), (-1, 3), 'Helvetica-Bold')
     ]))
     elements.append(selection_table)
-    elements.append(Spacer(1, 20))
+    #elements.append(Spacer(1, 20))
 
     # Payment Grid Data
     grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
