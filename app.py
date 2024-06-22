@@ -131,7 +131,7 @@ def generate_pdf(data, filename='quote.pdf'):
         [grid_table, breakdown_table]
     ]
     
-    combined_table = Table(combined_data, colWidths=[300, 190], rowHeights=None, hAlign='LEFT')
+    combined_table = Table(combined_data, colWidths=[300, 220], rowHeights=None, hAlign='LEFT')
     combined_table.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'TOP')  # Align to the top
     ]))
