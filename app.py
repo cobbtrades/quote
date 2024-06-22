@@ -26,7 +26,7 @@ def generate_pdf(data, filename='quote.pdf'):
     logo = Image('Modern.png', width=100, height=50)  # Adjust size as needed
     header_data = [
         [logo],
-        [Paragraph('AUTOMOTIVE', styles['Header'])]
+        [Paragraph('AUTOMOTIVE', styles['Title'])]
     ]
     header_table = Table(header_data, colWidths=[125], hAlign='CENTER')
     header_table.setStyle(TableStyle([
