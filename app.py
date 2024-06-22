@@ -26,13 +26,12 @@ def generate_pdf(data, filename='quote.pdf'):
     logo = Image('Modern.png', width=100, height=50)  # Adjust size as needed
     header_data = [
         [logo],
-        [Paragraph('AUTOMOTIVE', styles['Normal'])]
+        [Paragraph('AUTOMOTIVE', styles['Header4'])]
     ]
-    header_table = Table(header_data, colWidths=[125], hAlign='LEFT')
+    header_table = Table(header_data, colWidths=[125], hAlign='CENTER')
     header_table.setStyle(TableStyle([
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('VALIGN', (0, 0), (0, 0), 'TOP'),
-        ('TEXT-ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('VALIGN', (0, 1), (0, 1), 'BOTTOM'),
         ('SPAN', (0, 0), (-1, 0)),
         ('LEFTPADDING', (0, 0), (0, 0), 10),
