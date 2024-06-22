@@ -126,9 +126,11 @@ def generate_pdf(data, filename='quote.pdf'):
             ('LINEBELOW', (1, row_idx), (1, row_idx), 1, colors.black)
         ]))
 
-    # Combine the payment grid and breakdown tables side by side
+    spacer = Spacer(width=20, height=0)
+
+    # Combine the payment grid and breakdown tables side by side with spacer
     combined_data = [
-        [grid_table, breakdown_table]
+        [grid_table, spacer, breakdown_table]
     ]
     
     combined_table = Table(combined_data, colWidths=[300, 220], rowHeights=None, hAlign='LEFT')
