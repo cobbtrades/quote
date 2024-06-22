@@ -170,20 +170,21 @@ st.title("Quote Generator")
 
 # Form to input deal details
 with st.form(key='deal_form'):
-    col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
+    col1, col2 = st.columns([2, 2])
     
     with col1:
+        st.subheader("Customer Details")
         salesperson = st.text_input("Sales Person", key='salesperson')
         buyer = st.text_input("Buyer", key='buyer')
         address = st.text_input("Address", key='address')
         city = st.text_input("City", key='city')
-        state = st.text_input("State", key='state')  # Added state field
+        state = st.text_input("State", key='state')
         zip_code = st.text_input("ZIP", key='zip')
         cell_phone = st.text_input("Phone", key='cell_phone')
         email_add = st.text_input("Email", key='email_add')
-        doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
     
     with col2:
+        st.subheader("Vehicle Details")
         stock_no = st.text_input("Stock No.", key='stock_no')
         year = st.text_input("Vehicle Year", key='year')
         make = st.text_input("Vehicle Make", key='make')
@@ -191,22 +192,26 @@ with st.form(key='deal_form'):
         vin = st.text_input("VIN", key='vin')
         miles = st.text_input("Vehicle Miles", key='miles')
         cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0.0, format="%.2f", key='cost_of_vehicle')
+        doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
+    
+    col3, col4 = st.columns([2, 2])
     
     with col3:
+        st.subheader("Trade-in Details")
         trade_year = st.text_input("Trade Vehicle Year", key='trade_year')
         trade_make = st.text_input("Trade Vehicle Make", key='trade_make')
         trade_model = st.text_input("Trade Vehicle Model", key='trade_model')
         trade_vin = st.text_input("Trade Vehicle VIN", key='trade_vin')
         trade_miles = st.text_input("Trade Vehicle Miles", key='trade_miles')
+        trade_value = st.number_input("Trade Value", min_value=0.0, format="%.2f", key='trade_value')
+        trade_payoff = st.number_input("Trade Payoff", min_value=0.0, format="%.2f", key='trade_payoff')
+        acv_of_trade = st.number_input("ACV of Trade", min_value=0.0, format="%.2f", key='acv_of_trade')
     
     with col4:
+        st.subheader("Pricing and Payments")
         sale_price = st.number_input("Sale Price of Vehicle", min_value=0.0, format="%.2f", key='sale_price')
         rebate = st.number_input("Rebate", min_value=0.0, format="%.2f", key='rebate')
-        trade_value = st.number_input("Trade Value", min_value=0.0, format="%.2f", key='trade_value')
-        acv_of_trade = st.number_input("ACV of Trade", min_value=0.0, format="%.2f", key='acv_of_trade')
-        trade_payoff = st.number_input("Trade Payoff", min_value=0.0, format="%.2f", key='trade_payoff')
-    
-    with col5:
+        
         down_payments = []
         default_down_payments = [1000.0, 2000.0, 3000.0]
         for i in range(3):
