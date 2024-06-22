@@ -30,7 +30,6 @@ def generate_pdf(data, filename='quote.pdf'):
     header_data = [
         [logo, '', Paragraph('Date: {}'.format(data['date']), styles['Normal']), '', ''],
         ['', '', Paragraph('Salesperson: {}'.format(data['salesperson']), styles['Normal']), '', ''],
-        ['', '', Paragraph('Manager: {}'.format(data['manager']), styles['Normal']), '', ''],
         [Paragraph('AUTOMOTIVE', styles['CustomTitle']), '', '', '', ''],
         ['', '', '', '', Paragraph('FOR INTERNAL USE ONLY', styles['CustomTitle'])]
     ]
