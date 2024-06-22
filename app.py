@@ -101,12 +101,12 @@ def generate_pdf(data, filename='quote.pdf'):
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),  # Increase padding for the header row
-        ('TOPPADDING', (0, 0), (-1, 0), 12),     # Increase top padding for the header row
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 3),  # Increase padding for the header row
+        ('TOPPADDING', (0, 0), (-1, 0), 3),     # Increase top padding for the header row
         ('FONTSIZE', (0, 0), (-1, 0), 12),       # Increase font size for the header row
-        ('FONTSIZE', (0, 1), (-1, -1), 10),      # Increase font size for the rest of the rows
-        ('BOTTOMPADDING', (0, 1), (-1, -1), 10), # Increase bottom padding for the rest of the rows
-        ('TOPPADDING', (0, 1), (-1, -1), 10),    # Increase top padding for the rest of the rows
+        ('FONTSIZE', (0, 1), (-1, -1), 12),      # Increase font size for the rest of the rows
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 3), # Increase bottom padding for the rest of the rows
+        ('TOPPADDING', (0, 1), (-1, -1), 3),    # Increase top padding for the rest of the rows
         ('BACKGROUND', (0, 1), (-1, -1), colors.white),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
