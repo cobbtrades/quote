@@ -79,15 +79,18 @@ def generate_pdf(data, filename='quote.pdf'):
     
     # Detailed breakdown table
     breakdown_data = [
-        ["Sales Price", f"${data['sale_price']:.2f}"],
-        ["Rebate", f"${data['rebate']:.2f}"],
-        ["Trade Value", f"${data['trade_value']:.2f}"],
-        ["Trade Payoff", f"${data['trade_payoff']:.2f}"],
-        ["Dealer Service Fee", f"${data['doc_fee']:.2f}"],
-        ["Sales Tax", f"${data['sales_tax']:.2f}"],
-        ["Non Tax Fees", f"${NON_TAX_FEE:.2f}"],
-        ["Balance", f"${data['balance']:.2f}"],
+        ["Sales Price", f"${data['sale_price']:.2f}"] if data['sale_price'] != 0 else None,
+        ["Rebate", f"${data['rebate']:.2f}"] if data['rebate'] != 0 else None,
+        ["Trade Value", f"${data['trade_value']:.2f}"] if data['trade_value'] != 0 else None,
+        ["Trade Payoff", f"${data['trade_payoff']:.2f}"] if data['trade_payoff'] != 0 else None,
+        ["Dealer Service Fee", f"${data['doc_fee']:.2f}"] if data['doc_fee'] != 0 else None,
+        ["Sales Tax", f"${data['sales_tax']:.2f}"] if data['sales_tax'] != 0 else None,
+        ["Non Tax Fees", f"${NON_TAX_FEE:.2f}"] if NON_TAX_FEE != 0 else None,
+        ["Balance", f"${data['balance']:.2f}"] if data['balance'] != 0 else None,
     ]
+    # Filter out None values
+    breakdown_data = [row for row in breakdown_data if row is not None]
+    
     breakdown_table = Table(breakdown_data, colWidths=[150, 100])
     breakdown_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.whitesmoke),
