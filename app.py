@@ -125,7 +125,9 @@ def generate_pdf(data, filename='quote.pdf'):
             ('LINEBELOW', (1, row_idx), (1, row_idx), 1, colors.black)
         ]))
     
+    # Add a right margin spacer
     elements.append(Table([[grid_table, breakdown_table]], colWidths=[300, 200]))
+    elements.append(Spacer(1, 20))
     elements.append(Spacer(1, 20))
     
     disclaimer_line = Table([["* A.P.R Subject to equity and credit requirements."]], colWidths=[sum([70]*len(data['quotes'][list(data['quotes'].keys())[0]].keys())) + 70])
