@@ -22,18 +22,27 @@ def generate_pdf(data, filename='quote.pdf'):
     doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=50, leftMargin=36, rightMargin=36)
     elements = []
     styles = getSampleStyleSheet()
-    
+
+    # Custom style for the title
+    styles.add(ParagraphStyle(name='CustomTitle', fontSize=12, leading=14, alignment=1, fontName='Helvetica-Bold'))
+
     logo = Image('Modern.png', width=100, height=50)  # Adjust size as needed
     header_data = [
-        [logo]
+        [logo, '', Paragraph('Date: {}'.format(data['date']), styles['Normal']), '', ''],
+        ['', '', Paragraph('Salesperson: {}'.format(data['salesperson']), styles['Normal']), '', ''],
+        ['', '', Paragraph('Manager: {}'.format(data['manager']), styles['Normal']), '', ''],
+        [Paragraph('AUTOMOTIVE', styles['CustomTitle']), '', '', '', ''],
+        ['', '', '', '', Paragraph('FOR INTERNAL USE ONLY', styles['CustomTitle'])]
     ]
-    header_table = Table(header_data, colWidths=[125], hAlign='LEFT')
+    header_table = Table(header_data, colWidths=[100, 20, 150, 20, 150])
     header_table.setStyle(TableStyle([
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('VALIGN', (0, 0), (0, 0), 'TOP'),
-        ('SPAN', (0, 0), (-1, 0)),
-        ('LEFTPADDING', (0, 0), (0, 0), 10),
-        ('BOTTOMPADDING', (0, 0), (0, 0), 5),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('SPAN', (0, 3), (4, 3)),
+        ('SPAN', (0, 4), (4, 4)),
+        ('SPAN', (0, 0), (0, 2)),
+        ('BOTTOMPADDING', (0, 3), (0, 3), 5),
+        ('LEFTPADDING', (0, 0), (-1, -1), 5),
     ]))
     elements.append(header_table)
     elements.append(Spacer(1, 8))
@@ -107,7 +116,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ["Trade Payoff", f"${data['trade_payoff']:.2f}"] if data['trade_payoff'] != 0 else None,
         ["Doc Fee", f"${data['doc_fee']:.2f}"] if data['doc_fee'] != 0 else None,
         ["Sales Tax", f"${data['sales_tax']:.2f}"] if data['sales_tax'] != 0 else None,
-        ["Non Tax Fees", f"${NON_TAX_FEE:.2f}"] if NON_TAX_FEE != 0 else None,
+        ["Non Tax Fees", f"${data['non_tax_fee']:.2f}"] if data['non_tax_fee'] != 0 else None,
         ["Balance", f"${data['balance']:.2f}"] if data['balance'] != 0 else None,
     ]
     # Filter out None values
