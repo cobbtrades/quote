@@ -116,7 +116,7 @@ def generate_pdf(data, filename='quote.pdf'):
     # Detailed breakdown table
     breakdown_data = [
         ["Sales Price", f"${data['sale_price']:.2f}"] if data['sale_price'] != 0 else None,
-        ["Rebate", f"${data['rebate']:.2f}"] if data['rebate'] != 0 else None,
+        ["Savings", f"${data['rebate']:.2f}"] if data['rebate'] != 0 else None,
         ["Trade Value", f"${data['trade_value']:.2f}"] if data['trade_value'] != 0 else None,
         ["Trade Payoff", f"${data['trade_payoff']:.2f}"] if data['trade_payoff'] != 0 else None,
         ["Doc Fee", f"${data['doc_fee']:.2f}"] if data['doc_fee'] != 0 else None,
