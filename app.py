@@ -130,7 +130,7 @@ def generate_pdf(data, filename='quote.pdf'):
         [
             [
                 grid_table,
-                Spacer(1, 10),  # Adjusted the spacer width
+                Spacer(1, 0),  # Adjusted the spacer width
                 breakdown_table
             ]
         ],
