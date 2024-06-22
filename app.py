@@ -4,6 +4,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 import pandas as pd
 import streamlit as st
+from datetime import datetime
 
 # Constants for fees
 NON_TAX_FEE = 106.75
@@ -23,9 +24,7 @@ def generate_pdf(data, filename='quote.pdf'):
     styles = getSampleStyleSheet()
     
     # Header
-    header_data = [
-        ["MODERN AUTOMOTIVE"],
-    ]
+    header_data = [["MODERN AUTOMOTIVE"]]
     header_table = Table(header_data, colWidths=[400])
     header_table.setStyle(TableStyle([
         ('SPAN', (0, 0), (-1, -1)),
@@ -34,17 +33,17 @@ def generate_pdf(data, filename='quote.pdf'):
         ('FONTSIZE', (0, 0), (-1, -1), 14),
     ]))
     elements.append(header_table)
-    elements.append(Spacer(1, 8))  # Reduced spacing here
+    elements.append(Spacer(1, 8))
     
     # Customer and vehicle details
     details_data = [
         ["DATE", data['date'], "SALES", data['salesperson']],
         ["BUYER", data['buyer'], "", ""],
-        ["ADDR", data['address'], "", ""],
+        ["ADDRESS", data['address'], "EMAIL", data['email_add']],
         ["CITY", data['city'], "STATE", data['state']],
-        ["ZIP", data['zip'], "PHONE", data['cell_phone']],
+        ["ZIP", data['zip'], "PHONE", data['cell_phone']]
     ]
-    details_table = Table(details_data, colWidths=[50, 200, 80, 200])
+    details_table = Table(details_data, colWidths=[80, 150, 60, 180])
     details_table.setStyle(TableStyle([
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
@@ -53,15 +52,15 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
     ]))
     elements.append(details_table)
-    elements.append(Spacer(1, 20))  # Reduced spacing here
+    elements.append(Spacer(1, 20))
     
     # Vehicle selection and trade-in details
     selection_data = [
-        ["SELECTION:", "", "", "", ""],
-        ["YEAR", "MAKE", "MODEL", "STOCK NO.", "COLOR"],
-        [data['year'], data['make'], data['model'], data['stock_no'], data['color']]
+        ["SELECTION:", "", "", "", "", ""],
+        ["YEAR", "MAKE", "MODEL", "STOCK NO.", "VIN", "MILES"],
+        [data['year'], data['make'], data['model'], data['stock_no'], data['vin'], data['miles']]
     ]
-    selection_table = Table(selection_data, colWidths=[80, 60, 80, 80, 80, 80])
+    selection_table = Table(selection_data, colWidths=[65, 60, 80, 80, 110, 80])
     selection_table.setStyle(TableStyle([
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
@@ -70,8 +69,25 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
     ]))
     elements.append(selection_table)
-    elements.append(Spacer(1, 20))  # Reduced spacing here
+    elements.append(Spacer(1, 20))
     
+    # Trade-in vehicle details
+    trade_data = [
+        ["TRADE-IN:", "", "", "", ""],
+        ["YEAR", "MAKE", "MODEL", "VIN", "MILES"],
+        [data['trade_year'], data['trade_make'], data['trade_model'], data['trade_vin'], data['trade_miles']]
+    ]
+    trade_table = Table(trade_data, colWidths=[65, 60, 80, 110, 80])
+    trade_table.setStyle(TableStyle([
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+    ]))
+    elements.append(trade_table)
+    elements.append(Spacer(1, 20))
+
     # Detailed breakdown table
     breakdown_data = [
         ["Sales Price", f"${data['sale_price']:.2f}"],
@@ -87,15 +103,15 @@ def generate_pdf(data, filename='quote.pdf'):
     breakdown_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
         ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
     
     elements.append(breakdown_table)
-    elements.append(Spacer(1, 20))  # Reduced spacing here
+    elements.append(Spacer(1, 20))
     
     # Grid data
     grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
@@ -111,7 +127,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
         ('BACKGROUND', (0, 1), (-1, -1), colors.whitesmoke),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
@@ -125,7 +141,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('FONTSIZE', (0, 0), (-1, -1), 10),
     ]))
     elements.append(disclaimer_line)
-    elements.append(Spacer(1, 20))  # Reduced spacing here
+    elements.append(Spacer(1, 20))
 
     # Add signature lines
     signature_data = [
@@ -157,24 +173,31 @@ with st.form(key='deal_form'):
     col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
     
     with col1:
-        date = st.date_input("Date", key='date')
         salesperson = st.text_input("Sales Person", key='salesperson')
         buyer = st.text_input("Buyer", key='buyer')
         address = st.text_input("Address", key='address')
         city = st.text_input("City", key='city')
-    
-    with col2:
+        state = st.text_input("State", key='state')  # Added state field
         zip_code = st.text_input("ZIP", key='zip')
         cell_phone = st.text_input("Phone", key='cell_phone')
+        email_add = st.text_input("Email", key='email_add')
+        doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
+    
+    with col2:
+        stock_no = st.text_input("Stock No.", key='stock_no')
         year = st.text_input("Vehicle Year", key='year')
         make = st.text_input("Vehicle Make", key='make')
+        model = st.text_input("Vehicle Model", key='model')
+        vin = st.text_input("VIN", key='vin')
+        miles = st.text_input("Vehicle Miles", key='miles')
+        cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0.0, format="%.2f", key='cost_of_vehicle')
     
     with col3:
-        model = st.text_input("Vehicle Model", key='model')
-        stock_no = st.text_input("Stock No.", key='stock_no')
-        color = st.text_input("Vehicle Color", key='color')
-        cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0.0, format="%.2f", key='cost_of_vehicle')
-        doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
+        trade_year = st.text_input("Trade Vehicle Year", key='trade_year')
+        trade_make = st.text_input("Trade Vehicle Make", key='trade_make')
+        trade_model = st.text_input("Trade Vehicle Model", key='trade_model')
+        trade_vin = st.text_input("Trade Vehicle VIN", key='trade_vin')
+        trade_miles = st.text_input("Trade Vehicle Miles", key='trade_miles')
     
     with col4:
         sale_price = st.number_input("Sale Price of Vehicle", min_value=0.0, format="%.2f", key='sale_price')
@@ -215,22 +238,29 @@ if submit_button:
         quotes[term] = term_payments
     
     balance = sale_price - trade_value + doc_fee - rebate + sales_tax + NON_TAX_FEE + trade_payoff
-    gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)  # Corrected calculation
+    gross_profit = sale_price - cost_of_vehicle + (acv_of_trade - trade_value)
 
     data = {
-        'date': date,
+        'date': datetime.today().strftime('%B %d, %Y').upper(),
         'salesperson': salesperson,
         'buyer': buyer,
         'address': address,
         'city': city,
-        'state': 'NC',
+        'state': state,
         'zip': zip_code,
         'cell_phone': cell_phone,
+        'email_add': email_add,
         'year': year,
         'make': make,
         'model': model,
         'stock_no': stock_no,
-        'color': color,
+        'vin': vin,
+        'miles': miles,
+        'trade_year': trade_year,
+        'trade_make': trade_make,
+        'trade_model': trade_model,
+        'trade_vin': trade_vin,
+        'trade_miles': trade_miles,
         'sale_price': sale_price,
         'rebate': rebate,
         'trade_value': trade_value,
