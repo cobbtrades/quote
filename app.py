@@ -126,7 +126,7 @@ def generate_pdf(data, filename='quote.pdf'):
             ('LINEBELOW', (1, row_idx), (1, row_idx), 1, colors.black)
         ]))
 
-    spacer = Spacer(width=20, height=0)
+    spacer = Spacer(width=2, height=0)
 
     # Combine the payment grid and breakdown tables side by side with spacer
     combined_data = [
