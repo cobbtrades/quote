@@ -5,7 +5,7 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Par
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 
-st.set_page_config(page_title="Desking App", page_icon="📝")
+st.set_page_config(page_title="Desking App")
 
 with open("styles.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
@@ -22,6 +22,18 @@ def calculate_monthly_payment(principal, down_payment, annual_rate, term_months)
             payment = principal / term_months
         else:
             payment = principal * monthly_rate / (1 - (1 + monthly_rate) ** -term_months)
+        return "{:.2f}".format(payment)
+
+def calculate_lease_payment(principal, down_payment, annual_rate, term_months, residual_value):
+    if principal == 0:
+        return 0
+    else:
+        principal = principal - down_payment
+        monthly_rate = annual_rate / 100 / 12
+        if monthly_rate == 0:
+            payment = (principal - residual_value) / term_months
+        else:
+            payment = (principal - residual_value) * monthly_rate / (1 - (1 + monthly_rate) ** -term_months) + residual_value / term_months
         return "{:.2f}".format(payment)
 
 def calculate_balance(market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees):
@@ -223,9 +235,7 @@ def generate_pdf(data, filename='quote.pdf'):
     doc.build(elements)
     return filename
 
-finance, lease = st.tabs(["Finance", "Lease"])
-
-with finance:
+def render_tab(calc_payment_func, is_lease=False):
     fc, sc, tc = st.columns([3, 3, 2])
     
     with fc:
@@ -260,6 +270,9 @@ with finance:
         dealer = st.text_input(label="Dealership", key="dealer", placeholder="Dealership", label_visibility="collapsed", help="Dealership")
         consultant = st.text_input(label="Sales Person", key="consultant", placeholder="Sales Person", label_visibility="collapsed", help="Sales Person")
         manager = st.text_input(label="Sales Manager", key="manager", placeholder="Sales Manager", label_visibility="collapsed", help="Sales Manager")
+        
+        if is_lease:
+            residual_value = st.number_input(label="Residual Value", key="residual_value", value=0)
     
     left_col, right_col = st.columns(2)
     
@@ -334,7 +347,7 @@ with finance:
                 if market_value == 0:
                     monthly_payment = 0
                 else:
-                    monthly_payment = calculate_monthly_payment(balance, down_payments[j], rates[i], terms[i])
+                    monthly_payment = calc_payment_func(balance, down_payments[j], rates[i], terms[i])
                 ltv = ((balance - down_payments[j]) / book_value) * 100 if book_value else 0
                 if j == 0:
                     col3.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
@@ -361,7 +374,7 @@ with finance:
             for i in range(3):
                 term_payments = {}
                 for j in range(3):
-                    monthly_payment = calculate_monthly_payment(balance, down_payments[j], rates[i], terms[i])
+                    monthly_payment = calc_payment_func(balance, down_payments[j], rates[i], terms[i])
                     term_payments[down_payments[j]] = round(float(monthly_payment), 2)
                 quotes[terms[i]] = term_payments
             
@@ -410,3 +423,11 @@ with finance:
             gross_profit = market_value - discount - veh_cost + (trade_acv - trade_value)
             color = "green" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
             st.markdown(f"<p style='color:{color}; font-size:24px;'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
+
+finance, lease = st.tabs(["Finance", "Lease"])
+
+with finance:
+    render_tab(calculate_monthly_payment)
+
+with lease:
+    render_tab(lambda principal, down_payment, annual_rate, term_months: calculate_lease_payment(principal, down_payment, annual_rate, term_months, st.session_state.get('residual_value', 0)), is_lease=True)
