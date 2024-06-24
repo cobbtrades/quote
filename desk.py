@@ -263,20 +263,41 @@ with finance:
     left_col, right_col = st.columns(2)
 
     with right_col:
-        market_value = st.number_input(label="Market Value", key="market_value", value = None, placeholder="Market Value", label_visibility='collapsed', help="Market Value")
-        discount = st.number_input(label="Discount", key="discount", value = None, placeholder="Discount", label_visibility='collapsed', help="Discount")
-        rebate = st.number_input(label="Rebate", key="rebate", value = None, placeholder="Rebate", label_visibility='collapsed', help="Rebate")
-        trade_value = st.number_input(label="Trade Value", key="trade_value", value = None, placeholder="Trade Value", label_visibility='collapsed', help="Trade Value")
-        trade_acv = st.number_input(label="Trade ACV", key="trade_acv", value = None, placeholder="Trade ACV", label_visibility='collapsed', help="Trade ACV")
-        trade_payoff = st.number_input(label="Trade Payoff", key="trade_payoff", value = None, placeholder="Trade Payoff", label_visibility='collapsed', help="Trade Payoff")
-        doc_fee = st.number_input(label="Doc Fee", key="doc_fee", value = None, placeholder="Doc Fee", label_visibility='collapsed', help="Doc Fee")
+        labels_col, inputs_col = st.columns([1, 3])
+    
+        labels_col.text("Market Value")
+        market_value = inputs_col.number_input(label="Market Value", key="market_value", value=None, placeholder="Market Value", label_visibility='collapsed', help="Market Value")
+    
+        labels_col.text("Discount")
+        discount = inputs_col.number_input(label="Discount", key="discount", value=None, placeholder="Discount", label_visibility='collapsed', help="Discount")
+    
+        labels_col.text("Rebate")
+        rebate = inputs_col.number_input(label="Rebate", key="rebate", value=None, placeholder="Rebate", label_visibility='collapsed', help="Rebate")
+    
+        labels_col.text("Trade Value")
+        trade_value = inputs_col.number_input(label="Trade Value", key="trade_value", value=None, placeholder="Trade Value", label_visibility='collapsed', help="Trade Value")
+    
+        labels_col.text("Trade ACV")
+        trade_acv = inputs_col.number_input(label="Trade ACV", key="trade_acv", value=None, placeholder="Trade ACV", label_visibility='collapsed', help="Trade ACV")
+    
+        labels_col.text("Trade Payoff")
+        trade_payoff = inputs_col.number_input(label="Trade Payoff", key="trade_payoff", value=None, placeholder="Trade Payoff", label_visibility='collapsed', help="Trade Payoff")
+    
+        labels_col.text("Doc Fee")
+        doc_fee = inputs_col.number_input(label="Doc Fee", key="doc_fee", value=None, placeholder="Doc Fee", label_visibility='collapsed', help="Doc Fee")
+    
         taxes = calculate_taxes(state, market_value, discount, doc_fee, trade_value)
-        st.text_input(label="Taxes", key="taxes", value=f"{taxes:.2f}", label_visibility='collapsed', help="taxes")
-        non_tax_fees = st.number_input(label="Non-Tax Fees", key="non_tax_fees", value = None, placeholder="Non-Tax Fees", label_visibility='collapsed', help="Non-Tax Fees")
+        labels_col.text("Taxes")
+        inputs_col.text_input(label="Taxes", key="taxes", value=f"{taxes:.2f}", label_visibility='collapsed', help="Taxes")
+    
+        labels_col.text("Non-Tax Fees")
+        non_tax_fees = inputs_col.number_input(label="Non-Tax Fees", key="non_tax_fees", value=None, placeholder="Non-Tax Fees", label_visibility='collapsed', help="Non-Tax Fees")
+    
         balance = calculate_balance(
             market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees
         )
-        st.text_input(label="Balance", key="balance", value=f"{balance:.2f}", label_visibility='collapsed', help="Balance", disabled=True)
+        labels_col.text("Balance")
+        inputs_col.text_input(label="Balance", key="balance", value=f"{balance:.2f}", label_visibility='collapsed', help="Balance", disabled=True)
 
     with left_col:
         col1, col2, col3, col4, col5 = st.columns([1,1,2,2,2])
