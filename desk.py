@@ -182,9 +182,14 @@ def generate_pdf(data, filename='quote.pdf'):
             logging.error("No quotes data found")
         
         # Detailed breakdown table
+        market_value = data.get('sale_price', 0)
+        savings = data.get('rebate', 0) + data.get('discount', 0)
+        sales_price = market_value - savings
+
         breakdown_data = [
-            ["Market Value", f"${data.get('sale_price', 0):.2f}"] if data.get('sale_price', 0) != 0 else None,
-            ["Savings", f"${data.get('rebate', 0) + data.get('discount', 0):.2f}"] if data.get('rebate', 0) + data.get('discount', 0) != 0 else None,
+            ["Market Value", f"${market_value:.2f}"] if market_value != 0 else None,
+            ["Savings", f"${savings:.2f}"] if savings != 0 else None,
+            ["Sales Price", f"${sales_price:.2f}"] if market_value != 0 else None,
             ["Trade Value", f"${data.get('trade_value', 0):.2f}"] if data.get('trade_value', 0) != 0 else None,
             ["Trade Payoff", f"${data.get('trade_payoff', 0):.2f}"] if data.get('trade_payoff', 0) != 0 else None,
             ["Doc Fee", f"${data.get('doc_fee', 0):.2f}"] if data.get('doc_fee', 0) != 0 else None,
@@ -196,17 +201,6 @@ def generate_pdf(data, filename='quote.pdf'):
         breakdown_data = [row for row in breakdown_data if row is not None]
         
         breakdown_table = Table(breakdown_data, colWidths=[100, 80])
-        breakdown_table.setStyle(TableStyle([
-            ('ALIGN', (0, 0), (0, -1), 'LEFT'),
-            ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica'),
-            ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP')  # Align to the top
-        ]))
-        
-        # Add underlines to the values
-        for row_idx in range(len(breakdown_data)):
             breakdown_table.setStyle(TableStyle([
                 ('LINEBELOW', (1, row_idx), (1, row_idx), 1, colors.black)
             ]))
