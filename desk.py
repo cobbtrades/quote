@@ -141,7 +141,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('BACKGROUND', (0, 3), (-1, 3), colors.grey),  # This line styles the "TRADE-IN:" row
         ('TEXTCOLOR', (0, 3), (-1, 3), colors.white),
         ('FONTNAME', (0, 3), (-1, 3), 'Helvetica-Bold'),
-        ('BACKGROUND', (0, 3), (-1, 3), colors.grey)
+        ('BACKGROUND', (0, 6), (-1, 6), colors.grey)
     ]))
     elements.append(selection_table)
     elements.append(Spacer(1, 20))
