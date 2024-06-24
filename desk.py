@@ -250,11 +250,11 @@ with finance:
         model = fc5.text_input(label="Model", key="model", placeholder="Model", label_visibility="collapsed", help="Model")
         trim = sc5.text_input(label="Trim", key="trim", placeholder="Trim", label_visibility="collapsed", help="Trim")
         odometer = tc5.text_input(label="Odometer", key="odometer", placeholder="Odometer", label_visibility="collapsed", help="Odometer")
-        fc6, sc6, tc6 = st.columns(3)
+        fc6, sc6, tc6, fr6 = st.columns(4)
         fc6.markdown('<input class="label-input" type="text" value="Cost" disabled>', unsafe_allow_html=True)
-        veh_cost = fc6.number_input(label="Cost", key="veh_cost", value = None, placeholder="Cost", label_visibility='collapsed', help="Cost")
-        sc6.markdown('<input class="label-input" type="text" value="Book Value" disabled>', unsafe_allow_html=True)
-        book_value = sc6.number_input(label="Book Value", key="book_value", value = None, placeholder="Book Value", label_visibility='collapsed', help="Book Value")
+        veh_cost = sc6.number_input(label="Cost", key="veh_cost", value = None, placeholder="Cost", label_visibility='collapsed', help="Cost")
+        tc6.markdown('<input class="label-input" type="text" value="Book Value" disabled>', unsafe_allow_html=True)
+        book_value = fr6.number_input(label="Book Value", key="book_value", value = None, placeholder="Book Value", label_visibility='collapsed', help="Book Value")
 
     with tc:
         dealer = st.text_input(label="Dealership", key="dealer", placeholder="Dealership", label_visibility="collapsed", help="Dealership")
