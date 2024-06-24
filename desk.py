@@ -303,14 +303,14 @@ with finance:
             rates.append(rate)
 
         for i in range(3):
-        for j in range(3):
-            monthly_payment = calculate_monthly_payment(balance, down_payments[j], rates[i], terms[i])
-            if j == 0:
-                col3.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
-            elif j == 1:
-                col4.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
-            elif j == 2:
-                col5.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
+            for j in range(3):
+                monthly_payment = calculate_monthly_payment(balance, down_payments[j], rates[i], terms[i])
+                if j == 0:
+                    col3.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
+                elif j == 1:
+                    col4.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
+                elif j == 2:
+                    col5.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
         
         # 3x3 grid displaying some calculations based on input values and balance
         #term1 = col1.number_input(label="Term 1", key="term1", value=60)
