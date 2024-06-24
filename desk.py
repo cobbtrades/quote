@@ -159,11 +159,11 @@ def generate_pdf(data, filename='quote.pdf'):
 
 
         if data.get('quotes'):
-            grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
+            grid_data = [["Term"] + [f"${float(dp):.2f}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
             for term, payments in data['quotes'].items():
                 row = [term]
                 for dp, payment in payments.items():
-                    row.append(f"${payment:.2f}")
+                    row.append(f"${float(payment):.2f}")
                 grid_data.append(row)
             
             grid_table = Table(grid_data, colWidths=[75] + [75]*len(data['quotes'][list(data['quotes'].keys())[0]].keys()))
@@ -183,14 +183,14 @@ def generate_pdf(data, filename='quote.pdf'):
         
         # Detailed breakdown table
         breakdown_data = [
-            ["Market Value", f"${data.get('sale_price', 0):.2f}"] if data.get('sale_price', 0) != 0 else None,
-            ["Savings", f"${data.get('rebate', 0) + data.get('discount', 0):.2f}"] if data.get('rebate', 0) + data.get('discount', 0) != 0 else None,
-            ["Trade Value", f"${data.get('trade_value', 0):.2f}"] if data.get('trade_value', 0) != 0 else None,
-            ["Trade Payoff", f"${data.get('trade_payoff', 0):.2f}"] if data.get('trade_payoff', 0) != 0 else None,
-            ["Doc Fee", f"${data.get('doc_fee', 0):.2f}"] if data.get('doc_fee', 0) != 0 else None,
-            ["Sales Tax", f"${data.get('sales_tax', 0):.2f}"] if data.get('sales_tax', 0) != 0 else None,
-            ["Non Tax Fees", f"${data.get('non_tax_fees', 0)::.2f}"] if data.get('non_tax_fees', 0) != 0 else None,
-            ["Balance", f"${data.get('balance', 0):.2f}"] if data.get('balance', 0) != 0 else None,
+            ["Market Value", f"${float(data.get('sale_price', 0)):.2f}"] if data.get('sale_price', 0) != 0 else None,
+            ["Savings", f"${float(data.get('rebate', 0)) + float(data.get('discount', 0)):.2f}"] if data.get('rebate', 0) + data.get('discount', 0) != 0 else None,
+            ["Trade Value", f"${float(data.get('trade_value', 0)):.2f}"] if data.get('trade_value', 0) != 0 else None,
+            ["Trade Payoff", f"${float(data.get('trade_payoff', 0)):.2f}"] if data.get('trade_payoff', 0) != 0 else None,
+            ["Doc Fee", f"${float(data.get('doc_fee', 0)):.2f}"] if data.get('doc_fee', 0) != 0 else None,
+            ["Sales Tax", f"${float(data.get('sales_tax', 0)):.2f}"] if data.get('sales_tax', 0) != 0 else None,
+            ["Non Tax Fees", f"${float(data.get('non_tax_fees', 0)):.2f}"] if data.get('non_tax_fees', 0) != 0 else None,
+            ["Balance", f"${float(data.get('balance', 0)):.2f}"] if data.get('balance', 0) != 0 else None,
         ]
         # Filter out None values
         breakdown_data = [row for row in breakdown_data if row is not None]
