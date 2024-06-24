@@ -282,7 +282,7 @@ with right_col:
     trade_payoff = inputs_col.number_input(label="Trade Payoff", key="trade_payoff", value=0, label_visibility='collapsed', help="Trade Payoff")
     
     labels_col.markdown('<input class="label-input" type="text" value="Doc Fee" disabled>', unsafe_allow_html=True)
-    doc_fee = inputs_col.number_input(label="Doc Fee", key="doc_fee", value=0, label_visibility='collapsed', help="Doc Fee")
+    doc_fee = inputs_col.number_input(label="Doc Fee", key="doc_fee", value=799, label_visibility='collapsed', help="Doc Fee")
     
     taxes = calculate_taxes(state, market_value, discount, doc_fee, trade_value)
     labels_col.markdown('<input class="label-input" type="text" value="Taxes" disabled>', unsafe_allow_html=True)
