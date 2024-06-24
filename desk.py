@@ -224,7 +224,7 @@ def generate_pdf(data, filename='quote.pdf'):
     return filename
 
 #finance, cash, lease = st.tabs(["Finance", "Cash", "Lease"])
-finance = st.tabes(["Finance"])
+finance = st.tabs(["Finance"])
 with finance:
     fc, sc, tc = st.columns([3, 3, 2])
     
