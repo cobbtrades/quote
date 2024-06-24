@@ -235,44 +235,44 @@ def generate_pdf(data, filename='quote.pdf'):
     doc.build(elements)
     return filename
 
-def render_tab(calc_payment_func, is_lease=False):
+def render_tab(calc_payment_func, prefix, is_lease=False):
     fc, sc, tc = st.columns([3, 3, 2])
     
     with fc:
-        customer = st.text_input(label="Customer", key="cust", placeholder="Customer", label_visibility='collapsed', help="Customer")
-        address = st.text_input(label="Address", key="addr", placeholder="Address", label_visibility="collapsed", help="Address")
+        customer = st.text_input(label="Customer", key=f"{prefix}_cust", placeholder="Customer", label_visibility='collapsed', help="Customer")
+        address = st.text_input(label="Address", key=f"{prefix}_addr", placeholder="Address", label_visibility="collapsed", help="Address")
         fc2, sc2, tc2 = st.columns([3, 1, 2])
-        city = fc2.text_input(label="City", key="city", placeholder="City", label_visibility="collapsed", help="City")
-        state = sc2.text_input(label="State", key="state", placeholder="State", max_chars=2, label_visibility="collapsed", help="State")
-        zipcode = tc2.text_input(label="Zip", key="zip", placeholder="Zip", max_chars=5, label_visibility="collapsed", help="Zip")
-        email_address = fc2.text_input(label="Email", key="emailaddress", placeholder="Email", label_visibility="collapsed", help="Email")
-        phone_num = tc2.text_input(label="Phone", key="phonenumber", placeholder="Phone", max_chars=12, label_visibility="collapsed", help="Phone")
+        city = fc2.text_input(label="City", key=f"{prefix}_city", placeholder="City", label_visibility="collapsed", help="City")
+        state = sc2.text_input(label="State", key=f"{prefix}_state", placeholder="State", max_chars=2, label_visibility="collapsed", help="State")
+        zipcode = tc2.text_input(label="Zip", key=f"{prefix}_zip", placeholder="Zip", max_chars=5, label_visibility="collapsed", help="Zip")
+        email_address = fc2.text_input(label="Email", key=f"{prefix}_emailaddress", placeholder="Email", label_visibility="collapsed", help="Email")
+        phone_num = tc2.text_input(label="Phone", key=f"{prefix}_phonenumber", placeholder="Phone", max_chars=12, label_visibility="collapsed", help="Phone")
     
     with sc:
         fc3, sc3 = st.columns([2, 4])
-        stocknum = fc3.text_input(label="Stock #", key="stock", placeholder="Stock #", label_visibility="collapsed", help="Stock #")
-        vin = sc3.text_input(label="VIN", key="vin", placeholder="VIN", max_chars=17, label_visibility="collapsed", help="VIN")
+        stocknum = fc3.text_input(label="Stock #", key=f"{prefix}_stock", placeholder="Stock #", label_visibility="collapsed", help="Stock #")
+        vin = sc3.text_input(label="VIN", key=f"{prefix}_vin", placeholder="VIN", max_chars=17, label_visibility="collapsed", help="VIN")
         fc4, sc4, tc4 = st.columns([1, 2, 3])
-        newused = fc4.selectbox(label="N/U", options=["New", "Used", "CPO"], label_visibility="collapsed", help="N/U")
-        year = sc4.text_input(label="Year", key="year", placeholder="Year", max_chars=4, label_visibility="collapsed", help="Year")
-        make = tc4.text_input(label="Make", key="make", placeholder="Make", label_visibility="collapsed", help="Make")
+        newused = fc4.selectbox(label="N/U", options=["New", "Used", "CPO"], key=f"{prefix}_newused", label_visibility="collapsed", help="N/U")
+        year = sc4.text_input(label="Year", key=f"{prefix}_year", placeholder="Year", max_chars=4, label_visibility="collapsed", help="Year")
+        make = tc4.text_input(label="Make", key=f"{prefix}_make", placeholder="Make", label_visibility="collapsed", help="Make")
         fc5, sc5, tc5 = st.columns([3, 1.5, 1.5])
-        model = fc5.text_input(label="Model", key="model", placeholder="Model", label_visibility="collapsed", help="Model")
-        trim = sc5.text_input(label="Trim", key="trim", placeholder="Trim", label_visibility="collapsed", help="Trim")
-        odometer = tc5.text_input(label="Odometer", key="odometer", placeholder="Odometer", label_visibility="collapsed", help="Odometer")
+        model = fc5.text_input(label="Model", key=f"{prefix}_model", placeholder="Model", label_visibility="collapsed", help="Model")
+        trim = sc5.text_input(label="Trim", key=f"{prefix}_trim", placeholder="Trim", label_visibility="collapsed", help="Trim")
+        odometer = tc5.text_input(label="Odometer", key=f"{prefix}_odometer", placeholder="Odometer", label_visibility="collapsed", help="Odometer")
         fc6, sc6, tc6, fr6 = st.columns(4)
         fc6.markdown('<input class="label-input" type="text" value="Cost" disabled>', unsafe_allow_html=True)
-        veh_cost = sc6.number_input(label="Cost", key="veh_cost", value = 0, label_visibility='collapsed', help="Cost")
+        veh_cost = sc6.number_input(label="Cost", key=f"{prefix}_veh_cost", value = 0, label_visibility='collapsed', help="Cost")
         tc6.markdown('<input class="label-input" type="text" value="Book Value" disabled>', unsafe_allow_html=True)
-        book_value = fr6.number_input(label="Book Value", key="book_value", value = 0, label_visibility='collapsed', help="Book Value")
+        book_value = fr6.number_input(label="Book Value", key=f"{prefix}_book_value", value = 0, label_visibility='collapsed', help="Book Value")
     
     with tc:
-        dealer = st.text_input(label="Dealership", key="dealer", placeholder="Dealership", label_visibility="collapsed", help="Dealership")
-        consultant = st.text_input(label="Sales Person", key="consultant", placeholder="Sales Person", label_visibility="collapsed", help="Sales Person")
-        manager = st.text_input(label="Sales Manager", key="manager", placeholder="Sales Manager", label_visibility="collapsed", help="Sales Manager")
+        dealer = st.text_input(label="Dealership", key=f"{prefix}_dealer", placeholder="Dealership", label_visibility="collapsed", help="Dealership")
+        consultant = st.text_input(label="Sales Person", key=f"{prefix}_consultant", placeholder="Sales Person", label_visibility="collapsed", help="Sales Person")
+        manager = st.text_input(label="Sales Manager", key=f"{prefix}_manager", placeholder="Sales Manager", label_visibility="collapsed", help="Sales Manager")
         
         if is_lease:
-            residual_value = st.number_input(label="Residual Value", key="residual_value", value=0)
+            residual_value = st.number_input(label="Residual Value", key=f"{prefix}_residual_value", value=0)
     
     left_col, right_col = st.columns(2)
     
@@ -280,38 +280,38 @@ def render_tab(calc_payment_func, is_lease=False):
         labels_col, inputs_col = st.columns([1, 4])
         
         labels_col.markdown('<input class="label-input" type="text" value="Market Value" disabled>', unsafe_allow_html=True)
-        market_value = inputs_col.number_input(label="Market Value", key="market_value", value=0, label_visibility='collapsed', help="Market Value")
+        market_value = inputs_col.number_input(label="Market Value", key=f"{prefix}_market_value", value=0, label_visibility='collapsed', help="Market Value")
         
         labels_col.markdown('<input class="label-input" type="text" value="Discount" disabled>', unsafe_allow_html=True)
-        discount = inputs_col.number_input(label="Discount", key="discount", value=0, label_visibility='collapsed', help="Discount")
+        discount = inputs_col.number_input(label="Discount", key=f"{prefix}_discount", value=0, label_visibility='collapsed', help="Discount")
         
         labels_col.markdown('<input class="label-input" type="text" value="Rebate" disabled>', unsafe_allow_html=True)
-        rebate = inputs_col.number_input(label="Rebate", key="rebate", value=0, label_visibility='collapsed', help="Rebate")
+        rebate = inputs_col.number_input(label="Rebate", key=f"{prefix}_rebate", value=0, label_visibility='collapsed', help="Rebate")
         
         labels_col.markdown('<input class="label-input" type="text" value="Trade Value" disabled>', unsafe_allow_html=True)
-        trade_value = inputs_col.number_input(label="Trade Value", key="trade_value", value=0, label_visibility='collapsed', help="Trade Value")
+        trade_value = inputs_col.number_input(label="Trade Value", key=f"{prefix}_trade_value", value=0, label_visibility='collapsed', help="Trade Value")
         
         labels_col.markdown('<input class="label-input" type="text" value="Trade ACV" disabled>', unsafe_allow_html=True)
-        trade_acv = inputs_col.number_input(label="Trade ACV", key="trade_acv", value=0, label_visibility='collapsed', help="Trade ACV")
+        trade_acv = inputs_col.number_input(label="Trade ACV", key=f"{prefix}_trade_acv", value=0, label_visibility='collapsed', help="Trade ACV")
         
         labels_col.markdown('<input class="label-input" type="text" value="Trade Payoff" disabled>', unsafe_allow_html=True)
-        trade_payoff = inputs_col.number_input(label="Trade Payoff", key="trade_payoff", value=0, label_visibility='collapsed', help="Trade Payoff")
+        trade_payoff = inputs_col.number_input(label="Trade Payoff", key=f"{prefix}_trade_payoff", value=0, label_visibility='collapsed', help="Trade Payoff")
         
         labels_col.markdown('<input class="label-input" type="text" value="Doc Fee" disabled>', unsafe_allow_html=True)
-        doc_fee = inputs_col.number_input(label="Doc Fee", key="doc_fee", value=799, label_visibility='collapsed', help="Doc Fee")
+        doc_fee = inputs_col.number_input(label="Doc Fee", key=f"{prefix}_doc_fee", value=799, label_visibility='collapsed', help="Doc Fee")
         
         taxes = calculate_taxes(state, market_value, discount, doc_fee, trade_value)
         labels_col.markdown('<input class="label-input" type="text" value="Taxes" disabled>', unsafe_allow_html=True)
-        inputs_col.text_input(label="Taxes", key="taxes", value=f"{taxes:.2f}", label_visibility='collapsed', help="Taxes")
+        inputs_col.text_input(label="Taxes", key=f"{prefix}_taxes", value=f"{taxes:.2f}", label_visibility='collapsed', help="Taxes")
         
         labels_col.markdown('<input class="label-input" type="text" value="Non-Tax Fees" disabled>', unsafe_allow_html=True)
-        non_tax_fees = inputs_col.number_input(label="Non-Tax Fees", key="non_tax_fees", value=106.75, label_visibility='collapsed', help="Non-Tax Fees")
+        non_tax_fees = inputs_col.number_input(label="Non-Tax Fees", key=f"{prefix}_non_tax_fees", value=106.75, label_visibility='collapsed', help="Non-Tax Fees")
         
         balance = calculate_balance(
             market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees
         )
         labels_col.markdown('<input class="label-input" type="text" value="Balance" disabled>', unsafe_allow_html=True)
-        inputs_col.text_input(label="Balance", key="balance", value=f"{balance:.2f}", label_visibility='collapsed', help="Balance", disabled=True)
+        inputs_col.text_input(label="Balance", key=f"{prefix}_balance", value=f"{balance:.2f}", label_visibility='collapsed', help="Balance", disabled=True)
     
     with left_col:
         col1, col2, col3, col4, col5 = st.columns([1,1,2,2,2])
@@ -328,17 +328,17 @@ def render_tab(calc_payment_func, is_lease=False):
         col2.text("")
     
         # Input values
-        value1 = col3.number_input(label="Down Payment", key="value1", value=1000)
-        value2 = col4.number_input(label="Down Payment", key="value2", value=2000)
-        value3 = col5.number_input(label="Down Payment", key="value3", value=3000)
+        value1 = col3.number_input(label="Down Payment", key=f"{prefix}_value1", value=1000)
+        value2 = col4.number_input(label="Down Payment", key=f"{prefix}_value2", value=2000)
+        value3 = col5.number_input(label="Down Payment", key=f"{prefix}_value3", value=3000)
         down_payments = [value1, value2, value3]
     
         terms = []
         rates = []
         default_terms = [60, 66, 72]
         for i in range(3):
-            term = col1.number_input(f"Term {i+1}", min_value=1, value=default_terms[i], key=f'term_{i+1}')
-            rate = col2.number_input(f"Rate {i+1} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'rate_{i+1}')
+            term = col1.number_input(f"Term {i+1}", min_value=1, value=default_terms[i], key=f'{prefix}_term_{i+1}')
+            rate = col2.number_input(f"Rate {i+1} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'{prefix}_rate_{i+1}')
             terms.append(term)
             rates.append(rate)
     
@@ -367,7 +367,7 @@ def render_tab(calc_payment_func, is_lease=False):
     
     lbc, rbc, blankbc = st.columns([2, 3, 10])
     with lbc:
-        submit_button = st.button(label="Generate Quote")
+        submit_button = st.button(label="Generate Quote", key=f"{prefix}_submit_button")
         
         if submit_button:
             quotes = {}
@@ -413,7 +413,7 @@ def render_tab(calc_payment_func, is_lease=False):
             
             pdf_file = generate_pdf(data)
             with open(pdf_file, 'rb') as f:
-                st.download_button('Download Quote', f, file_name=pdf_file)
+                st.download_button('Download Quote', f, file_name=pdf_file, key=f"{prefix}_download_button")
         with rbc:
             market_value = market_value or 0
             discount = discount or 0
@@ -427,7 +427,7 @@ def render_tab(calc_payment_func, is_lease=False):
 finance, lease = st.tabs(["Finance", "Lease"])
 
 with finance:
-    render_tab(calculate_monthly_payment)
+    render_tab(calculate_monthly_payment, prefix="finance")
 
 with lease:
-    render_tab(lambda principal, down_payment, annual_rate, term_months: calculate_lease_payment(principal, down_payment, annual_rate, term_months, st.session_state.get('residual_value', 0)), is_lease=True)
+    render_tab(lambda principal, down_payment, annual_rate, term_months: calculate_lease_payment(principal, down_payment, annual_rate, term_months, st.session_state.get('lease_residual_value', 0)), prefix="lease", is_lease=True)
