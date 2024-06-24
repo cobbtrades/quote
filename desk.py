@@ -335,6 +335,13 @@ with finance:
 submit_button = st.button(label="Generate Quote")
 
 if submit_button:
+    quotes = {}
+    for term in terms:
+        term_payments = {}
+        for dp in down_payments:
+            monthly_payment = calculate_monthly_payment(balance, rates[term], term)
+            term_payments[dp] = round(monthly_payment, 2)
+        quotes[term] = term_payments
     data = {
         'date': datetime.today().strftime('%B %d, %Y').upper(),
         'salesperson': consultant,
@@ -367,3 +374,6 @@ if submit_button:
         'quotes': quotes,
         'rates': rates
     }
+    pdf_file = generate_pdf(data)
+    with open(pdf_file, 'rb') as f:
+        st.download_button('Download PDF Quote', f, file_name=pdf_file)
