@@ -1,4 +1,5 @@
 import streamlit as st
+from datetime import datetime
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
@@ -316,12 +317,13 @@ submit_button = st.button(label="Generate Quote")
 
 if submit_button:
     quotes = {}
-    for term in terms:
+    for i in range(3):
         term_payments = {}
-        for dp in down_payments:
-            monthly_payment = calculate_monthly_payment(balance, rates[term], term)
-            term_payments[dp] = round(monthly_payment, 2)
-        quotes[term] = term_payments
+        for j in range(3):
+            monthly_payment = calculate_monthly_payment(balance, down_payments[j], rates[i], terms[i])
+            term_payments[down_payments[j]] = round(float(monthly_payment), 2)
+        quotes[terms[i]] = term_payments
+    
     data = {
         'date': datetime.today().strftime('%B %d, %Y').upper(),
         'salesperson': consultant,
@@ -330,30 +332,31 @@ if submit_button:
         'city': city,
         'state': state,
         'zip': zipcode,
-        'phone_num': phone_num,
+        'cell_phone': phone_num,
         'email_add': email_address,
         'year': year,
         'make': make,
         'model': model,
-        'stock_no': stock_no,
+        'stock_no': stocknum,
         'vin': vin,
         'miles': odometer,
-        'trade_year': trade_year,
-        'trade_make': trade_make,
-        'trade_model': trade_model,
-        'trade_vin': trade_vin,
-        'trade_miles': trade_miles,
-        'sale_price': sale_price,
+        'trade_year': '',
+        'trade_make': '',
+        'trade_model': '',
+        'trade_vin': '',
+        'trade_miles': '',
+        'sale_price': market_value,
         'discount': discount,
         'rebate': rebate,
         'trade_value': trade_value,
         'trade_payoff': trade_payoff,
         'doc_fee': doc_fee,
         'sales_tax': taxes,
+        'non_tax_fees': non_tax_fees,
         'balance': balance,
         'quotes': quotes,
-        'rates': rates
     }
+
     pdf_file = generate_pdf(data)
     with open(pdf_file, 'rb') as f:
         st.download_button('Download PDF Quote', f, file_name=pdf_file)
