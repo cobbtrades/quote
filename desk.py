@@ -280,11 +280,10 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
     trade_payoffs = [0, 0]
     trade_acvs = [0, 0]
     with st.expander("Enter Trade-in Details"):
-        for i in range(2):  # For up to 2 trades
-            st.write(f"Trade-in {i+1}")
-            
+        for i in range(2):  # For up to 2 trades        
             # First row of trade-in details
-            fc1, sc1, tc1, fr1, ft1, st1, sv1, ec1 = st.columns(8)
+            tt1, fc1, sc1, tc1, fr1, ft1, st1, sv1, ec1 = st.columns(9)
+            tt1.write(f"Trade-in {i+1}")
             fc1.markdown('<input class="label-input" type="text" value="Year" disabled>', unsafe_allow_html=True)
             trade_year = sc1.text_input(f"Trade-in {i+1} Year", key=f"{prefix}_trade_year_{i+1}", placeholder="Year", label_visibility="collapsed")
             tc1.markdown('<input class="label-input" type="text" value="Make" disabled>', unsafe_allow_html=True)
