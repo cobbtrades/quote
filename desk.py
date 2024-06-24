@@ -313,13 +313,19 @@ with finance:
                 ltv = ((balance - down_payments[j]) / book_value) * 100 if book_value else 0
                 if j == 0:
                     col3.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
-                    col3.markdown(f'<div class="centered-metric"><div class="stMetric">{ltv:.2f}%</div></div>', unsafe_allow_html=True)
                 elif j == 1:
                     col4.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
-                    col4.markdown(f'<div class="centered-metric"><div class="stMetric">{ltv:.2f}%</div></div>', unsafe_allow_html=True)
                 elif j == 2:
                     col5.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
-                    col5.markdown(f'<div class="centered-metric"><div class="stMetric">{ltv:.2f}%</div></div>', unsafe_allow_html=True)
+        
+        # Display LTV percentages under each column
+        ltv1 = ((balance - down_payments[0]) / book_value) * 100 if book_value else 0
+        ltv2 = ((balance - down_payments[1]) / book_value) * 100 if book_value else 0
+        ltv3 = ((balance - down_payments[2]) / book_value) * 100 if book_value else 0
+        
+        col3.markdown(f'<div class="centered-metric"><div class="stMetric">{ltv1:.2f}%</div></div>', unsafe_allow_html=True)
+        col4.markdown(f'<div class="centered-metric"><div class="stMetric">{ltv2:.2f}%</div></div>', unsafe_allow_html=True)
+        col5.markdown(f'<div class="centered-metric"><div class="stMetric">{ltv3:.2f}%</div></div>', unsafe_allow_html=True)
 
 submit_button = st.button(label="Generate Quote")
 
