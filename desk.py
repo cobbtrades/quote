@@ -348,7 +348,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         inputs_col.text_input(label="Balance", key=f"{prefix}_balance", value=f"{balance:.2f}", label_visibility='collapsed', help="Balance", disabled=True)
     
     with left_col:
-        col1, col2, col3, col4, col5, col6 = st.columns([.5,1,.5,2,2,2,2])
+        col1, col2, col3, col4, col5, col6 = st.columns([.5,1,.5,2,2,2])
     
         col1.text("")
         col1.text("")
