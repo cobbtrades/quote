@@ -251,7 +251,9 @@ with finance:
         trim = sc5.text_input(label="Trim", key="trim", placeholder="Trim", label_visibility="collapsed", help="Trim")
         odometer = tc5.text_input(label="Odometer", key="odometer", placeholder="Odometer", label_visibility="collapsed", help="Odometer")
         fc6, sc6, tc6 = st.columns(3)
+        markdown('<input class="label-input" type="text" value="Cost" disabled>', unsafe_allow_html=True)
         veh_cost = fc6.number_input(label="Cost", key="veh_cost", value = None, placeholder="Cost", label_visibility='collapsed', help="Cost")
+        markdown('<input class="label-input" type="text" value="Book Value" disabled>', unsafe_allow_html=True)
         book_value = sc6.number_input(label="Book Value", key="book_value", value = None, placeholder="Book Value", label_visibility='collapsed', help="Book Value")
 
     with tc:
