@@ -409,7 +409,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 else:
                     if is_lease:
                         residual_value = market_value * residual_values[i]
-                        monthly_payment = calc_payment_func(market_value, balance, down_payments[j], rates[i], terms[i], residual_value, taxes)
+                        monthly_payment = calc_payment_func(market_value, market_value, 0, down_payments[j], 0, rates[i], terms[i], residual_value, taxes)
                     else:
                         monthly_payment = calc_payment_func(balance, down_payments[j], rates[i], terms[i])
                 ltv = ((balance - down_payments[j]) / book_value) * 100 if book_value else 0
@@ -440,7 +440,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 for j in range(3):
                     if is_lease:
                         residual_value = market_value * residual_values[i]
-                        monthly_payment = calc_payment_func(market_value, market_value, balance, down_payments[j], rates[i], terms[i], residual_value, taxes)
+                        monthly_payment = calc_payment_func(market_value, market_value, 0, down_payments[j], 0, rates[i], terms[i], residual_value, taxes)
                     else:
                         monthly_payment = calc_payment_func(balance, down_payments[j], rates[i], terms[i])
                     term_payments[down_payments[j]] = round(float(monthly_payment), 2)
@@ -503,5 +503,6 @@ finance, lease = st.tabs(["Finance", "Lease"])
 with finance:
     render_tab(calculate_monthly_payment, prefix="finance")
 
+lease_payment_func = lambda msrp, negotiated_price, fees, down_payment, rebate, money_factor, term_months, residual_percentage, tax_rate: calculate_lease_payment(msrp, negotiated_price, fees, down_payment, rebate, money_factor, term_months, residual_percentage, tax_rate)
 with lease:
-    render_tab(lambda msrp, negotiated_price, fees, down_payment, rebate, money_factor, term_months, residual_percentage, tax_rate: calculate_lease_payment(msrp, negotiated_price, fees, down_payment, rebate, money_factor, term_months, residual_percentage, tax_rate), prefix="lease", is_lease=True)
+    render_tab(lease_payment_func, prefix="lease", is_lease=True)
