@@ -103,7 +103,6 @@ def generate_pdf(data, filename='quote.pdf'):
     elements.append(details_table)
     elements.append(Spacer(1, 20))
     
-    # Vehicle selection and trade-in details
     selection_data = [
         ["SELECTION", "", "", "", "", ""],
         ["YEAR", "MAKE", "MODEL", "STOCK NO.", "VIN", "MILES"],
