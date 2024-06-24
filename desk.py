@@ -5,7 +5,7 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Par
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 
-st.set_page_config(page_title="Desking App", page_icon="📝")
+st.set_page_config(page_title="Desking App")
 
 with open("styles.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
@@ -24,16 +24,14 @@ def calculate_monthly_payment(principal, down_payment, annual_rate, term_months)
             payment = principal * monthly_rate / (1 - (1 + monthly_rate) ** -term_months)
         return "{:.2f}".format(payment)
 
-def calculate_lease_payment(principal, down_payment, annual_rate, term_months, residual_value):
+def calculate_lease_payment(principal, down_payment, money_factor, term_months, residual_value):
     if principal == 0:
         return 0
     else:
         principal = principal - down_payment
-        monthly_rate = annual_rate / 100 / 12
-        if monthly_rate == 0:
-            payment = (principal - residual_value) / term_months
-        else:
-            payment = (principal - residual_value) * monthly_rate / (1 - (1 + monthly_rate) ** -term_months) + residual_value / term_months
+        monthly_depreciation = (principal - residual_value) / term_months
+        monthly_interest = (principal + residual_value) * money_factor
+        payment = monthly_depreciation + monthly_interest
         return "{:.2f}".format(payment)
 
 def calculate_balance(market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees):
@@ -339,7 +337,10 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         default_terms = [60, 66, 72]
         for i in range(3):
             term = col1.number_input(f"Term {i+1}", min_value=1, value=default_terms[i], key=f'{prefix}_term_{i+1}')
-            rate = col2.number_input(f"Rate {i+1} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'{prefix}_rate_{i+1}')
+            if is_lease:
+                rate = col2.number_input(f"Money Factor {i+1}", min_value=0.00000, max_value=1.00000, value=0.00275, format="%.5f", key=f'{prefix}_rate_{i+1}')
+            else:
+                rate = col2.number_input(f"Rate {i+1} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'{prefix}_rate_{i+1}')
             terms.append(term)
             rates.append(rate)
     
@@ -431,4 +432,4 @@ with finance:
     render_tab(calculate_monthly_payment, prefix="finance")
 
 with lease:
-    render_tab(lambda principal, down_payment, annual_rate, term_months: calculate_lease_payment(principal, down_payment, annual_rate, term_months, st.session_state.get('lease_residual_value', 0)), prefix="lease", is_lease=True)
+    render_tab(lambda principal, down_payment, money_factor, term_months: calculate_lease_payment(principal, down_payment, money_factor, term_months, st.session_state.get('lease_residual_value', 0)), prefix="lease", is_lease=True)
