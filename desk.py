@@ -346,50 +346,56 @@ with left_col:
     col4.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv2:.2f}%</span></div></div>', unsafe_allow_html=True)
     col5.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv3:.2f}%</span></div></div>', unsafe_allow_html=True)
 
-submit_button = st.button(label="Generate Quote")
-
-if submit_button:
-    quotes = {}
-    for i in range(3):
-        term_payments = {}
-        for j in range(3):
-            monthly_payment = calculate_monthly_payment(balance, down_payments[j], rates[i], terms[i])
-            term_payments[down_payments[j]] = round(float(monthly_payment), 2)
-        quotes[terms[i]] = term_payments
+lbc, rbc, blankbc = st.columns([1, 1, 10])
+with lbc:
+    submit_button = st.button(label="Generate Quote")
     
-    data = {
-        'date': datetime.today().strftime('%B %d, %Y').upper(),
-        'salesperson': consultant,
-        'buyer': customer,
-        'address': address,
-        'city': city,
-        'state': state,
-        'zip': zipcode,
-        'cell_phone': phone_num,
-        'email_add': email_address,
-        'year': year,
-        'make': make,
-        'model': model,
-        'stock_no': stocknum,
-        'vin': vin,
-        'miles': odometer,
-        'trade_year': '',
-        'trade_make': '',
-        'trade_model': '',
-        'trade_vin': '',
-        'trade_miles': '',
-        'sale_price': market_value,
-        'discount': discount,
-        'rebate': rebate,
-        'trade_value': trade_value,
-        'trade_payoff': trade_payoff,
-        'doc_fee': doc_fee,
-        'sales_tax': taxes,
-        'non_tax_fees': non_tax_fees,
-        'balance': balance,
-        'quotes': quotes,
-    }
-    
-    pdf_file = generate_pdf(data)
-    with open(pdf_file, 'rb') as f:
-        st.download_button('Download PDF Quote', f, file_name=pdf_file)
+    if submit_button:
+        quotes = {}
+        for i in range(3):
+            term_payments = {}
+            for j in range(3):
+                monthly_payment = calculate_monthly_payment(balance, down_payments[j], rates[i], terms[i])
+                term_payments[down_payments[j]] = round(float(monthly_payment), 2)
+            quotes[terms[i]] = term_payments
+        
+        data = {
+            'date': datetime.today().strftime('%B %d, %Y').upper(),
+            'salesperson': consultant,
+            'buyer': customer,
+            'address': address,
+            'city': city,
+            'state': state,
+            'zip': zipcode,
+            'cell_phone': phone_num,
+            'email_add': email_address,
+            'year': year,
+            'make': make,
+            'model': model,
+            'stock_no': stocknum,
+            'vin': vin,
+            'miles': odometer,
+            'trade_year': '',
+            'trade_make': '',
+            'trade_model': '',
+            'trade_vin': '',
+            'trade_miles': '',
+            'sale_price': market_value,
+            'discount': discount,
+            'rebate': rebate,
+            'trade_value': trade_value,
+            'trade_payoff': trade_payoff,
+            'doc_fee': doc_fee,
+            'sales_tax': taxes,
+            'non_tax_fees': non_tax_fees,
+            'balance': balance,
+            'quotes': quotes,
+        }
+        
+        pdf_file = generate_pdf(data)
+        with open(pdf_file, 'rb') as f:
+            st.download_button('Download PDF Quote', f, file_name=pdf_file)
+    with rbc:
+        gross_profit = market_value - discount - cost_of_vehicle + (acv_of_trade - trade_value)
+        color = "lightgreen" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
+        st.markdown(f"<p style='color:{color}; font-size:24px;'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
