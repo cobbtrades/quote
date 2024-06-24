@@ -24,7 +24,7 @@ def calculate_monthly_payment(principal, down_payment, annual_rate, term_months)
             payment = principal * monthly_rate / (1 - (1 + monthly_rate) ** -term_months)
         return "{:.2f}".format(payment)
 
-def calculate_lease_payment(market_value, doc_fee, non_tax_fees, doc, down_payment, rebate, money_factor, term_months, residual_percentage, trade_value, trade_payoff):
+def calculate_lease_payment(market_value, doc_fee, non_tax_fees, doc, down_payment, rebate, money_factor, term_months, residual_percentage, trade_value, trade_payoff, discount):
     if market_value == 0:
         return 0
     else:
