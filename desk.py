@@ -349,47 +349,47 @@ with left_col:
 submit_button = st.button(label="Generate Quote")
 
 if submit_button:
-quotes = {}
-for i in range(3):
-    term_payments = {}
-    for j in range(3):
-        monthly_payment = calculate_monthly_payment(balance, down_payments[j], rates[i], terms[i])
-        term_payments[down_payments[j]] = round(float(monthly_payment), 2)
-    quotes[terms[i]] = term_payments
-
-data = {
-    'date': datetime.today().strftime('%B %d, %Y').upper(),
-    'salesperson': consultant,
-    'buyer': customer,
-    'address': address,
-    'city': city,
-    'state': state,
-    'zip': zipcode,
-    'cell_phone': phone_num,
-    'email_add': email_address,
-    'year': year,
-    'make': make,
-    'model': model,
-    'stock_no': stocknum,
-    'vin': vin,
-    'miles': odometer,
-    'trade_year': '',
-    'trade_make': '',
-    'trade_model': '',
-    'trade_vin': '',
-    'trade_miles': '',
-    'sale_price': market_value,
-    'discount': discount,
-    'rebate': rebate,
-    'trade_value': trade_value,
-    'trade_payoff': trade_payoff,
-    'doc_fee': doc_fee,
-    'sales_tax': taxes,
-    'non_tax_fees': non_tax_fees,
-    'balance': balance,
-    'quotes': quotes,
-}
-
-pdf_file = generate_pdf(data)
-with open(pdf_file, 'rb') as f:
-    st.download_button('Download PDF Quote', f, file_name=pdf_file)
+    quotes = {}
+    for i in range(3):
+        term_payments = {}
+        for j in range(3):
+            monthly_payment = calculate_monthly_payment(balance, down_payments[j], rates[i], terms[i])
+            term_payments[down_payments[j]] = round(float(monthly_payment), 2)
+        quotes[terms[i]] = term_payments
+    
+    data = {
+        'date': datetime.today().strftime('%B %d, %Y').upper(),
+        'salesperson': consultant,
+        'buyer': customer,
+        'address': address,
+        'city': city,
+        'state': state,
+        'zip': zipcode,
+        'cell_phone': phone_num,
+        'email_add': email_address,
+        'year': year,
+        'make': make,
+        'model': model,
+        'stock_no': stocknum,
+        'vin': vin,
+        'miles': odometer,
+        'trade_year': '',
+        'trade_make': '',
+        'trade_model': '',
+        'trade_vin': '',
+        'trade_miles': '',
+        'sale_price': market_value,
+        'discount': discount,
+        'rebate': rebate,
+        'trade_value': trade_value,
+        'trade_payoff': trade_payoff,
+        'doc_fee': doc_fee,
+        'sales_tax': taxes,
+        'non_tax_fees': non_tax_fees,
+        'balance': balance,
+        'quotes': quotes,
+    }
+    
+    pdf_file = generate_pdf(data)
+    with open(pdf_file, 'rb') as f:
+        st.download_button('Download PDF Quote', f, file_name=pdf_file)
