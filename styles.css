@@ -36,6 +36,19 @@ body {
     width: 100%;
 }
 
+.labels_col input {
+    background-color: transparent !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+.labels_col input:disabled {
+    background-color: transparent !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
 /* Remove footer padding */
 footer {
     padding: 0;
