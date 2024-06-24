@@ -257,6 +257,9 @@ with tc:
     dealer = st.text_input(label="Dealership", key="dealer", placeholder="Dealership", label_visibility="collapsed", help="Dealership")
     consultant = st.text_input(label="Sales Person", key="consultant", placeholder="Sales Person", label_visibility="collapsed", help="Sales Person")
     manager = st.text_input(label="Sales Manager", key="manager", placeholder="Sales Manager", label_visibility="collapsed", help="Sales Manager")
+    gross_profit = market_value - discount - cost_of_vehicle + (acv_of_trade - trade_value)
+    color = "lightgreen" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
+    st.markdown(f"<p style='color:{color}; font-size:24px;'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
 
 left_col, right_col = st.columns(2)
 
