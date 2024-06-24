@@ -24,15 +24,28 @@ def calculate_monthly_payment(principal, down_payment, annual_rate, term_months)
             payment = principal * monthly_rate / (1 - (1 + monthly_rate) ** -term_months)
         return "{:.2f}".format(payment)
 
-def calculate_lease_payment(principal, down_payment, money_factor, term_months, residual_value):
-    if principal == 0:
-        return 0
-    else:
-        principal = principal - down_payment
-        monthly_depreciation = (principal - residual_value) / term_months
-        monthly_interest = (principal + residual_value) * money_factor
-        payment = monthly_depreciation + monthly_interest
-        return "{:.2f}".format(payment)
+def calculate_lease_payment(msrp, negotiated_price, fees, down_payment, rebate, money_factor, term_months, residual_percentage, tax_rate):
+    # Calculate residual value
+    residual_value = msrp * residual_percentage
+    
+    # Calculate gross and adjusted capitalized cost
+    gross_cap_cost = negotiated_price + fees
+    cap_cost_reduction = down_payment + rebate
+    adjusted_cap_cost = gross_cap_cost - cap_cost_reduction
+    
+    # Calculate monthly depreciation
+    monthly_depreciation = (adjusted_cap_cost - residual_value) / term_months
+    
+    # Calculate monthly rent charge
+    monthly_rent_charge = (adjusted_cap_cost + residual_value) * money_factor
+    
+    # Calculate monthly tax
+    monthly_tax = (monthly_depreciation + monthly_rent_charge) * tax_rate
+    
+    # Calculate total monthly lease payment
+    total_monthly_lease_payment = monthly_depreciation + monthly_rent_charge + monthly_tax
+    
+    return "{:.2f}".format(total_monthly_lease_payment)
 
 def calculate_balance(market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees):
     market_value = market_value or 0
@@ -395,8 +408,8 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                     monthly_payment = 0
                 else:
                     if is_lease:
-                        residual_value = balance * residual_values[i]
-                        monthly_payment = calc_payment_func(balance, down_payments[j], rates[i], terms[i], residual_value)
+                        residual_value = market_value * residual_values[i]
+                        monthly_payment = calc_payment_func(market_value, balance, down_payments[j], rates[i], terms[i], residual_value, taxes)
                     else:
                         monthly_payment = calc_payment_func(balance, down_payments[j], rates[i], terms[i])
                 ltv = ((balance - down_payments[j]) / book_value) * 100 if book_value else 0
@@ -426,8 +439,8 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 term_payments = {}
                 for j in range(3):
                     if is_lease:
-                        residual_value = balance * residual_values[i]
-                        monthly_payment = calc_payment_func(balance, down_payments[j], rates[i], terms[i], residual_value)
+                        residual_value = market_value * residual_values[i]
+                        monthly_payment = calc_payment_func(market_value, balance, down_payments[j], rates[i], terms[i], residual_value, taxes)
                     else:
                         monthly_payment = calc_payment_func(balance, down_payments[j], rates[i], terms[i])
                     term_payments[down_payments[j]] = round(float(monthly_payment), 2)
@@ -491,4 +504,4 @@ with finance:
     render_tab(calculate_monthly_payment, prefix="finance")
 
 with lease:
-    render_tab(lambda principal, down_payment, money_factor, term_months, residual_value: calculate_lease_payment(principal, down_payment, money_factor, term_months, residual_value), prefix="lease", is_lease=True)
+    render_tab(lambda msrp, negotiated_price, balance, down_payment, money_factor, term_months, residual_percentage, tax_rate: calculate_lease_payment(msrp, negotiated_price, balance, down_payment, money_factor, term_months, residual_percentage, tax_rate), prefix="lease", is_lease=True)
