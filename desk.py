@@ -24,45 +24,15 @@ def calculate_monthly_payment(principal, down_payment, annual_rate, term_months)
             payment = principal * monthly_rate / (1 - (1 + monthly_rate) ** -term_months)
         return "{:.2f}".format(payment)
 
-def calculate_lease_payment(msrp, negotiated_price, fees, down_payment, rebate, money_factor, term_months, residual_percentage, tax_rate):
-    residual_percentage /= 100  # Convert percentage to fraction if input is in percentage
-    # Calculate residual value
-    residual_value = msrp * residual_percentage
-    # Calculate gross and adjusted capitalized cost
-    gross_cap_cost = negotiated_price + fees
-    cap_cost_reduction = down_payment + rebate
+def calculate_lease_payment(market_value, doc_fee, non_tax_fees, doc, down_payment, rebate, money_factor, term_months, residual_percentage, trade_value, trade_payoff):
+    residual_value = market_value * residual_percentage
+    gross_cap_cost = market_value - discount + doc_fee + non_tax_fees + doc
+    cap_cost_reduction = down_payment + rebate + (trade_value - trade_payoff)
     adjusted_cap_cost = gross_cap_cost - cap_cost_reduction
-    
-    # Calculate monthly depreciation
     monthly_depreciation = (adjusted_cap_cost - residual_value) / term_months
-    # Calculate monthly rent charge
     monthly_rent_charge = (adjusted_cap_cost + residual_value) * money_factor
-    
-    # Calculate monthly tax
-    monthly_tax = (monthly_depreciation + monthly_rent_charge) * tax_rate
-    
-    # Calculate total monthly lease payment
+    monthly_tax = (monthly_depreciation + monthly_rent_charge) * 0.03
     total_monthly_lease_payment = monthly_depreciation + monthly_rent_charge + monthly_tax
-    
-    # Debugging logs
-    st.write(f"MSRP: {msrp}")
-    st.write(f"Negotiated Price: {negotiated_price}")
-    st.write(f"Fees: {fees}")
-    st.write(f"Down Payment: {down_payment}")
-    st.write(f"Rebate: {rebate}")
-    st.write(f"Money Factor: {money_factor}")
-    st.write(f"Term Months: {term_months}")
-    st.write(f"Residual Percentage: {residual_percentage}")
-    st.write(f"Tax Rate: {tax_rate}")
-    st.write(f"Residual Value: {residual_value}")
-    st.write(f"Gross Cap Cost: {gross_cap_cost}")
-    st.write(f"Cap Cost Reduction: {cap_cost_reduction}")
-    st.write(f"Adjusted Cap Cost: {adjusted_cap_cost}")
-    st.write(f"Monthly Depreciation: {monthly_depreciation}")
-    st.write(f"Monthly Rent Charge: {monthly_rent_charge}")
-    st.write(f"Monthly Tax: {monthly_tax}")
-    st.write(f"Total Monthly Lease Payment: {total_monthly_lease_payment}")
-    
     return "{:.2f}".format(total_monthly_lease_payment)
 
 def calculate_balance(market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees):
@@ -521,6 +491,5 @@ finance, lease = st.tabs(["Finance", "Lease"])
 with finance:
     render_tab(calculate_monthly_payment, prefix="finance")
 
-lease_payment_func = lambda msrp, negotiated_price, fees, down_payment, rebate, money_factor, term_months, residual_percentage, tax_rate: calculate_lease_payment(msrp, negotiated_price, fees, down_payment, rebate, money_factor, term_months, residual_percentage, tax_rate)
 with lease:
     render_tab(lease_payment_func, prefix="lease", is_lease=True)
