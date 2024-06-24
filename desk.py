@@ -284,7 +284,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             # First row of trade-in details
             tt1, fc1, sc1, tc1, fr1, ft1, st1, sv1, ec1 = st.columns([1, 1, 2, 1, 2, 1, 2, 1, 4])
             col_data = f"Trade-in {i+1}"
-            tt1.markdown('<input class="label-input" type="text" value={col_data} disabled>', unsafe_allow_html=True)
+            tt1.markdown('<input class="label-input" type="text" value="{col_data}" disabled>', unsafe_allow_html=True)
             fc1.markdown('<input class="label-input" type="text" value="Year" disabled>', unsafe_allow_html=True)
             trade_year = sc1.text_input(f"Trade-in {i+1} Year", key=f"{prefix}_trade_year_{i+1}", placeholder="Year", label_visibility="collapsed", max_chars=4)
             tc1.markdown('<input class="label-input" type="text" value="Make" disabled>', unsafe_allow_html=True)
