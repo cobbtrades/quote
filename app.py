@@ -10,13 +10,13 @@ from datetime import datetime
 NON_TAX_FEE = 106.75
 SALES_TAX_RATE_NC = 0.03
 
-# Function to calculate monthly payments
-def calculate_monthly_payment(principal, annual_rate, term_months):
-    monthly_rate = annual_rate / 100 / 12
+def calculate_monthly_payment(principal, annual_interest_rate, loan_term_months):
+    monthly_interest_rate = annual_interest_rate / 12 / 100
     if monthly_rate == 0:
-        return principal / term_months
-    return principal * (monthly_rate * (1 + monthly_rate) ** term_months) / ((1 + monthly_rate) ** term_months - 1)
-
+        return principal / loan_term_months
+    monthly_payment = (principal * monthly_interest_rate * (1 + monthly_interest_rate) ** loan_term_months) / \
+                      ((1 + monthly_interest_rate) ** loan_term_months - 1)
+    return monthly_payment
 
 # Function to generate PDF
 def generate_pdf(data, filename='quote.pdf'):
