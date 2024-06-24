@@ -283,15 +283,15 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         for i in range(2):  # For up to 2 trades
             # First row of trade-in details
             tt1, fc1, sc1, tc1, fr1, ft1, st1, sv1, ec1 = st.columns([1, 1, 2, 1, 2, 1, 2, 1, 4])
-            tt1.write(f"Trade-in {i+1}")
+            tt1.markdown('<input class="label-input" type="text" value="f"Trade-in {i+1}"" disabled>', unsafe_allow_html=True)
             fc1.markdown('<input class="label-input" type="text" value="Year" disabled>', unsafe_allow_html=True)
-            trade_year = sc1.text_input(f"Trade-in {i+1} Year", key=f"{prefix}_trade_year_{i+1}", placeholder="Year", label_visibility="collapsed")
+            trade_year = sc1.text_input(f"Trade-in {i+1} Year", key=f"{prefix}_trade_year_{i+1}", placeholder="Year", label_visibility="collapsed", max_chars=4)
             tc1.markdown('<input class="label-input" type="text" value="Make" disabled>', unsafe_allow_html=True)
             trade_make = fr1.text_input(f"Trade-in {i+1} Make", key=f"{prefix}_trade_make_{i+1}", placeholder="Make", label_visibility="collapsed")
             ft1.markdown('<input class="label-input" type="text" value="Model" disabled>', unsafe_allow_html=True)
             trade_model = st1.text_input(f"Trade-in {i+1} Model", key=f"{prefix}_trade_model_{i+1}", placeholder="Model", label_visibility="collapsed")
             sv1.markdown('<input class="label-input" type="text" value="VIN" disabled>', unsafe_allow_html=True)
-            trade_vin = ec1.text_input(f"Trade-in {i+1} VIN", key=f"{prefix}_trade_vin_{i+1}", placeholder="VIN", label_visibility="collapsed")
+            trade_vin = ec1.text_input(f"Trade-in {i+1} VIN", key=f"{prefix}_trade_vin_{i+1}", placeholder="VIN", label_visibility="collapsed", max_chars=17)
     
             # Second row of trade-in details
             tt2, fc2, sc2, tc2, fr2, ft2, st2, sv2, ec2 = st.columns([1, 1, 2, 1, 2, 1, 2, 1, 4])
