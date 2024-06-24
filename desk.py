@@ -405,5 +405,5 @@ with lbc:
         trade_acv = trade_acv or 0
         trade_value = trade_value or 0
         gross_profit = market_value - discount - veh_cost + (trade_acv - trade_value)
-        color = "lightgreen" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
+        color = "green" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
         st.markdown(f"<p style='color:{color}; font-size:24px;'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
