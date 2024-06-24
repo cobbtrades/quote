@@ -178,8 +178,6 @@ def generate_pdf(data, filename='quote.pdf'):
                 ('BACKGROUND', (0, 1), (-1, -1), colors.white),
                 ('GRID', (0, 0), (-1, -1), 1, colors.black),
             ]))
-            elements.append(grid_table)
-            elements.append(Spacer(1, 20))
         else:
             logging.error("No quotes data found")
         
