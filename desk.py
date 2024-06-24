@@ -294,7 +294,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             trade_vin = ec1.text_input(f"Trade-in {i+1} VIN", key=f"{prefix}_trade_vin_{i+1}", placeholder="VIN", label_visibility="collapsed")
 
             # Second row of trade-in details
-            fc2, sc2, tc2, fr2, ft2, st2, sv2, ec2 = st.columns(8)
+            tt2, fc2, sc2, tc2, fr2, ft2, st2, sv2, ec2 = st.columns(9)
             fc2.markdown('<input class="label-input" type="text" value="Miles" disabled>', unsafe_allow_html=True)
             trade_miles = sc2.text_input(f"Trade-in {i+1} Miles", key=f"{prefix}_trade_miles_{i+1}", placeholder="Miles", label_visibility="collapsed")
             tc2.markdown('<input class="label-input" type="text" value="Trade Value" disabled>', unsafe_allow_html=True)
