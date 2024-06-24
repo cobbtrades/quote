@@ -263,39 +263,40 @@ with finance:
     left_col, right_col = st.columns(2)
 
     with right_col:
-        labels_col, inputs_col = st.columns([1, 4])
-        with labels_col:
-            st.text_input("Market Value", value="Market Value", disabled=True, label_visibility='collapsed', key="market_value_label")
-            st.text_input("Discount", value="Discount", disabled=True, label_visibility='collapsed', key="discount_label")
-            st.text_input("Rebate", value="Rebate", disabled=True, label_visibility='collapsed', key="rebate_label")
-            st.text_input("Trade Value", value="Trade Value", disabled=True, label_visibility='collapsed', key="trade_value_label")
-            st.text_input("Trade ACV", value="Trade ACV", disabled=True, label_visibility='collapsed', key="trade_acv_label")
-            st.text_input("Trade Payoff", value="Trade Payoff", disabled=True, label_visibility='collapsed', key="trade_payoff_label")
-            st.text_input("Doc Fee", value="Doc Fee", disabled=True, label_visibility='collapsed', key="doc_fee_label")
-            st.text_input("Taxes", value="Taxes", disabled=True, label_visibility='collapsed', key="taxes_label")
-            st.text_input("Non-Tax Fees", value="Non-Tax Fees", disabled=True, label_visibility='collapsed', key="non_tax_fees_label")
-            st.text_input("Balance", value="Balance", disabled=True, label_visibility='collapsed', key="balance_label")
-        
-        with inputs_col:
-            market_value = st.number_input(label="Market Value", key="market_value", value=None, placeholder="Market Value", label_visibility='collapsed', help="Market Value")
-            discount = st.number_input(label="Discount", key="discount", value=None, placeholder="Discount", label_visibility='collapsed', help="Discount")
-            rebate = st.number_input(label="Rebate", key="rebate", value=None, placeholder="Rebate", label_visibility='collapsed', help="Rebate")
-            trade_value = st.number_input(label="Trade Value", key="trade_value", value=None, placeholder="Trade Value", label_visibility='collapsed', help="Trade Value")
-            trade_acv = st.number_input(label="Trade ACV", key="trade_acv", value=None, placeholder="Trade ACV", label_visibility='collapsed', help="Trade ACV")
-            trade_payoff = st.number_input(label="Trade Payoff", key="trade_payoff", value=None, placeholder="Trade Payoff", label_visibility='collapsed', help="Trade Payoff")
-            doc_fee = st.number_input(label="Doc Fee", key="doc_fee", value=None, placeholder="Doc Fee", label_visibility='collapsed', help="Doc Fee")
-            
-            # Assuming calculate_taxes and calculate_balance are defined functions
-            taxes = calculate_taxes(state, market_value, discount, doc_fee, trade_value)
-            st.text_input(label="Taxes", key="taxes", value=f"{taxes:.2f}", label_visibility='collapsed', help="Taxes", disabled=True)
-            
-            non_tax_fees = st.number_input(label="Non-Tax Fees", key="non_tax_fees", value=None, placeholder="Non-Tax Fees", label_visibility='collapsed', help="Non-Tax Fees")
-            
-            balance = calculate_balance(
-                market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees
-            )
-            st.text_input(label="Balance", key="balance", value=f"{balance:.2f}", label_visibility='collapsed', help="Balance", disabled=True)
+    labels_col, inputs_col = st.columns([1, 4])
+    with labels_col:
+        st.markdown('<div class="labels_col">', unsafe_allow_html=True)
+        st.text_input("Market Value", value="Market Value", disabled=True, label_visibility='collapsed', key="market_value_label")
+        st.text_input("Discount", value="Discount", disabled=True, label_visibility='collapsed', key="discount_label")
+        st.text_input("Rebate", value="Rebate", disabled=True, label_visibility='collapsed', key="rebate_label")
+        st.text_input("Trade Value", value="Trade Value", disabled=True, label_visibility='collapsed', key="trade_value_label")
+        st.text_input("Trade ACV", value="Trade ACV", disabled=True, label_visibility='collapsed', key="trade_acv_label")
+        st.text_input("Trade Payoff", value="Trade Payoff", disabled=True, label_visibility='collapsed', key="trade_payoff_label")
+        st.text_input("Doc Fee", value="Doc Fee", disabled=True, label_visibility='collapsed', key="doc_fee_label")
+        st.text_input("Taxes", value="Taxes", disabled=True, label_visibility='collapsed', key="taxes_label")
+        st.text_input("Non-Tax Fees", value="Non-Tax Fees", disabled=True, label_visibility='collapsed', key="non_tax_fees_label")
+        st.text_input("Balance", value="Balance", disabled=True, label_visibility='collapsed', key="balance_label")
+        st.markdown('</div>', unsafe_allow_html=True)
 
+    with inputs_col:
+        market_value = st.number_input(label="Market Value", key="market_value", value=None, placeholder="Market Value", label_visibility='collapsed', help="Market Value")
+        discount = st.number_input(label="Discount", key="discount", value=None, placeholder="Discount", label_visibility='collapsed', help="Discount")
+        rebate = st.number_input(label="Rebate", key="rebate", value=None, placeholder="Rebate", label_visibility='collapsed', help="Rebate")
+        trade_value = st.number_input(label="Trade Value", key="trade_value", value=None, placeholder="Trade Value", label_visibility='collapsed', help="Trade Value")
+        trade_acv = st.number_input(label="Trade ACV", key="trade_acv", value=None, placeholder="Trade ACV", label_visibility='collapsed', help="Trade ACV")
+        trade_payoff = st.number_input(label="Trade Payoff", key="trade_payoff", value=None, placeholder="Trade Payoff", label_visibility='collapsed', help="Trade Payoff")
+        doc_fee = st.number_input(label="Doc Fee", key="doc_fee", value=None, placeholder="Doc Fee", label_visibility='collapsed', help="Doc Fee")
+
+        # Assuming calculate_taxes and calculate_balance are defined functions
+        taxes = calculate_taxes(state, market_value, discount, doc_fee, trade_value)
+        st.text_input(label="Taxes", key="taxes", value=f"{taxes:.2f}", label_visibility='collapsed', help="Taxes", disabled=True)
+
+        non_tax_fees = st.number_input(label="Non-Tax Fees", key="non_tax_fees", value=None, placeholder="Non-Tax Fees", label_visibility='collapsed', help="Non-Tax Fees")
+
+        balance = calculate_balance(
+            market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees
+        )
+        st.text_input(label="Balance", key="balance", value=f"{balance:.2f}", label_visibility='collapsed', help="Balance", disabled=True)
 
     with left_col:
         col1, col2, col3, col4, col5 = st.columns([1,1,2,2,2])
