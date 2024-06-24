@@ -12,7 +12,7 @@ SALES_TAX_RATE_NC = 0.03
 
 def calculate_monthly_payment(principal, annual_interest_rate, loan_term_months):
     monthly_interest_rate = annual_interest_rate / 12 / 100
-    if monthly_rate == 0:
+    if monthly_interest_rate == 0:
         return principal / loan_term_months
     monthly_payment = (principal * monthly_interest_rate * (1 + monthly_interest_rate) ** loan_term_months) / \
                       ((1 + monthly_interest_rate) ** loan_term_months - 1)
