@@ -151,7 +151,7 @@ def generate_pdf(data, filename='quote.pdf'):
         elements.append(selection_table)
         elements.append(Spacer(1, 20))
 
-        # Payment Grid Data
+
         if data.get('quotes'):
             grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
             for term, payments in data['quotes'].items():
