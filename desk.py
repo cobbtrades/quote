@@ -124,9 +124,9 @@ def generate_pdf(data, filename='quote.pdf'):
         ["TRADE-IN", "", "", "", ""],
         ["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"]
     ]
-    if data['trade_vin'] is not None:
+    if data['trade_vin'] != "":
         selection_data.append([data['trade_year'], data['trade_make'], data['trade_model'], "", data['trade_vin'], data['trade_miles']])
-    if data['trade_vin_2'] is not None:
+    if data['trade_vin_2'] != "":
         selection_data.append(["TRADE-IN 2", "", "", "", ""])
         selection_data.append(["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"])
         selection_data.append([data['trade_year_2'], data['trade_make_2'], data['trade_model_2'], "", data['trade_vin_2'], data['trade_miles_2']])
