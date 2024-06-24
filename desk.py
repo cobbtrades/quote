@@ -255,7 +255,6 @@ with finance:
         veh_cost = fc6.number_input(label="Cost", key="veh_cost", value = None, placeholder="Cost", label_visibility='collapsed', help="Cost")
         book_value = sc6.number_input(label="Book Value", key="book_value", value = None, placeholder="Book Value", label_visibility='collapsed', help="Book Value")
 
-    
     with tc:
         dealer = st.text_input(label="Dealership", key="dealer", placeholder="Dealership", label_visibility="collapsed", help="Dealership")
         consultant = st.text_input(label="Sales Person", key="consultant", placeholder="Sales Person", label_visibility="collapsed", help="Sales Person")
@@ -311,12 +310,17 @@ with finance:
         for i in range(3):
             for j in range(3):
                 monthly_payment = calculate_monthly_payment(balance, down_payments[j], rates[i], terms[i])
+                ltv = ((balance - down_payments[j]) / book_value) * 100 if book_value else 0
                 if j == 0:
                     col3.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
+                    col3.markdown(f'<div class="centered-metric"><div class="stMetric">{ltv:.2f}%</div></div>', unsafe_allow_html=True)
                 elif j == 1:
                     col4.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
+                    col4.markdown(f'<div class="centered-metric"><div class="stMetric">{ltv:.2f}%</div></div>', unsafe_allow_html=True)
                 elif j == 2:
                     col5.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
+                    col5.markdown(f'<div class="centered-metric"><div class="stMetric">{ltv:.2f}%</div></div>', unsafe_allow_html=True)
+
 submit_button = st.button(label="Generate Quote")
 
 if submit_button:
