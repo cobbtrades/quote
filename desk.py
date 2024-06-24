@@ -149,7 +149,7 @@ def generate_pdf(data, filename='quote.pdf'):
             row.append(f"${payment:.2f}")
         grid_data.append(row)
     
-    grid_table = Table(grid_data, colWidths=[75] + [75]*len(data['quotes'][list(data['quotes'].keys())[0]].keys()))
+    grid_table = Table(grid_data, colWidths=[75] + [75]*len(data['quotes'][list(data['quotes'].keys'])[0].keys()))
     grid_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
@@ -276,6 +276,9 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         manager = st.text_input(label="Sales Manager", key=f"{prefix}_manager", placeholder="Sales Manager", label_visibility="collapsed", help="Sales Manager")
 
     # Expander for trade-in details
+    trade_values = [0, 0]
+    trade_payoffs = [0, 0]
+    trade_acvs = [0, 0]
     with st.expander("Enter Trade-in Details"):
         for i in range(2):  # For up to 2 trades
             st.write(f"Trade-in {i+1}")
@@ -291,9 +294,9 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 trade_miles = st.text_input(f"Trade-in {i+1} Miles", key=f"{prefix}_trade_miles_{i+1}", placeholder="Miles")
             
             with col3:
-                trade_value = st.number_input(f"Trade-in {i+1} Value", key=f"{prefix}_trade_value_{i+1}", value=0)
-                trade_payoff = st.number_input(f"Trade-in {i+1} Payoff", key=f"{prefix}_trade_payoff_{i+1}", value=0)
-                trade_acv = st.number_input(f"Trade-in {i+1} ACV", key=f"{prefix}_trade_acv_{i+1}", value=0)
+                trade_values[i] = st.number_input(f"Trade-in {i+1} Value", key=f"{prefix}_trade_value_{i+1}", value=0)
+                trade_payoffs[i] = st.number_input(f"Trade-in {i+1} Payoff", key=f"{prefix}_trade_payoff_{i+1}", value=0)
+                trade_acvs[i] = st.number_input(f"Trade-in {i+1} ACV", key=f"{prefix}_trade_acv_{i+1}", value=0)
             
     left_col, right_col = st.columns(2)
     
@@ -310,20 +313,23 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         rebate = inputs_col.number_input(label="Rebate", key=f"{prefix}_rebate", value=0, label_visibility='collapsed', help="Rebate")
         
         labels_col.markdown('<input class="label-input" type="text" value="Trade Value" disabled>', unsafe_allow_html=True)
-        trade_value = inputs_col.number_input(label="Trade Value", key=f"{prefix}_trade_value", value=0, label_visibility='collapsed', help="Trade Value")
+        trade_value = sum(trade_values)
+        inputs_col.text_input(label="Trade Value", key=f"{prefix}_trade_value", value=f"{trade_value:.2f}", label_visibility='collapsed', help="Trade Value", disabled=True)
         
         labels_col.markdown('<input class="label-input" type="text" value="Trade ACV" disabled>', unsafe_allow_html=True)
-        trade_acv = inputs_col.number_input(label="Trade ACV", key=f"{prefix}_trade_acv", value=0, label_visibility='collapsed', help="Trade ACV")
+        trade_acv = sum(trade_acvs)
+        inputs_col.text_input(label="Trade ACV", key=f"{prefix}_trade_acv", value=f"{trade_acv:.2f}", label_visibility='collapsed', help="Trade ACV", disabled=True)
         
         labels_col.markdown('<input class="label-input" type="text" value="Trade Payoff" disabled>', unsafe_allow_html=True)
-        trade_payoff = inputs_col.number_input(label="Trade Payoff", key=f"{prefix}_trade_payoff", value=0, label_visibility='collapsed', help="Trade Payoff")
+        trade_payoff = sum(trade_payoffs)
+        inputs_col.text_input(label="Trade Payoff", key=f"{prefix}_trade_payoff", value=f"{trade_payoff:.2f}", label_visibility='collapsed', help="Trade Payoff", disabled=True)
         
         labels_col.markdown('<input class="label-input" type="text" value="Doc Fee" disabled>', unsafe_allow_html=True)
         doc_fee = inputs_col.number_input(label="Doc Fee", key=f"{prefix}_doc_fee", value=799, label_visibility='collapsed', help="Doc Fee")
         
         taxes = calculate_taxes(state, market_value, discount, doc_fee, trade_value)
         labels_col.markdown('<input class="label-input" type="text" value="Taxes" disabled>', unsafe_allow_html=True)
-        inputs_col.text_input(label="Taxes", key=f"{prefix}_taxes", value=f"{taxes:.2f}", label_visibility='collapsed', help="Taxes")
+        inputs_col.text_input(label="Taxes", key=f"{prefix}_taxes", value=f"{taxes:.2f}", label_visibility='collapsed', help="Taxes", disabled=True)
         
         labels_col.markdown('<input class="label-input" type="text" value="Non-Tax Fees" disabled>', unsafe_allow_html=True)
         non_tax_fees = inputs_col.number_input(label="Non-Tax Fees", key=f"{prefix}_non_tax_fees", value=106.75, label_visibility='collapsed', help="Non-Tax Fees")
@@ -427,9 +433,9 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 'trade_model': st.session_state.get(f"{prefix}_trade_model_1", ""),
                 'trade_vin': st.session_state.get(f"{prefix}_trade_vin_1", ""),
                 'trade_miles': st.session_state.get(f"{prefix}_trade_miles_1", ""),
-                'trade_value': st.session_state.get(f"{prefix}_trade_value_1", 0) + st.session_state.get(f"{prefix}_trade_value_2", 0),
-                'trade_payoff': st.session_state.get(f"{prefix}_trade_payoff_1", 0) + st.session_state.get(f"{prefix}_trade_payoff_2", 0),
-                'trade_acv': st.session_state.get(f"{prefix}_trade_acv_1", 0) + st.session_state.get(f"{prefix}_trade_acv_2", 0),
+                'trade_value': sum(trade_values),
+                'trade_payoff': sum(trade_payoffs),
+                'trade_acv': sum(trade_acvs),
                 'trade_year_2': st.session_state.get(f"{prefix}_trade_year_2", ""),
                 'trade_make_2': st.session_state.get(f"{prefix}_trade_make_2", ""),
                 'trade_model_2': st.session_state.get(f"{prefix}_trade_model_2", ""),
