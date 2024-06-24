@@ -189,7 +189,7 @@ def generate_pdf(data, filename='quote.pdf'):
             ["Trade Payoff", f"${data.get('trade_payoff', 0):.2f}"] if data.get('trade_payoff', 0) != 0 else None,
             ["Doc Fee", f"${data.get('doc_fee', 0):.2f}"] if data.get('doc_fee', 0) != 0 else None,
             ["Sales Tax", f"${data.get('sales_tax', 0):.2f}"] if data.get('sales_tax', 0) != 0 else None,
-            ["Non Tax Fees", f"${data.get('non_tax_fees', 0):.2f}"] if data.get('non_tax_fees', 0) != 0 else None,
+            ["Non Tax Fees", f"${data.get('non_tax_fees', 0)::.2f}"] if data.get('non_tax_fees', 0) != 0 else None,
             ["Balance", f"${data.get('balance', 0):.2f}"] if data.get('balance', 0) != 0 else None,
         ]
         # Filter out None values
@@ -440,7 +440,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
 
     lbc, rbc, blankbc = st.columns([2, 3, 10])
     with lbc:
-        submit_button = st.button(label="Generate Quote", key=f"{prefix}_submit_button")
+        submit_button = st.button(label="Generate and Download Quote", key=f"{prefix}_submit_button")
         
         if submit_button:
             quotes = {}
