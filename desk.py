@@ -13,7 +13,6 @@ with open("styles.css") as f:
 # Page title
 st.title("Desking App")
 
-
 def calculate_monthly_payment(principal, down_payment, annual_rate, term_months):
     if principal == 0:
         return 0
@@ -104,6 +103,7 @@ def generate_pdf(data, filename='quote.pdf'):
     elements.append(details_table)
     elements.append(Spacer(1, 20))
     
+    # Vehicle selection and trade-in details
     selection_data = [
         ["SELECTION", "", "", "", "", ""],
         ["YEAR", "MAKE", "MODEL", "STOCK NO.", "VIN", "MILES"],
@@ -265,38 +265,38 @@ with finance:
     with right_col:
         labels_col, inputs_col = st.columns([1, 4])
         
-        labels_col.text_input("Market Value", value="Market Value", disabled=True, label_visibility='collapsed')
+        labels_col.markdown('<input class="label-input" type="text" value="Market Value" disabled>', unsafe_allow_html=True)
         market_value = inputs_col.number_input(label="Market Value", key="market_value", value=None, placeholder="Market Value", label_visibility='collapsed', help="Market Value")
         
-        labels_col.text_input("Discount", value="Discount", disabled=True, label_visibility='collapsed')
+        labels_col.markdown('<input class="label-input" type="text" value="Discount" disabled>', unsafe_allow_html=True)
         discount = inputs_col.number_input(label="Discount", key="discount", value=None, placeholder="Discount", label_visibility='collapsed', help="Discount")
         
-        labels_col.text_input("Rebate", value="Rebate", disabled=True, label_visibility='collapsed')
+        labels_col.markdown('<input class="label-input" type="text" value="Rebate" disabled>', unsafe_allow_html=True)
         rebate = inputs_col.number_input(label="Rebate", key="rebate", value=None, placeholder="Rebate", label_visibility='collapsed', help="Rebate")
         
-        labels_col.text_input("Trade Value", value="Trade Value", disabled=True, label_visibility='collapsed')
+        labels_col.markdown('<input class="label-input" type="text" value="Trade Value" disabled>', unsafe_allow_html=True)
         trade_value = inputs_col.number_input(label="Trade Value", key="trade_value", value=None, placeholder="Trade Value", label_visibility='collapsed', help="Trade Value")
         
-        labels_col.text_input("Trade ACV", value="Trade ACV", disabled=True, label_visibility='collapsed')
+        labels_col.markdown('<input class="label-input" type="text" value="Trade ACV" disabled>', unsafe_allow_html=True)
         trade_acv = inputs_col.number_input(label="Trade ACV", key="trade_acv", value=None, placeholder="Trade ACV", label_visibility='collapsed', help="Trade ACV")
         
-        labels_col.text_input("Trade Payoff", value="Trade Payoff", disabled=True, label_visibility='collapsed')
+        labels_col.markdown('<input class="label-input" type="text" value="Trade Payoff" disabled>', unsafe_allow_html=True)
         trade_payoff = inputs_col.number_input(label="Trade Payoff", key="trade_payoff", value=None, placeholder="Trade Payoff", label_visibility='collapsed', help="Trade Payoff")
         
-        labels_col.text_input("Doc Fee", value="Doc Fee", disabled=True, label_visibility='collapsed')
+        labels_col.markdown('<input class="label-input" type="text" value="Doc Fee" disabled>', unsafe_allow_html=True)
         doc_fee = inputs_col.number_input(label="Doc Fee", key="doc_fee", value=None, placeholder="Doc Fee", label_visibility='collapsed', help="Doc Fee")
         
         taxes = calculate_taxes(state, market_value, discount, doc_fee, trade_value)
-        labels_col.text_input("Taxes", value="Taxes", disabled=True, label_visibility='collapsed')
+        labels_col.markdown('<input class="label-input" type="text" value="Taxes" disabled>', unsafe_allow_html=True)
         inputs_col.text_input(label="Taxes", key="taxes", value=f"{taxes:.2f}", label_visibility='collapsed', help="Taxes")
         
-        labels_col.text_input("Non-Tax Fees", value="Non-Tax Fees", disabled=True, label_visibility='collapsed')
+        labels_col.markdown('<input class="label-input" type="text" value="Non-Tax Fees" disabled>', unsafe_allow_html=True)
         non_tax_fees = inputs_col.number_input(label="Non-Tax Fees", key="non_tax_fees", value=None, placeholder="Non-Tax Fees", label_visibility='collapsed', help="Non-Tax Fees")
         
         balance = calculate_balance(
             market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees
         )
-        labels_col.text_input("Balance", value="Balance", disabled=True, label_visibility='collapsed')
+        labels_col.markdown('<input class="label-input" type="text" value="Balance" disabled>', unsafe_allow_html=True)
         inputs_col.text_input(label="Balance", key="balance", value=f"{balance:.2f}", label_visibility='collapsed', help="Balance", disabled=True)
 
     with left_col:
