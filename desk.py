@@ -13,6 +13,7 @@ with open("styles.css") as f:
 # Page title
 st.title("Desking App")
 
+
 def calculate_monthly_payment(principal, down_payment, annual_rate, term_months):
     if principal == 0:
         return 0
