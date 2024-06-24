@@ -1,5 +1,9 @@
 /* styles.css */
 
+#MainMenu, footer {
+    visibility: hidden;
+}
+
 /* Full page container */
 .main .block-container {
     padding: 0;
