@@ -312,26 +312,6 @@ with finance:
                     col4.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
                 elif j == 2:
                     col5.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
-        
-        # 3x3 grid displaying some calculations based on input values and balance
-        #term1 = col1.number_input(label="Term 1", key="term1", value=60)
-        #rate1 = col2.number_input(label="Rate 1", key="rate1", value=14.00)
-        #grid1 = col3.markdown(f'<div class="centered-metric"><div class="stMetric">{calculate_monthly_payment(balance, value1, rate1, term1)}</div></div>', unsafe_allow_html=True)
-        #grid2 = col4.markdown(f'<div class="centered-metric"><div class="stMetric">{calculate_monthly_payment(balance, value2, rate1, term1)}</div></div>', unsafe_allow_html=True)
-        #grid3 = col5.markdown(f'<div class="centered-metric"><div class="stMetric">{calculate_monthly_payment(balance, value3, rate1, term1)}</div></div>', unsafe_allow_html=True)
-        
-        #term2 = col1.number_input(label="Term 2", key="term2", value=66)
-        #rate2 = col2.number_input(label="Rate 2", key="rate2", value=14.00)
-        #grid4 = col3.markdown(f'<div class="centered-metric"><div class="stMetric">{calculate_monthly_payment(balance, value1, rate2, term2)}</div></div>', unsafe_allow_html=True)
-        #grid5 = col4.markdown(f'<div class="centered-metric"><div class="stMetric">{calculate_monthly_payment(balance, value2, rate2, term2)}</div></div>', unsafe_allow_html=True)
-        #grid6 = col5.markdown(f'<div class="centered-metric"><div class="stMetric">{calculate_monthly_payment(balance, value3, rate2, term2)}</div></div>', unsafe_allow_html=True)
-        
-        #term3 = col1.number_input(label="Term 3", key="term3", value=72)
-        #rate3 = col2.number_input(label="Rate 3", key="rate3", value=14.00)
-        #grid7 = col3.markdown(f'<div class="centered-metric"><div class="stMetric">{calculate_monthly_payment(balance, value1, rate3, term3)}</div></div>', unsafe_allow_html=True)
-        #grid8 = col4.markdown(f'<div class="centered-metric"><div class="stMetric">{calculate_monthly_payment(balance, value2, rate3, term3)}</div></div>', unsafe_allow_html=True)
-        #grid9 = col5.markdown(f'<div class="centered-metric"><div class="stMetric">{calculate_monthly_payment(balance, value3, rate3, term3)}</div></div>', unsafe_allow_html=True)
-    
 submit_button = st.button(label="Generate Quote")
 
 if submit_button:
