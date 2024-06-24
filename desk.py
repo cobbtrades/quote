@@ -10,7 +10,7 @@ st.set_page_config(page_title="Desking App")
 with open("styles.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-st.title("Desking App")
+st.header("Desking App")
 
 def calculate_monthly_payment(principal, down_payment, annual_rate, term_months):
     if principal == 0:
