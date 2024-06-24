@@ -440,7 +440,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 for j in range(3):
                     if is_lease:
                         residual_value = market_value * residual_values[i]
-                        monthly_payment = calc_payment_func(market_value, balance, down_payments[j], rates[i], terms[i], residual_value, taxes)
+                        monthly_payment = calc_payment_func(market_value, market_value, balance, down_payments[j], rates[i], terms[i], residual_value, taxes)
                     else:
                         monthly_payment = calc_payment_func(balance, down_payments[j], rates[i], terms[i])
                     term_payments[down_payments[j]] = round(float(monthly_payment), 2)
@@ -504,4 +504,4 @@ with finance:
     render_tab(calculate_monthly_payment, prefix="finance")
 
 with lease:
-    render_tab(lambda msrp, negotiated_price, balance, down_payment, money_factor, term_months, residual_percentage, tax_rate: calculate_lease_payment(msrp, negotiated_price, balance, down_payment, money_factor, term_months, residual_percentage, tax_rate), prefix="lease", is_lease=True)
+    render_tab(lambda msrp, negotiated_price, fees, down_payment, rebate, money_factor, term_months, residual_percentage, tax_rate: calculate_lease_payment(msrp, negotiated_price, fees, down_payment, rebate, money_factor, term_months, residual_percentage, tax_rate), prefix="lease", is_lease=True)
