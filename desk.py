@@ -11,6 +11,7 @@ with open("styles.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 st.title("Desking")
+
 def calculate_monthly_payment(principal, down_payment, annual_rate, term_months):
     if principal == 0:
         return 0
