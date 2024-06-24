@@ -266,7 +266,7 @@ with finance:
         labels_col, inputs_col = st.columns([1, 3])
     
         def centered_label(text):
-            return f'<div style="display: flex; align-items: center; height: 100%; top-padding: 10px;">{text}</div>'
+            return f'<div style="display: flex; align-items: center; height: 100%; top-padding: 15px;">{text}</div>'
     
         labels_col.markdown(centered_label("Market Value"), unsafe_allow_html=True)
         market_value = inputs_col.number_input(label="Market Value", key="market_value", value=None, placeholder="Market Value", label_visibility='collapsed', help="Market Value")
