@@ -27,7 +27,6 @@ def calculate_monthly_payment(principal, down_payment, annual_rate, term_months)
 def calculate_lease_payment(msrp, negotiated_price, fees, down_payment, rebate, money_factor, term_months, residual_percentage, tax_rate):
     # Calculate residual value
     residual_value = msrp * residual_percentage
-    
     # Calculate gross and adjusted capitalized cost
     gross_cap_cost = negotiated_price + fees
     cap_cost_reduction = down_payment + rebate
@@ -35,7 +34,6 @@ def calculate_lease_payment(msrp, negotiated_price, fees, down_payment, rebate, 
     
     # Calculate monthly depreciation
     monthly_depreciation = (adjusted_cap_cost - residual_value) / term_months
-    
     # Calculate monthly rent charge
     monthly_rent_charge = (adjusted_cap_cost + residual_value) * money_factor
     
@@ -44,6 +42,25 @@ def calculate_lease_payment(msrp, negotiated_price, fees, down_payment, rebate, 
     
     # Calculate total monthly lease payment
     total_monthly_lease_payment = monthly_depreciation + monthly_rent_charge + monthly_tax
+    
+    # Debugging logs
+    st.write(f"MSRP: {msrp}")
+    st.write(f"Negotiated Price: {negotiated_price}")
+    st.write(f"Fees: {fees}")
+    st.write(f"Down Payment: {down_payment}")
+    st.write(f"Rebate: {rebate}")
+    st.write(f"Money Factor: {money_factor}")
+    st.write(f"Term Months: {term_months}")
+    st.write(f"Residual Percentage: {residual_percentage}")
+    st.write(f"Tax Rate: {tax_rate}")
+    st.write(f"Residual Value: {residual_value}")
+    st.write(f"Gross Cap Cost: {gross_cap_cost}")
+    st.write(f"Cap Cost Reduction: {cap_cost_reduction}")
+    st.write(f"Adjusted Cap Cost: {adjusted_cap_cost}")
+    st.write(f"Monthly Depreciation: {monthly_depreciation}")
+    st.write(f"Monthly Rent Charge: {monthly_rent_charge}")
+    st.write(f"Monthly Tax: {monthly_tax}")
+    st.write(f"Total Monthly Lease Payment: {total_monthly_lease_payment}")
     
     return "{:.2f}".format(total_monthly_lease_payment)
 
@@ -392,7 +409,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
     
         terms = []
         rates = []
-        default_terms = [60, 66, 72]
+        default_terms = [36, 48, 60]  # Changed to typical lease terms
         for i in range(3):
             term = col1.number_input(f"Term {i+1}", min_value=1, value=default_terms[i], key=f'{prefix}_term_{i+1}')
             if is_lease:
