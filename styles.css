@@ -36,21 +36,37 @@ body {
     width: 100%;
 }
 
-.labels_col input {
-    background-color: transparent !important;
-    color: white !important;
-    border: none !important;
-    box-shadow: none !important;
-}
-
-.labels_col input:disabled {
-    background-color: transparent !important;
-    color: white !important;
-    border: none !important;
-    box-shadow: none !important;
-}
-
 /* Remove footer padding */
 footer {
     padding: 0;
+}
+
+input[type="text"] {
+    background-color: #f0f0f0; /* Light grey background */
+    border: 2px solid #dcdcdc; /* Grey border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px; /* Padding inside the input */
+    font-size: 14px; /* Font size */
+    width: 100%; /* Full width */
+}
+
+input[type="number"] {
+    background-color: #f0f0f0; /* Light grey background */
+    border: 2px solid #dcdcdc; /* Grey border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px; /* Padding inside the input */
+    font-size: 14px; /* Font size */
+    width: 100%; /* Full width */
+}
+
+div.stTextInput label {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333; /* Darker text color */
+}
+
+div.stNumberInput label {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333; /* Darker text color */
 }
