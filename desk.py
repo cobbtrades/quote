@@ -292,6 +292,7 @@ with finance:
         value1 = col3.number_input(label="Down Payment", key="value1", value=1000)
         value2 = col4.number_input(label="Down Payment", key="value2", value=2000)
         value3 = col5.number_input(label="Down Payment", key="value3", value=3000)
+        down_payments = [value1, value2, value3]
 
         terms = []
         rates = []
@@ -330,8 +331,6 @@ with finance:
         #grid7 = col3.markdown(f'<div class="centered-metric"><div class="stMetric">{calculate_monthly_payment(balance, value1, rate3, term3)}</div></div>', unsafe_allow_html=True)
         #grid8 = col4.markdown(f'<div class="centered-metric"><div class="stMetric">{calculate_monthly_payment(balance, value2, rate3, term3)}</div></div>', unsafe_allow_html=True)
         #grid9 = col5.markdown(f'<div class="centered-metric"><div class="stMetric">{calculate_monthly_payment(balance, value3, rate3, term3)}</div></div>', unsafe_allow_html=True)
-
-        down_payments = [value1, value2, value3]
     
 submit_button = st.button(label="Generate Quote")
 
