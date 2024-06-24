@@ -400,7 +400,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 else:
                     if is_lease:
                         residual_value = market_value * residual_values[i]
-                        monthly_payment = calc_payment_func(market_value, market_value, 0, down_payments[j], 0, rates[i], terms[i], residual_value, taxes)
+                        monthly_payment = calculate_lease_payment(market_value, doc_fee, non_tax_fees, 0, down_payments[j], 0, rates[i], terms[i], residual_values[i], trade_value, trade_payoff, discount)
                     else:
                         monthly_payment = calc_payment_func(balance, down_payments[j], rates[i], terms[i])
                 ltv = ((balance - down_payments[j]) / book_value) * 100 if book_value else 0
