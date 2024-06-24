@@ -298,8 +298,8 @@ with finance:
         rates = []
         default_terms = [60, 66, 72]
         for i in range(3):
-            term = col1.number_input(f"Loan Term {i+1} (months)", min_value=1, value=default_terms[i], key=f'term_{i+1}')
-            rate = col2.number_input(f"Rate for Term {i+1} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'rate_{i+1}')
+            term = col1.number_input(f"Term {i+1}", min_value=1, value=default_terms[i], key=f'term_{i+1}')
+            rate = col2.number_input(f"Rate {i+1} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'rate_{i+1}')
             terms.append(term)
             rates.append(rate)
 
