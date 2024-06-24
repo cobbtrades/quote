@@ -118,34 +118,34 @@ def generate_pdf(data, filename='quote.pdf'):
     
     # Vehicle selection and trade-in details
     selection_data = [
-        ["SELECTION", "", "", "", "", ""],
-        ["YEAR", "MAKE", "MODEL", "STOCK NO.", "VIN", "MILES"],
-        [data['year'], data['make'], data['model'], data['stock_no'], data['vin'], data['miles']]
-    ]
-    if data['trade_vin'] != "":
-        selection_data.append(["TRADE-IN", "", "", "", ""])
-        selection_data.append(["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"])
-        selection_data.append([data['trade_year'], data['trade_make'], data['trade_model'], "", data['trade_vin'], data['trade_miles']])
-    if data['trade_vin_2'] != "":
-        selection_data.append(["TRADE-IN 2", "", "", "", ""])
-        selection_data.append(["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"])
-        selection_data.append([data['trade_year_2'], data['trade_make_2'], data['trade_model_2'], "", data['trade_vin_2'], data['trade_miles_2']])
-    
-    selection_table = Table(selection_data, colWidths=[65, 65, 90, 80, 135, 80])
-    selection_table.setStyle(TableStyle([
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('BACKGROUND', (0, 3), (-1, 3), colors.grey),  # This line styles the "TRADE-IN:" row
-        ('TEXTCOLOR', (0, 3), (-1, 3), colors.white),
-        ('FONTNAME', (0, 3), (-1, 3), 'Helvetica-Bold'),
-        ('BACKGROUND', (0, 6), (-1, 6), colors.grey),
-        ('TEXTCOLOR', (0, 6), (-1, 6), colors.white),
-        ('FONTNAME', (0, 6), (-1, 6), 'Helvetica-Bold')
-    ]))
-    elements.append(selection_table)
+            ["SELECTION", "", "", "", "", ""],
+            ["YEAR", "MAKE", "MODEL", "STOCK NO.", "VIN", "MILES"],
+            [data.get('year', ''), data.get('make', ''), data.get('model', ''), data.get('stock_no', ''), data.get('vin', ''), data.get('miles', '')]
+        ]
+        if data.get('trade_vin'):
+            selection_data.append(["TRADE-IN", "", "", "", ""])
+            selection_data.append(["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"])
+            selection_data.append([data.get('trade_year', ''), data.get('trade_make', ''), data.get('trade_model', ''), "", data.get('trade_vin', ''), data.get('trade_miles', '')])
+        if data.get('trade_vin_2'):
+            selection_data.append(["TRADE-IN 2", "", "", "", ""])
+            selection_data.append(["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"])
+            selection_data.append([data.get('trade_year_2', ''), data.get('trade_make_2', ''), data.get('trade_model_2', ''), "", data.get('trade_vin_2', ''), data.get('trade_miles_2', '')])
+        
+        selection_table = Table(selection_data, colWidths=[65, 65, 90, 80, 135, 80])
+        selection_table.setStyle(TableStyle([
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('BACKGROUND', (0, 3), (-1, 3), colors.grey),  # This line styles the "TRADE-IN:" row
+            ('TEXTCOLOR', (0, 3), (-1, 3), colors.white),
+            ('FONTNAME', (0, 3), (-1, 3), 'Helvetica-Bold'),
+            ('BACKGROUND', (0, 6), (-1, 6), colors.grey),
+            ('TEXTCOLOR', (0, 6), (-1, 6), colors.white),
+            ('FONTNAME', (0, 6), (-1, 6), 'Helvetica-Bold')
+        ]))
+        elements.append(selection_table)
     elements.append(Spacer(1, 20))
 
     # Payment Grid Data
