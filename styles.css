@@ -41,21 +41,12 @@ footer {
     padding: 0;
 }
 
-input[type="text"], input[type="number"], select {
-    background-color: transparent;
-    border-radius: 5px; /* Rounded corners */
-    padding: 10px; /* Padding inside the input */
-    font-size: 14px; /* Font size */
+.label-input {
+    background-color: transparent; /* Transparent background */
+    border: none; /* No border */
     color: white; /* White text */
-    width: 100%; /* Full width */
-}
-
-div.stTextInput label, div.stNumberInput label, div.stSelectbox label {
     font-weight: bold;
     font-size: 16px;
-    color: white; /* White text */
-}
-
-div.stTextInput, div.stNumberInput, div.stSelectbox {
-    background-color: transparent; /* Transparent background for the container */
+    width: 100%; /* Full width */
+    text-align: right; /* Align text to the right */
 }
