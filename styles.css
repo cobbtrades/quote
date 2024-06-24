@@ -1,0 +1,42 @@
+/* styles.css */
+
+/* Full page container */
+.main .block-container {
+    padding: 0;
+    margin: 0;
+    max-width: 95%;
+}
+
+/* Adjust body padding */
+body {
+    padding: 0;
+}
+
+/* Remove header padding */
+.css-1d391kg {
+    padding: 0;
+}
+
+.centered-metric {
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    align-items: center;
+    height: 100%;
+}
+.centered-metric .stMetric {
+    margin: auto;
+    font-size: 30px;
+    padding: 15px 0;
+}
+.compact-input {
+    margin-bottom: 10px;
+}
+.compact-input input {
+    width: 100%;
+}
+
+/* Remove footer padding */
+footer {
+    padding: 0;
+}
