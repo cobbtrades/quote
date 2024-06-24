@@ -265,49 +265,38 @@ with finance:
     with right_col:
         labels_col, inputs_col = st.columns([1, 3])
     
-        def transparent_input(text):
-            return f"""
-            <input type="text" value="{text}" disabled style="
-                background-color: transparent;
-                border: none;
-                font-size: 16px;
-                color: black;
-                padding: 6px 0;
-            ">
-            """
-    
-        labels_col.markdown(transparent_input("Market Value"), unsafe_allow_html=True)
+        labels_col.text("Market Value")
         market_value = inputs_col.number_input(label="Market Value", key="market_value", value=None, placeholder="Market Value", label_visibility='collapsed', help="Market Value")
     
-        labels_col.markdown(transparent_input("Discount"), unsafe_allow_html=True)
+        labels_col.text("Discount")
         discount = inputs_col.number_input(label="Discount", key="discount", value=None, placeholder="Discount", label_visibility='collapsed', help="Discount")
     
-        labels_col.markdown(transparent_input("Rebate"), unsafe_allow_html=True)
+        labels_col.text("Rebate")
         rebate = inputs_col.number_input(label="Rebate", key="rebate", value=None, placeholder="Rebate", label_visibility='collapsed', help="Rebate")
     
-        labels_col.markdown(transparent_input("Trade Value"), unsafe_allow_html=True)
+        labels_col.text("Trade Value")
         trade_value = inputs_col.number_input(label="Trade Value", key="trade_value", value=None, placeholder="Trade Value", label_visibility='collapsed', help="Trade Value")
     
-        labels_col.markdown(transparent_input("Trade ACV"), unsafe_allow_html=True)
+        labels_col.text("Trade ACV")
         trade_acv = inputs_col.number_input(label="Trade ACV", key="trade_acv", value=None, placeholder="Trade ACV", label_visibility='collapsed', help="Trade ACV")
     
-        labels_col.markdown(transparent_input("Trade Payoff"), unsafe_allow_html=True)
+        labels_col.text("Trade Payoff")
         trade_payoff = inputs_col.number_input(label="Trade Payoff", key="trade_payoff", value=None, placeholder="Trade Payoff", label_visibility='collapsed', help="Trade Payoff")
     
-        labels_col.markdown(transparent_input("Doc Fee"), unsafe_allow_html=True)
+        labels_col.text("Doc Fee")
         doc_fee = inputs_col.number_input(label="Doc Fee", key="doc_fee", value=None, placeholder="Doc Fee", label_visibility='collapsed', help="Doc Fee")
     
         taxes = calculate_taxes(state, market_value, discount, doc_fee, trade_value)
-        labels_col.markdown(transparent_input("Taxes"), unsafe_allow_html=True)
+        labels_col.text("Taxes")
         inputs_col.text_input(label="Taxes", key="taxes", value=f"{taxes:.2f}", label_visibility='collapsed', help="Taxes")
     
-        labels_col.markdown(transparent_input("Non-Tax Fees"), unsafe_allow_html=True)
+        labels_col.text("Non-Tax Fees")
         non_tax_fees = inputs_col.number_input(label="Non-Tax Fees", key="non_tax_fees", value=None, placeholder="Non-Tax Fees", label_visibility='collapsed', help="Non-Tax Fees")
     
         balance = calculate_balance(
             market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees
         )
-        labels_col.markdown(transparent_input("Balance"), unsafe_allow_html=True)
+        labels_col.text("Balance")
         inputs_col.text_input(label="Balance", key="balance", value=f"{balance:.2f}", label_visibility='collapsed', help="Balance", disabled=True)
 
     with left_col:
