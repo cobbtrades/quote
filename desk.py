@@ -138,7 +138,9 @@ def generate_pdf(data, filename='quote.pdf'):
             ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER')
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('LINEBEFORE', (0, 0), (-1, -1), 0, colors.white),  # Remove vertical borders
+            ('LINEAFTER', (0, 0), (-1, -1), 0, colors.white)  # Remove vertical borders
         ]))
         
         if data.get('trade_vin'):
