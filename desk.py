@@ -265,39 +265,43 @@ with finance:
     with right_col:
         labels_col, inputs_col = st.columns([1, 3])
     
-        labels_col.text("Market Value")
+        def centered_label(text):
+            return f'<div style="display: flex; align-items: center; height: 100%;">{text}</div>'
+    
+        labels_col.markdown(centered_label("Market Value"), unsafe_allow_html=True)
         market_value = inputs_col.number_input(label="Market Value", key="market_value", value=None, placeholder="Market Value", label_visibility='collapsed', help="Market Value")
     
-        labels_col.text("Discount")
+        labels_col.markdown(centered_label("Discount"), unsafe_allow_html=True)
         discount = inputs_col.number_input(label="Discount", key="discount", value=None, placeholder="Discount", label_visibility='collapsed', help="Discount")
     
-        labels_col.text("Rebate")
+        labels_col.markdown(centered_label("Rebate"), unsafe_allow_html=True)
         rebate = inputs_col.number_input(label="Rebate", key="rebate", value=None, placeholder="Rebate", label_visibility='collapsed', help="Rebate")
     
-        labels_col.text("Trade Value")
+        labels_col.markdown(centered_label("Trade Value"), unsafe_allow_html=True)
         trade_value = inputs_col.number_input(label="Trade Value", key="trade_value", value=None, placeholder="Trade Value", label_visibility='collapsed', help="Trade Value")
     
-        labels_col.text("Trade ACV")
+        labels_col.markdown(centered_label("Trade ACV"), unsafe_allow_html=True)
         trade_acv = inputs_col.number_input(label="Trade ACV", key="trade_acv", value=None, placeholder="Trade ACV", label_visibility='collapsed', help="Trade ACV")
     
-        labels_col.text("Trade Payoff")
+        labels_col.markdown(centered_label("Trade Payoff"), unsafe_allow_html=True)
         trade_payoff = inputs_col.number_input(label="Trade Payoff", key="trade_payoff", value=None, placeholder="Trade Payoff", label_visibility='collapsed', help="Trade Payoff")
     
-        labels_col.text("Doc Fee")
+        labels_col.markdown(centered_label("Doc Fee"), unsafe_allow_html=True)
         doc_fee = inputs_col.number_input(label="Doc Fee", key="doc_fee", value=None, placeholder="Doc Fee", label_visibility='collapsed', help="Doc Fee")
     
         taxes = calculate_taxes(state, market_value, discount, doc_fee, trade_value)
-        labels_col.text("Taxes")
+        labels_col.markdown(centered_label("Taxes"), unsafe_allow_html=True)
         inputs_col.text_input(label="Taxes", key="taxes", value=f"{taxes:.2f}", label_visibility='collapsed', help="Taxes")
     
-        labels_col.text("Non-Tax Fees")
+        labels_col.markdown(centered_label("Non-Tax Fees"), unsafe_allow_html=True)
         non_tax_fees = inputs_col.number_input(label="Non-Tax Fees", key="non_tax_fees", value=None, placeholder="Non-Tax Fees", label_visibility='collapsed', help="Non-Tax Fees")
     
         balance = calculate_balance(
             market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees
         )
-        labels_col.text("Balance")
+        labels_col.markdown(centered_label("Balance"), unsafe_allow_html=True)
         inputs_col.text_input(label="Balance", key="balance", value=f"{balance:.2f}", label_visibility='collapsed', help="Balance", disabled=True)
+
 
     with left_col:
         col1, col2, col3, col4, col5 = st.columns([1,1,2,2,2])
