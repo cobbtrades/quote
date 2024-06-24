@@ -120,14 +120,17 @@ def generate_pdf(data, filename='quote.pdf'):
     selection_data = [
         ["SELECTION", "", "", "", "", ""],
         ["YEAR", "MAKE", "MODEL", "STOCK NO.", "VIN", "MILES"],
-        [data['year'], data['make'], data['model'], data['stock_no'], data['vin'], data['miles']],
-        ["TRADE-IN", "", "", "", ""],
-        ["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"],
-        [data['trade_year'], data['trade_make'], data['trade_model'], "", data['trade_vin'], data['trade_miles']],
-        ["TRADE-IN 2", "", "", "", ""],
-        ["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"],
-        [data['trade_year_2'], data['trade_make_2'], data['trade_model_2'], "", data['trade_vin_2'], data['trade_miles_2']]
+        [data['year'], data['make'], data['model'], data['stock_no'], data['vin'], data['miles']]
     ]
+    if data['trade_vin'] is not None:
+        selection_data.append(["TRADE-IN", "", "", "", ""])
+        selection_data.append(["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"])
+        selection_data.append([data['trade_year'], data['trade_make'], data['trade_model'], "", data['trade_vin'], data['trade_miles']])
+    if data['trade_vin_2'] is not None:
+        selection_data.append(["TRADE-IN 2", "", "", "", ""])
+        selection_data.append(["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"])
+        selection_data.append([data['trade_year_2'], data['trade_make_2'], data['trade_model_2'], "", data['trade_vin_2'], data['trade_miles_2']])
+    
     selection_table = Table(selection_data, colWidths=[65, 65, 90, 80, 135, 80])
     selection_table.setStyle(TableStyle([
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
