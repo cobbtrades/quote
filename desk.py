@@ -366,8 +366,11 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         col3.text("")
         col3.text("")
 
+        residual_values = []
         if is_lease:
-            residual_value = col3.number_input(label="Residual Percent", key=f"{prefix}_residual_percent", value=0.70)
+            for i in range(3):
+                residual_value = col3.number_input(label=f"Residual Percent {i+1}", key=f"{prefix}_residual_percent_{i+1}", value=0.70)
+                residual_values.append(residual_value)
         # Input values
         value1 = col4.number_input(label="Down Payment", key=f"{prefix}_value1", value=1000)
         value2 = col5.number_input(label="Down Payment", key=f"{prefix}_value2", value=2000)
@@ -391,7 +394,11 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 if market_value == 0:
                     monthly_payment = 0
                 else:
-                    monthly_payment = calc_payment_func(balance, down_payments[j], rates[i], terms[i])
+                    if is_lease:
+                        residual_value = balance * residual_values[i]
+                        monthly_payment = calc_payment_func(balance, down_payments[j], rates[i], terms[i], residual_value)
+                    else:
+                        monthly_payment = calc_payment_func(balance, down_payments[j], rates[i], terms[i])
                 ltv = ((balance - down_payments[j]) / book_value) * 100 if book_value else 0
                 if j == 0:
                     col4.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
@@ -418,7 +425,11 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             for i in range(3):
                 term_payments = {}
                 for j in range(3):
-                    monthly_payment = calc_payment_func(balance, down_payments[j], rates[i], terms[i])
+                    if is_lease:
+                        residual_value = balance * residual_values[i]
+                        monthly_payment = calc_payment_func(balance, down_payments[j], rates[i], terms[i], residual_value)
+                    else:
+                        monthly_payment = calc_payment_func(balance, down_payments[j], rates[i], terms[i])
                     term_payments[down_payments[j]] = round(float(monthly_payment), 2)
                 quotes[terms[i]] = term_payments
             
@@ -480,4 +491,4 @@ with finance:
     render_tab(calculate_monthly_payment, prefix="finance")
 
 with lease:
-    render_tab(lambda principal, down_payment, money_factor, term_months: calculate_lease_payment(principal, down_payment, money_factor, term_months, st.session_state.get('lease_residual_value', 0)), prefix="lease", is_lease=True)
+    render_tab(lambda principal, down_payment, money_factor, term_months, residual_value: calculate_lease_payment(principal, down_payment, money_factor, term_months, residual_value), prefix="lease", is_lease=True)
