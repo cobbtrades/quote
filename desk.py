@@ -249,9 +249,9 @@ with sc:
     odometer = tc5.text_input(label="Odometer", key="odometer", placeholder="Odometer", label_visibility="collapsed", help="Odometer")
     fc6, sc6, tc6, fr6 = st.columns(4)
     fc6.markdown('<input class="label-input" type="text" value="Cost" disabled>', unsafe_allow_html=True)
-    veh_cost = sc6.number_input(label="Cost", key="veh_cost", value = 0, placeholder="Cost", label_visibility='collapsed', help="Cost")
+    veh_cost = sc6.number_input(label="Cost", key="veh_cost", value = 0, label_visibility='collapsed', help="Cost")
     tc6.markdown('<input class="label-input" type="text" value="Book Value" disabled>', unsafe_allow_html=True)
-    book_value = fr6.number_input(label="Book Value", key="book_value", value = 0, placeholder="Book Value", label_visibility='collapsed', help="Book Value")
+    book_value = fr6.number_input(label="Book Value", key="book_value", value = 0, label_visibility='collapsed', help="Book Value")
 
 with tc:
     dealer = st.text_input(label="Dealership", key="dealer", placeholder="Dealership", label_visibility="collapsed", help="Dealership")
