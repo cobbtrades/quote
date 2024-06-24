@@ -270,11 +270,10 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         dealer = st.text_input(label="Dealership", key=f"{prefix}_dealer", placeholder="Dealership", label_visibility="collapsed", help="Dealership")
         consultant = st.text_input(label="Sales Person", key=f"{prefix}_consultant", placeholder="Sales Person", label_visibility="collapsed", help="Sales Person")
         manager = st.text_input(label="Sales Manager", key=f"{prefix}_manager", placeholder="Sales Manager", label_visibility="collapsed", help="Sales Manager")
-        lease_left, lease_right = st.columns(2)
-        lease_left.markdown('<input class="label-input" type="text" value="Residuel" disabled>', unsafe_allow_html=True)
-        with lease_right:
-            if is_lease:
-                residual_value = st.number_input(label="Residual Value", key=f"{prefix}_residual_value", value=0, label_visibility="collapsed")
+        if is_lease:
+            l_left, l_right = st.columns(2)
+            l_left.markdown('<input class="label-input" type="text" value="Residual" disabled>', unsafe_allow_html=True)
+            residual_value = l_right.number_input(label="Residual Value", key=f"{prefix}_residual_value", value=0, label_visibility="collapsed")
     
     left_col, right_col = st.columns(2)
     
