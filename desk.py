@@ -346,7 +346,7 @@ with left_col:
     col4.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv2:.2f}%</span></div></div>', unsafe_allow_html=True)
     col5.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv3:.2f}%</span></div></div>', unsafe_allow_html=True)
 
-lbc, rbc, blankbc = st.columns([1, 3, 10])
+lbc, rbc, blankbc = st.columns([2, 3, 10])
 with lbc:
     submit_button = st.button(label="Generate Quote")
     
