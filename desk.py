@@ -13,13 +13,16 @@ with open("styles.css") as f:
 st.title("Desking App")
 
 def calculate_monthly_payment(principal, down_payment, annual_rate, term_months):
-    principal = principal - down_payment
-    monthly_rate = annual_rate / 100 / 12
-    if monthly_rate == 0:
-        payment = principal / term_months
+    if principal == 0:
+        return 0
     else:
-        payment = principal * monthly_rate / (1 - (1 + monthly_rate) ** -term_months)
-    return "{:.2f}".format(payment)
+        principal = principal - down_payment
+        monthly_rate = annual_rate / 100 / 12
+        if monthly_rate == 0:
+            payment = principal / term_months
+        else:
+            payment = principal * monthly_rate / (1 - (1 + monthly_rate) ** -term_months)
+        return "{:.2f}".format(payment)
 
 def calculate_balance(market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees):
     market_value = market_value or 0
@@ -232,6 +235,8 @@ with finance:
         city = fc2.text_input(label="City", key="city", placeholder="City", label_visibility="collapsed", help="City")
         state = sc2.text_input(label="State", key="state", placeholder="State", max_chars=2, label_visibility="collapsed", help="State")
         zipcode = tc2.text_input(label="Zip", key="zip", placeholder="Zip", max_chars=5, label_visibility="collapsed", help="Zip")
+        email_address = fc2.text_input(label="Email", key="emailaddress", placeholder="Email", max_chars=5, label_visibility="collapsed", help="Email")
+        phone_num = tc2.text_input(label="Phone", key="phonenumber", placeholder="Phone", max_chars=5, label_visibility="collapsed", help="Phone")
     
     with sc:
         fc3, sc3 = st.columns([2, 4])
@@ -270,7 +275,7 @@ with finance:
         st.text_input(label="Balance", key="balance", value=f"{balance:.2f}", label_visibility='collapsed', help="Balance", disabled=True)
 
     with left_col:
-        col1, col2, col3, col4, col5 = st.columns(5)
+        col1, col2, col3, col4, col5 = st.columns([1,1,2,2,2])
 
         col1.text("")
         col1.text("")
@@ -306,5 +311,38 @@ with finance:
         grid8 = col4.markdown(f'<div class="centered-metric"><div class="stMetric">{calculate_monthly_payment(balance, value2, rate3, term3)}</div></div>', unsafe_allow_html=True)
         grid9 = col5.markdown(f'<div class="centered-metric"><div class="stMetric">{calculate_monthly_payment(balance, value3, rate3, term3)}</div></div>', unsafe_allow_html=True)
     
+submit_button = st.button(label="Generate Quote")
 
-
+if submit_button:
+     data = {
+        'date': datetime.today().strftime('%B %d, %Y').upper(),
+        'salesperson': consultant,
+        'buyer': customer,
+        'address': address,
+        'city': city,
+        'state': state,
+        'zip': zipcode,
+        'phone_num': phone_num,
+        'email_add': email_address,
+        'year': year,
+        'make': make,
+        'model': model,
+        'stock_no': stock_no,
+        'vin': vin,
+        'miles': odometer,
+        'trade_year': trade_year,
+        'trade_make': trade_make,
+        'trade_model': trade_model,
+        'trade_vin': trade_vin,
+        'trade_miles': trade_miles,
+        'sale_price': sale_price,
+        'discount': discount,
+        'rebate': rebate,
+        'trade_value': trade_value,
+        'trade_payoff': trade_payoff,
+        'doc_fee': doc_fee,
+        'sales_tax': taxes,
+        'balance': balance,
+        'quotes': quotes,
+        'rates': rates
+    }
