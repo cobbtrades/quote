@@ -323,9 +323,9 @@ with finance:
         ltv2 = ((balance - down_payments[1]) / book_value) * 100 if book_value else 0
         ltv3 = ((balance - down_payments[2]) / book_value) * 100 if book_value else 0
         
-        col3.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 12px;">{ltv1:.2f}%</span></div></div>', unsafe_allow_html=True)
-        col4.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 12px;">{ltv2:.2f}%</span></div></div>', unsafe_allow_html=True)
-        col5.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 12px;">{ltv3:.2f}%</span></div></div>', unsafe_allow_html=True)
+        col3.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">LTV: {ltv1:.2f}%</span></div></div>', unsafe_allow_html=True)
+        col4.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">LTV: {ltv2:.2f}%</span></div></div>', unsafe_allow_html=True)
+        col5.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">LTV: {ltv3:.2f}%</span></div></div>', unsafe_allow_html=True)
 
 submit_button = st.button(label="Generate Quote")
 
