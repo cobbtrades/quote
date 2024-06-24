@@ -42,6 +42,7 @@ body {
     border: none !important;
     box-shadow: none !important;
 }
+
 .labels_col input:disabled {
     background-color: transparent !important;
     color: white !important;
