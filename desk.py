@@ -274,7 +274,20 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         dealer = st.text_input(label="Dealership", key=f"{prefix}_dealer", placeholder="Dealership", label_visibility="collapsed", help="Dealership")
         consultant = st.text_input(label="Sales Person", key=f"{prefix}_consultant", placeholder="Sales Person", label_visibility="collapsed", help="Sales Person")
         manager = st.text_input(label="Sales Manager", key=f"{prefix}_manager", placeholder="Sales Manager", label_visibility="collapsed", help="Sales Manager")
-    
+
+    # Expander for trade-in details
+    with st.expander("Enter Trade-in Details"):
+        for i in range(2):  # For up to 2 trades
+            st.write(f"Trade-in {i+1}")
+            trade_year = st.text_input(f"Trade-in {i+1} Year", key=f"{prefix}_trade_year_{i+1}", placeholder="Year")
+            trade_make = st.text_input(f"Trade-in {i+1} Make", key=f"{prefix}_trade_make_{i+1}", placeholder="Make")
+            trade_model = st.text_input(f"Trade-in {i+1} Model", key=f"{prefix}_trade_model_{i+1}", placeholder="Model")
+            trade_vin = st.text_input(f"Trade-in {i+1} VIN", key=f"{prefix}_trade_vin_{i+1}", placeholder="VIN")
+            trade_miles = st.text_input(f"Trade-in {i+1} Miles", key=f"{prefix}_trade_miles_{i+1}", placeholder="Miles")
+            trade_value = st.number_input(f"Trade-in {i+1} Value", key=f"{prefix}_trade_value_{i+1}", value=0)
+            trade_payoff = st.number_input(f"Trade-in {i+1} Payoff", key=f"{prefix}_trade_payoff_{i+1}", value=0)
+            trade_acv = st.number_input(f"Trade-in {i+1} ACV", key=f"{prefix}_trade_acv_{i+1}", value=0)
+            
     left_col, right_col = st.columns(2)
     
     with right_col:
@@ -372,19 +385,6 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         if is_lease:
                 col1.markdown('<input class="label-input" type="text" value="Residual" disabled>', unsafe_allow_html=True)
                 residual_value = col2.number_input(label="Residual Percent", key=f"{prefix}_residual_percent", value=0, label_visibility="collapsed")
-    
-    # Expander for trade-in details
-    with st.expander("Enter Trade-in Details"):
-        for i in range(2):  # For up to 2 trades
-            st.write(f"Trade-in {i+1}")
-            trade_year = st.text_input(f"Trade-in {i+1} Year", key=f"{prefix}_trade_year_{i+1}", placeholder="Year")
-            trade_make = st.text_input(f"Trade-in {i+1} Make", key=f"{prefix}_trade_make_{i+1}", placeholder="Make")
-            trade_model = st.text_input(f"Trade-in {i+1} Model", key=f"{prefix}_trade_model_{i+1}", placeholder="Model")
-            trade_vin = st.text_input(f"Trade-in {i+1} VIN", key=f"{prefix}_trade_vin_{i+1}", placeholder="VIN")
-            trade_miles = st.text_input(f"Trade-in {i+1} Miles", key=f"{prefix}_trade_miles_{i+1}", placeholder="Miles")
-            trade_value = st.number_input(f"Trade-in {i+1} Value", key=f"{prefix}_trade_value_{i+1}", value=0)
-            trade_payoff = st.number_input(f"Trade-in {i+1} Payoff", key=f"{prefix}_trade_payoff_{i+1}", value=0)
-            trade_acv = st.number_input(f"Trade-in {i+1} ACV", key=f"{prefix}_trade_acv_{i+1}", value=0)
 
     lbc, rbc, blankbc = st.columns([2, 3, 10])
     with lbc:
