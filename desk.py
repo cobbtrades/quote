@@ -495,4 +495,4 @@ with finance:
     render_tab(calculate_monthly_payment, prefix="finance")
 
 with lease:
-    render_tab(lease_payment_func, prefix="lease", is_lease=True)
+    render_tab(calculate_lease_payment, prefix="lease", is_lease=True)
