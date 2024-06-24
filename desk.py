@@ -119,7 +119,10 @@ def generate_pdf(data, filename='quote.pdf'):
         [data['year'], data['make'], data['model'], data['stock_no'], data['vin'], data['miles']],
         ["TRADE-IN", "", "", "", ""],
         ["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"],
-        [data['trade_year'], data['trade_make'], data['trade_model'], "", data['trade_vin'], data['trade_miles']]
+        [data['trade_year'], data['trade_make'], data['trade_model'], "", data['trade_vin'], data['trade_miles']],
+        ["TRADE-IN 2", "", "", "", ""],
+        ["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"],
+        [data['trade_year_2'], data['trade_make_2'], data['trade_model_2'], "", data['trade_vin_2'], data['trade_miles_2']]
     ]
     selection_table = Table(selection_data, colWidths=[65, 65, 90, 80, 135, 80])
     selection_table.setStyle(TableStyle([
@@ -130,7 +133,10 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('BACKGROUND', (0, 3), (-1, 3), colors.grey),  # This line styles the "TRADE-IN:" row
         ('TEXTCOLOR', (0, 3), (-1, 3), colors.white),
-        ('FONTNAME', (0, 3), (-1, 3), 'Helvetica-Bold')
+        ('FONTNAME', (0, 3), (-1, 3), 'Helvetica-Bold'),
+        ('BACKGROUND', (0, 6), (-1, 6), colors.grey),  # This line styles the "TRADE-IN 2:" row
+        ('TEXTCOLOR', (0, 6), (-1, 6), colors.white),
+        ('FONTNAME', (0, 6), (-1, 6), 'Helvetica-Bold')
     ]))
     elements.append(selection_table)
     elements.append(Spacer(1, 20))
@@ -367,6 +373,19 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 col1.markdown('<input class="label-input" type="text" value="Residual" disabled>', unsafe_allow_html=True)
                 residual_value = col2.number_input(label="Residual Percent", key=f"{prefix}_residual_percent", value=0, label_visibility="collapsed")
     
+    # Expander for trade-in details
+    with st.expander("Enter Trade-in Details"):
+        for i in range(2):  # For up to 2 trades
+            st.write(f"Trade-in {i+1}")
+            trade_year = st.text_input(f"Trade-in {i+1} Year", key=f"{prefix}_trade_year_{i+1}", placeholder="Year")
+            trade_make = st.text_input(f"Trade-in {i+1} Make", key=f"{prefix}_trade_make_{i+1}", placeholder="Make")
+            trade_model = st.text_input(f"Trade-in {i+1} Model", key=f"{prefix}_trade_model_{i+1}", placeholder="Model")
+            trade_vin = st.text_input(f"Trade-in {i+1} VIN", key=f"{prefix}_trade_vin_{i+1}", placeholder="VIN")
+            trade_miles = st.text_input(f"Trade-in {i+1} Miles", key=f"{prefix}_trade_miles_{i+1}", placeholder="Miles")
+            trade_value = st.number_input(f"Trade-in {i+1} Value", key=f"{prefix}_trade_value_{i+1}", value=0)
+            trade_payoff = st.number_input(f"Trade-in {i+1} Payoff", key=f"{prefix}_trade_payoff_{i+1}", value=0)
+            trade_acv = st.number_input(f"Trade-in {i+1} ACV", key=f"{prefix}_trade_acv_{i+1}", value=0)
+
     lbc, rbc, blankbc = st.columns([2, 3, 10])
     with lbc:
         submit_button = st.button(label="Generate Quote", key=f"{prefix}_submit_button")
@@ -396,16 +415,22 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 'stock_no': stocknum,
                 'vin': vin,
                 'miles': odometer,
-                'trade_year': '',
-                'trade_make': '',
-                'trade_model': '',
-                'trade_vin': '',
-                'trade_miles': '',
+                'trade_year': st.session_state.get(f"{prefix}_trade_year_1", ""),
+                'trade_make': st.session_state.get(f"{prefix}_trade_make_1", ""),
+                'trade_model': st.session_state.get(f"{prefix}_trade_model_1", ""),
+                'trade_vin': st.session_state.get(f"{prefix}_trade_vin_1", ""),
+                'trade_miles': st.session_state.get(f"{prefix}_trade_miles_1", ""),
+                'trade_value': st.session_state.get(f"{prefix}_trade_value_1", 0) + st.session_state.get(f"{prefix}_trade_value_2", 0),
+                'trade_payoff': st.session_state.get(f"{prefix}_trade_payoff_1", 0) + st.session_state.get(f"{prefix}_trade_payoff_2", 0),
+                'trade_acv': st.session_state.get(f"{prefix}_trade_acv_1", 0) + st.session_state.get(f"{prefix}_trade_acv_2", 0),
+                'trade_year_2': st.session_state.get(f"{prefix}_trade_year_2", ""),
+                'trade_make_2': st.session_state.get(f"{prefix}_trade_make_2", ""),
+                'trade_model_2': st.session_state.get(f"{prefix}_trade_model_2", ""),
+                'trade_vin_2': st.session_state.get(f"{prefix}_trade_vin_2", ""),
+                'trade_miles_2': st.session_state.get(f"{prefix}_trade_miles_2", ""),
                 'sale_price': market_value,
                 'discount': discount,
                 'rebate': rebate,
-                'trade_value': trade_value,
-                'trade_payoff': trade_payoff,
                 'doc_fee': doc_fee,
                 'sales_tax': taxes,
                 'non_tax_fees': non_tax_fees,
