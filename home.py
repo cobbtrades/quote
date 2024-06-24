@@ -1,23 +1,54 @@
+import streamlit as st
+from datetime import datetime
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
-import pandas as pd
-import streamlit as st
-from datetime import datetime
 
-# Constants for fees
-NON_TAX_FEE = 106.75
-SALES_TAX_RATE_NC = 0.03
+st.set_page_config(page_title="Desking App")
 
-# Function to calculate monthly payments
-def calculate_monthly_payment(principal, annual_rate, term_months):
-    monthly_rate = annual_rate / 100 / 12
-    if monthly_rate == 0:
-        return principal / term_months
-    return principal * monthly_rate / (1 - (1 + monthly_rate) ** -term_months)
+with open("styles.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# Function to generate PDF
+st.title("Desking App")
+
+def calculate_monthly_payment(principal, down_payment, annual_rate, term_months):
+    if principal == 0:
+        return 0
+    else:
+        principal = principal - down_payment
+        monthly_rate = annual_rate / 100 / 12
+        if monthly_rate == 0:
+            payment = principal / term_months
+        else:
+            payment = principal * monthly_rate / (1 - (1 + monthly_rate) ** -term_months)
+        return "{:.2f}".format(payment)
+
+def calculate_balance(market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees):
+    market_value = market_value or 0
+    discount = discount or 0
+    rebate = rebate or 0
+    trade_value = trade_value or 0
+    trade_payoff = trade_payoff or 0
+    taxes = taxes or 0
+    doc_fee = doc_fee or 0
+    non_tax_fees = non_tax_fees or 0
+    balance = market_value - discount - rebate - trade_value + trade_payoff + taxes + doc_fee + non_tax_fees
+    return balance
+
+def calculate_taxes(state, market_value, discount, doc_fee, trade_value):
+    market_value = market_value or 0
+    discount = discount or 0
+    doc_fee = doc_fee or 0
+    trade_value = trade_value or 0
+    taxable_amount = market_value - discount - trade_value + doc_fee
+    if state == "NC":
+        return taxable_amount * 0.03
+    elif state == "SC":
+        return 500.00
+    else:
+        return 0.00
+
 def generate_pdf(data, filename='quote.pdf'):
     doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=50, leftMargin=36, rightMargin=36)
     elements = []
@@ -123,7 +154,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ["Trade Payoff", f"${data['trade_payoff']:.2f}"] if data['trade_payoff'] != 0 else None,
         ["Doc Fee", f"${data['doc_fee']:.2f}"] if data['doc_fee'] != 0 else None,
         ["Sales Tax", f"${data['sales_tax']:.2f}"] if data['sales_tax'] != 0 else None,
-        ["Non Tax Fees", f"${NON_TAX_FEE:.2f}"] if NON_TAX_FEE != 0 else None,
+        ["Non Tax Fees", f"${data['non_tax_fees']:.2f}"] if data['non_tax_fees'] != 0 else None,
         ["Balance", f"${data['balance']:.2f}"] if data['balance'] != 0 else None,
     ]
     # Filter out None values
@@ -192,129 +223,187 @@ def generate_pdf(data, filename='quote.pdf'):
     doc.build(elements)
     return filename
 
-st.set_page_config(layout="wide", page_title="Quote Generator", page_icon="📝")
-st.title("Quote Generator")
+fc, sc, tc = st.columns([3, 3, 2])
 
-# Form to input deal details
-with st.form(key='deal_form'):
-    col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
+with fc:
+    customer = st.text_input(label="Customer", key="cust", placeholder="Customer", label_visibility='collapsed', help="Customer")
+    address = st.text_input(label="Address", key="addr", placeholder="Address", label_visibility="collapsed", help="Address")
+    fc2, sc2, tc2 = st.columns([3, 1, 2])
+    city = fc2.text_input(label="City", key="city", placeholder="City", label_visibility="collapsed", help="City")
+    state = sc2.text_input(label="State", key="state", placeholder="State", max_chars=2, label_visibility="collapsed", help="State")
+    zipcode = tc2.text_input(label="Zip", key="zip", placeholder="Zip", max_chars=5, label_visibility="collapsed", help="Zip")
+    email_address = fc2.text_input(label="Email", key="emailaddress", placeholder="Email", label_visibility="collapsed", help="Email")
+    phone_num = tc2.text_input(label="Phone", key="phonenumber", placeholder="Phone", max_chars=12, label_visibility="collapsed", help="Phone")
+
+with sc:
+    fc3, sc3 = st.columns([2, 4])
+    stocknum = fc3.text_input(label="Stock #", key="stock", placeholder="Stock #", label_visibility="collapsed", help="Stock #")
+    vin = sc3.text_input(label="VIN", key="vin", placeholder="VIN", max_chars=17, label_visibility="collapsed", help="VIN")
+    fc4, sc4, tc4 = st.columns([1, 2, 3])
+    newused = fc4.selectbox(label="N/U", options=["New", "Used", "CPO"], label_visibility="collapsed", help="N/U")
+    year = sc4.text_input(label="Year", key="year", placeholder="Year", max_chars=4, label_visibility="collapsed", help="Year")
+    make = tc4.text_input(label="Make", key="make", placeholder="Make", label_visibility="collapsed", help="Make")
+    fc5, sc5, tc5 = st.columns([3, 1.5, 1.5])
+    model = fc5.text_input(label="Model", key="model", placeholder="Model", label_visibility="collapsed", help="Model")
+    trim = sc5.text_input(label="Trim", key="trim", placeholder="Trim", label_visibility="collapsed", help="Trim")
+    odometer = tc5.text_input(label="Odometer", key="odometer", placeholder="Odometer", label_visibility="collapsed", help="Odometer")
+    fc6, sc6, tc6, fr6 = st.columns(4)
+    fc6.markdown('<input class="label-input" type="text" value="Cost" disabled>', unsafe_allow_html=True)
+    veh_cost = sc6.number_input(label="Cost", key="veh_cost", value = 0, label_visibility='collapsed', help="Cost")
+    tc6.markdown('<input class="label-input" type="text" value="Book Value" disabled>', unsafe_allow_html=True)
+    book_value = fr6.number_input(label="Book Value", key="book_value", value = 0, label_visibility='collapsed', help="Book Value")
+
+with tc:
+    dealer = st.text_input(label="Dealership", key="dealer", placeholder="Dealership", label_visibility="collapsed", help="Dealership")
+    consultant = st.text_input(label="Sales Person", key="consultant", placeholder="Sales Person", label_visibility="collapsed", help="Sales Person")
+    manager = st.text_input(label="Sales Manager", key="manager", placeholder="Sales Manager", label_visibility="collapsed", help="Sales Manager")
+
+left_col, right_col = st.columns(2)
+
+with right_col:
+    labels_col, inputs_col = st.columns([1, 4])
     
-    with col1:
-        salesperson = st.text_input("Sales Person", key='salesperson')
-        buyer = st.text_input("Buyer", key='buyer')
-        address = st.text_input("Address", key='address')
-        city = st.text_input("City", key='city')
-        state = st.text_input("State", key='state')  # Added state field
-        zip_code = st.text_input("ZIP", key='zip')
-        cell_phone = st.text_input("Phone", key='cell_phone')
-        email_add = st.text_input("Email", key='email_add')
-        doc_fee = st.number_input("Dealer Service Fee", min_value=0.0, value=799.0, format="%.2f", key='doc_fee')
+    labels_col.markdown('<input class="label-input" type="text" value="Market Value" disabled>', unsafe_allow_html=True)
+    market_value = inputs_col.number_input(label="Market Value", key="market_value", value=0, label_visibility='collapsed', help="Market Value")
     
-    with col2:
-        stock_no = st.text_input("Stock No.", key='stock_no')
-        year = st.text_input("Vehicle Year", key='year')
-        make = st.text_input("Vehicle Make", key='make')
-        model = st.text_input("Vehicle Model", key='model')
-        vin = st.text_input("VIN", key='vin')
-        miles = st.text_input("Vehicle Miles", key='miles')
-        cost_of_vehicle = st.number_input("Cost of Vehicle", min_value=0.0, format="%.2f", key='cost_of_vehicle')
+    labels_col.markdown('<input class="label-input" type="text" value="Discount" disabled>', unsafe_allow_html=True)
+    discount = inputs_col.number_input(label="Discount", key="discount", value=0, label_visibility='collapsed', help="Discount")
     
-    with col3:
-        trade_year = st.text_input("Trade Vehicle Year", key='trade_year')
-        trade_make = st.text_input("Trade Vehicle Make", key='trade_make')
-        trade_model = st.text_input("Trade Vehicle Model", key='trade_model')
-        trade_vin = st.text_input("Trade Vehicle VIN", key='trade_vin')
-        trade_miles = st.text_input("Trade Vehicle Miles", key='trade_miles')
+    labels_col.markdown('<input class="label-input" type="text" value="Rebate" disabled>', unsafe_allow_html=True)
+    rebate = inputs_col.number_input(label="Rebate", key="rebate", value=0, label_visibility='collapsed', help="Rebate")
     
-    with col4:
-        sale_price = st.number_input("Market Value of Vehicle", min_value=0.0, format="%.2f", key='sale_price')
-        discount = st.number_input("Discount", min_value=0.0, format="%.2f", key='discount')
-        rebate = st.number_input("Rebate", min_value=0.0, format="%.2f", key='rebate')
-        trade_value = st.number_input("Trade Value", min_value=0.0, format="%.2f", key='trade_value')
-        acv_of_trade = st.number_input("ACV of Trade", min_value=0.0, format="%.2f", key='acv_of_trade')
-        trade_payoff = st.number_input("Trade Payoff", min_value=0.0, format="%.2f", key='trade_payoff')
+    labels_col.markdown('<input class="label-input" type="text" value="Trade Value" disabled>', unsafe_allow_html=True)
+    trade_value = inputs_col.number_input(label="Trade Value", key="trade_value", value=0, label_visibility='collapsed', help="Trade Value")
     
-    with col5:
-        down_payments = []
-        default_down_payments = [1000.0, 2000.0, 3000.0]
+    labels_col.markdown('<input class="label-input" type="text" value="Trade ACV" disabled>', unsafe_allow_html=True)
+    trade_acv = inputs_col.number_input(label="Trade ACV", key="trade_acv", value=0, label_visibility='collapsed', help="Trade ACV")
+    
+    labels_col.markdown('<input class="label-input" type="text" value="Trade Payoff" disabled>', unsafe_allow_html=True)
+    trade_payoff = inputs_col.number_input(label="Trade Payoff", key="trade_payoff", value=0, label_visibility='collapsed', help="Trade Payoff")
+    
+    labels_col.markdown('<input class="label-input" type="text" value="Doc Fee" disabled>', unsafe_allow_html=True)
+    doc_fee = inputs_col.number_input(label="Doc Fee", key="doc_fee", value=799, label_visibility='collapsed', help="Doc Fee")
+    
+    taxes = calculate_taxes(state, market_value, discount, doc_fee, trade_value)
+    labels_col.markdown('<input class="label-input" type="text" value="Taxes" disabled>', unsafe_allow_html=True)
+    inputs_col.text_input(label="Taxes", key="taxes", value=f"{taxes:.2f}", label_visibility='collapsed', help="Taxes")
+    
+    labels_col.markdown('<input class="label-input" type="text" value="Non-Tax Fees" disabled>', unsafe_allow_html=True)
+    non_tax_fees = inputs_col.number_input(label="Non-Tax Fees", key="non_tax_fees", value=106.75, label_visibility='collapsed', help="Non-Tax Fees")
+    
+    balance = calculate_balance(
+        market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees
+    )
+    labels_col.markdown('<input class="label-input" type="text" value="Balance" disabled>', unsafe_allow_html=True)
+    inputs_col.text_input(label="Balance", key="balance", value=f"{balance:.2f}", label_visibility='collapsed', help="Balance", disabled=True)
+
+with left_col:
+    col1, col2, col3, col4, col5 = st.columns([1,1,2,2,2])
+
+    col1.text("")
+    col1.text("")
+    col1.text("")
+    col1.text("")
+    col1.text("")
+    col2.text("")
+    col2.text("")
+    col2.text("")
+    col2.text("")
+    col2.text("")
+
+    # Input values
+    value1 = col3.number_input(label="Down Payment", key="value1", value=1000)
+    value2 = col4.number_input(label="Down Payment", key="value2", value=2000)
+    value3 = col5.number_input(label="Down Payment", key="value3", value=3000)
+    down_payments = [value1, value2, value3]
+
+    terms = []
+    rates = []
+    default_terms = [60, 66, 72]
+    for i in range(3):
+        term = col1.number_input(f"Term {i+1}", min_value=1, value=default_terms[i], key=f'term_{i+1}')
+        rate = col2.number_input(f"Rate {i+1} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'rate_{i+1}')
+        terms.append(term)
+        rates.append(rate)
+
+    for i in range(3):
+        for j in range(3):
+            if market_value == 0:
+                monthly_payment = 0
+            else:
+                monthly_payment = calculate_monthly_payment(balance, down_payments[j], rates[i], terms[i])
+            ltv = ((balance - down_payments[j]) / book_value) * 100 if book_value else 0
+            if j == 0:
+                col3.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
+            elif j == 1:
+                col4.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
+            elif j == 2:
+                col5.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
+    
+    # Display LTV percentages under each column
+    ltv1 = ((balance - down_payments[0]) / book_value) * 100 if book_value else 0
+    ltv2 = ((balance - down_payments[1]) / book_value) * 100 if book_value else 0
+    ltv3 = ((balance - down_payments[2]) / book_value) * 100 if book_value else 0
+    
+    col3.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv1:.2f}%</span></div></div>', unsafe_allow_html=True)
+    col4.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv2:.2f}%</span></div></div>', unsafe_allow_html=True)
+    col5.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv3:.2f}%</span></div></div>', unsafe_allow_html=True)
+
+lbc, rbc, blankbc = st.columns([2, 3, 10])
+with lbc:
+    submit_button = st.button(label="Generate Quote")
+    
+    if submit_button:
+        quotes = {}
         for i in range(3):
-            down_payments.append(st.number_input(f"Down Payment Option {i+1}", min_value=0.0, value=default_down_payments[i], format="%.2f", key=f'down_payment_{i+1}'))
+            term_payments = {}
+            for j in range(3):
+                monthly_payment = calculate_monthly_payment(balance, down_payments[j], rates[i], terms[i])
+                term_payments[down_payments[j]] = round(float(monthly_payment), 2)
+            quotes[terms[i]] = term_payments
         
-        terms = []
-        rates = {}
-        for i in range(1, 4):
-            term = st.number_input(f"Loan Term {i} (months)", min_value=1, value=[60, 66, 72][i-1], key=f'term_{i}')
-            rate = st.number_input(f"Rate for Term {i} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'rate_{i}')
-            terms.append(term)
-            rates[term] = rate
-    
-    submit_button = st.form_submit_button(label='Generate Quote')
-
-if submit_button:
-    # Calculate sales tax
-    taxable_amount = sale_price - discount - trade_value + doc_fee
-    sales_tax = taxable_amount * SALES_TAX_RATE_NC
-
-    # Calculate monthly payments for each combination of down payment and term
-    quotes = {}
-    for term in terms:
-        term_payments = {}
-        for dp in down_payments:
-            total_loan_amount = taxable_amount + sales_tax + NON_TAX_FEE + trade_payoff - dp
-            monthly_payment = calculate_monthly_payment(total_loan_amount, rates[term], term)
-            term_payments[dp] = round(monthly_payment, 2)
-        quotes[term] = term_payments
-    
-    balance = sale_price - trade_value + doc_fee - rebate - discount + sales_tax + NON_TAX_FEE + trade_payoff
-    gross_profit = sale_price - discount - cost_of_vehicle + (acv_of_trade - trade_value)
-
-    data = {
-        'date': datetime.today().strftime('%B %d, %Y').upper(),
-        'salesperson': salesperson,
-        'buyer': buyer,
-        'address': address,
-        'city': city,
-        'state': state,
-        'zip': zip_code,
-        'cell_phone': cell_phone,
-        'email_add': email_add,
-        'year': year,
-        'make': make,
-        'model': model,
-        'stock_no': stock_no,
-        'vin': vin,
-        'miles': miles,
-        'trade_year': trade_year,
-        'trade_make': trade_make,
-        'trade_model': trade_model,
-        'trade_vin': trade_vin,
-        'trade_miles': trade_miles,
-        'sale_price': sale_price,
-        'discount': discount,
-        'rebate': rebate,
-        'trade_value': trade_value,
-        'trade_payoff': trade_payoff,
-        'doc_fee': doc_fee,
-        'sales_tax': sales_tax,
-        'balance': balance,
-        'quotes': quotes,
-        'rates': rates
-    }
-    # Display the gross profit
-    color = "lightgreen" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
-    st.markdown(f"<p style='color:{color}; font-size:24px;'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
-    # Display the quotes in a grid format
-    grid_data = []
-    for term, payments in quotes.items():
-        row = {'Term': term}
-        for dp, payment in payments.items():
-            row[f'${dp}'] = round(payment, 2)
-        grid_data.append(row)
-    
-    df = pd.DataFrame(grid_data)
-    st.dataframe(df, hide_index=True)
-    
-    pdf_file = generate_pdf(data)
-    
-    with open(pdf_file, 'rb') as f:
-        st.download_button('Download PDF Quote', f, file_name=pdf_file)
+        data = {
+            'date': datetime.today().strftime('%B %d, %Y').upper(),
+            'salesperson': consultant,
+            'buyer': customer,
+            'address': address,
+            'city': city,
+            'state': state,
+            'zip': zipcode,
+            'cell_phone': phone_num,
+            'email_add': email_address,
+            'year': year,
+            'make': make,
+            'model': model,
+            'stock_no': stocknum,
+            'vin': vin,
+            'miles': odometer,
+            'trade_year': '',
+            'trade_make': '',
+            'trade_model': '',
+            'trade_vin': '',
+            'trade_miles': '',
+            'sale_price': market_value,
+            'discount': discount,
+            'rebate': rebate,
+            'trade_value': trade_value,
+            'trade_payoff': trade_payoff,
+            'doc_fee': doc_fee,
+            'sales_tax': taxes,
+            'non_tax_fees': non_tax_fees,
+            'balance': balance,
+            'quotes': quotes,
+        }
+        
+        pdf_file = generate_pdf(data)
+        with open(pdf_file, 'rb') as f:
+            st.download_button('Download Quote', f, file_name=pdf_file)
+    with rbc:
+        market_value = market_value or 0
+        discount = discount or 0
+        veh_cost = veh_cost or 0
+        trade_acv = trade_acv or 0
+        trade_value = trade_value or 0
+        gross_profit = market_value - discount - veh_cost + (trade_acv - trade_value)
+        color = "green" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
+        st.markdown(f"<p style='color:{color}; font-size:24px;'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
