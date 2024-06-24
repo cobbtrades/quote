@@ -25,15 +25,18 @@ def calculate_monthly_payment(principal, down_payment, annual_rate, term_months)
         return "{:.2f}".format(payment)
 
 def calculate_lease_payment(market_value, doc_fee, non_tax_fees, doc, down_payment, rebate, money_factor, term_months, residual_percentage, trade_value, trade_payoff):
-    residual_value = market_value * residual_percentage
-    gross_cap_cost = market_value - discount + doc_fee + non_tax_fees + doc
-    cap_cost_reduction = down_payment + rebate + (trade_value - trade_payoff)
-    adjusted_cap_cost = gross_cap_cost - cap_cost_reduction
-    monthly_depreciation = (adjusted_cap_cost - residual_value) / term_months
-    monthly_rent_charge = (adjusted_cap_cost + residual_value) * money_factor
-    monthly_tax = (monthly_depreciation + monthly_rent_charge) * 0.03
-    total_monthly_lease_payment = monthly_depreciation + monthly_rent_charge + monthly_tax
-    return "{:.2f}".format(total_monthly_lease_payment)
+    if market_value == 0:
+        return 0
+    else:
+        residual_value = market_value * residual_percentage
+        gross_cap_cost = market_value - discount + doc_fee + non_tax_fees + doc
+        cap_cost_reduction = down_payment + rebate + (trade_value - trade_payoff)
+        adjusted_cap_cost = gross_cap_cost - cap_cost_reduction
+        monthly_depreciation = (adjusted_cap_cost - residual_value) / term_months
+        monthly_rent_charge = (adjusted_cap_cost + residual_value) * money_factor
+        monthly_tax = (monthly_depreciation + monthly_rent_charge) * 0.03
+        total_monthly_lease_payment = monthly_depreciation + monthly_rent_charge + monthly_tax
+        return "{:.2f}".format(total_monthly_lease_payment)
 
 def calculate_balance(market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees):
     market_value = market_value or 0
