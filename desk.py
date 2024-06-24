@@ -328,7 +328,10 @@ with left_col:
 
     for i in range(3):
         for j in range(3):
-            monthly_payment = calculate_monthly_payment(balance, down_payments[j], rates[i], terms[i])
+            if len(market_value) > 3:
+                monthly_payment = calculate_monthly_payment(balance, down_payments[j], rates[i], terms[i])
+            elif:
+                monthly_payment = 0
             ltv = ((balance - down_payments[j]) / book_value) * 100 if book_value else 0
             if j == 0:
                 col3.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
