@@ -285,18 +285,18 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             
             col1, col2, col3 = st.columns(3)
             with col1:
-                trade_year = st.text_input(f"Trade-in {i+1} Year", key=f"{prefix}_trade_year_{i+1}", placeholder="Year")
-                trade_make = st.text_input(f"Trade-in {i+1} Make", key=f"{prefix}_trade_make_{i+1}", placeholder="Make")
-                trade_model = st.text_input(f"Trade-in {i+1} Model", key=f"{prefix}_trade_model_{i+1}", placeholder="Model")
+                trade_year = st.text_input(f"Trade-in {i+1} Year", key=f"{prefix}_trade_year_{i+1}", placeholder="Year", label_visibility="collapsed")
+                trade_make = st.text_input(f"Trade-in {i+1} Make", key=f"{prefix}_trade_make_{i+1}", placeholder="Make", label_visibility="collapsed")
+                trade_model = st.text_input(f"Trade-in {i+1} Model", key=f"{prefix}_trade_model_{i+1}", placeholder="Model", label_visibility="collapsed")
             
             with col2:
-                trade_vin = st.text_input(f"Trade-in {i+1} VIN", key=f"{prefix}_trade_vin_{i+1}", placeholder="VIN")
-                trade_miles = st.text_input(f"Trade-in {i+1} Miles", key=f"{prefix}_trade_miles_{i+1}", placeholder="Miles")
+                trade_vin = st.text_input(f"Trade-in {i+1} VIN", key=f"{prefix}_trade_vin_{i+1}", placeholder="VIN", label_visibility="collapsed")
+                trade_miles = st.text_input(f"Trade-in {i+1} Miles", key=f"{prefix}_trade_miles_{i+1}", placeholder="Miles", label_visibility="collapsed")
             
             with col3:
-                trade_values[i] = st.number_input(f"Trade-in {i+1} Value", key=f"{prefix}_trade_value_{i+1}", value=0)
-                trade_payoffs[i] = st.number_input(f"Trade-in {i+1} Payoff", key=f"{prefix}_trade_payoff_{i+1}", value=0)
-                trade_acvs[i] = st.number_input(f"Trade-in {i+1} ACV", key=f"{prefix}_trade_acv_{i+1}", value=0)
+                trade_values[i] = st.number_input(f"Trade-in {i+1} Value", key=f"{prefix}_trade_value_{i+1}", value=0, label_visibility="collapsed")
+                trade_payoffs[i] = st.number_input(f"Trade-in {i+1} Payoff", key=f"{prefix}_trade_payoff_{i+1}", value=0, label_visibility="collapsed")
+                trade_acvs[i] = st.number_input(f"Trade-in {i+1} ACV", key=f"{prefix}_trade_acv_{i+1}", value=0, label_visibility="collapsed")
             
     left_col, right_col = st.columns(2)
     
