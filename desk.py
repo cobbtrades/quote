@@ -201,6 +201,17 @@ def generate_pdf(data, filename='quote.pdf'):
         breakdown_data = [row for row in breakdown_data if row is not None]
         
         breakdown_table = Table(breakdown_data, colWidths=[100, 80])
+        breakdown_table.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+            ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica'),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP')  # Align to the top
+        ]))
+        
+        # Add underlines to the values
+        for row_idx in range(len(breakdown_data)):
             breakdown_table.setStyle(TableStyle([
                 ('LINEBELOW', (1, row_idx), (1, row_idx), 1, colors.black)
             ]))
@@ -253,7 +264,6 @@ def generate_pdf(data, filename='quote.pdf'):
         return filename
     except Exception as e:
         logging.error(f"Failed to generate PDF: {e}")
-        st.error(f"Failed to generate PDF: {e}")
         return None
 
 def render_tab(calc_payment_func, prefix, is_lease=False):
