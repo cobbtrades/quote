@@ -260,7 +260,7 @@ if submit_button:
     for term in terms:
         term_payments = {}
         for dp in down_payments:
-            total_loan_amount = taxable_amount + sales_tax + NON_TAX_FEE + trade_payoff - dp
+            total_loan_amount = taxable_amount + sales_tax + NON_TAX_FEE + trade_payoff - dp - rebate
             monthly_payment = calculate_monthly_payment(total_loan_amount, rates[term], term)
             term_payments[dp] = round(monthly_payment, 2)
         quotes[term] = term_payments
