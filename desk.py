@@ -116,18 +116,27 @@ def generate_pdf(data, filename='quote.pdf'):
     elements.append(details_table)
     elements.append(Spacer(1, 20))
     
-    # Vehicle selection and trade-in details
+    # Vehicle selection details
     selection_data = [
         ["SELECTION", "", "", "", "", ""],
         ["YEAR", "MAKE", "MODEL", "STOCK NO.", "VIN", "MILES"],
-        [data['year'], data['make'], data['model'], data['stock_no'], data['vin'], data['miles']],
-        ["TRADE-IN", "", "", "", ""],
-        ["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"],
-        [data['trade_year'], data['trade_make'], data['trade_model'], "", data['trade_vin'], data['trade_miles']],
-        ["TRADE-IN 2", "", "", "", ""],
-        ["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"],
-        [data['trade_year_2'], data['trade_make_2'], data['trade_model_2'], "", data['trade_vin_2'], data['trade_miles_2']]
+        [data['year'], data['make'], data['model'], data['stock_no'], data['vin'], data['miles']]
     ]
+    
+    if data.get('trade_year') or data.get('trade_make') or data.get('trade_model') or data.get('trade_vin') or data.get('trade_miles'):
+        selection_data.extend([
+            ["TRADE-IN", "", "", "", ""],
+            ["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"],
+            [data['trade_year'], data['trade_make'], data['trade_model'], "", data['trade_vin'], data['trade_miles']]
+        ])
+    
+    if data.get('trade_year_2') or data.get('trade_make_2') or data.get('trade_model_2') or data.get('trade_vin_2') or data.get('trade_miles_2'):
+        selection_data.extend([
+            ["TRADE-IN 2", "", "", "", ""],
+            ["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"],
+            [data['trade_year_2'], data['trade_make_2'], data['trade_model_2'], "", data['trade_vin_2'], data['trade_miles_2']]
+        ])
+    
     selection_table = Table(selection_data, colWidths=[65, 65, 90, 80, 135, 80])
     selection_table.setStyle(TableStyle([
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
@@ -135,10 +144,10 @@ def generate_pdf(data, filename='quote.pdf'):
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('BACKGROUND', (0, 3), (-1, 3), colors.grey),  # This line styles the "TRADE-IN:" row
+        ('BACKGROUND', (0, 3), (-1, 3), colors.grey),
         ('TEXTCOLOR', (0, 3), (-1, 3), colors.white),
         ('FONTNAME', (0, 3), (-1, 3), 'Helvetica-Bold'),
-        ('BACKGROUND', (0, 6), (-1, 6), colors.grey),  # This line styles the "TRADE-IN 2:" row
+        ('BACKGROUND', (0, 6), (-1, 6), colors.grey),
         ('TEXTCOLOR', (0, 6), (-1, 6), colors.white),
         ('FONTNAME', (0, 6), (-1, 6), 'Helvetica-Bold')
     ]))
@@ -160,7 +169,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-BoldOblique'),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
-        ('FONTSIZE', (0, 0), (-1, 0), 12),  # Increase font size for the header row
+        ('FONTSIZE', (0, 0), (-1, 0), 12),
         ('FONTSIZE', (0, 1), (-1, -1), 12),
         ('BACKGROUND', (0, 1), (-1, -1), colors.white),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
@@ -177,7 +186,6 @@ def generate_pdf(data, filename='quote.pdf'):
         ["Non Tax Fees", f"${data['non_tax_fees']:.2f}"] if data['non_tax_fees'] != 0 else None,
         ["Balance", f"${data['balance']:.2f}"] if data['balance'] != 0 else None,
     ]
-    # Filter out None values
     breakdown_data = [row for row in breakdown_data if row is not None]
     
     breakdown_table = Table(breakdown_data, colWidths=[100, 80])
@@ -187,25 +195,22 @@ def generate_pdf(data, filename='quote.pdf'):
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica'),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
         ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-        ('VALIGN', (0, 0), (-1, -1), 'TOP')  # Align to the top
+        ('VALIGN', (0, 0), (-1, -1), 'TOP')
     ]))
     
-    # Add underlines to the values
     for row_idx in range(len(breakdown_data)):
         breakdown_table.setStyle(TableStyle([
             ('LINEBELOW', (1, row_idx), (1, row_idx), 1, colors.black)
         ]))
 
     spacer = Spacer(width=20, height=0)
-
-    # Combine the payment grid and breakdown tables side by side with spacer
     combined_data = [
         [grid_table, spacer, breakdown_table]
     ]
     
     combined_table = Table(combined_data, colWidths=[300, 20, 220], rowHeights=None, hAlign='LEFT')
     combined_table.setStyle(TableStyle([
-        ('VALIGN', (0, 0), (-1, -1), 'TOP')  # Align to the top
+        ('VALIGN', (0, 0), (-1, -1), 'TOP')
     ]))
 
     elements.append(combined_table)
@@ -221,7 +226,6 @@ def generate_pdf(data, filename='quote.pdf'):
     elements.append(disclaimer_line)
     elements.append(Spacer(1, 20))
 
-    # Add signature lines
     signature_data = [
         ["Customer Approval: ", "_________________________ ", "Management Approval: ", "_________________________"]
     ]
@@ -232,7 +236,6 @@ def generate_pdf(data, filename='quote.pdf'):
     ]))
     elements.append(signature_table)
 
-    # Add paragraph
     paragraph_text = "By signing this authorization form, you certify that the above personal information is correct and accurate, and authorize the release of credit and employment information. By signing above, I provide to the dealership and its affiliates consent to communicate with me about my vehicle or any future vehicles using electronic, verbal and written communications including but not limited to email, text messaging, SMS, phone calls and direct mail. Terms and Conditions subject to credit approval. For Information Only. This is not an offer or contract for sale."
     paragraph_style = styles["Normal"]
     paragraph_style.fontSize = 6
