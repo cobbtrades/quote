@@ -25,6 +25,7 @@ def calculate_monthly_payment(principal, down_payment, annual_rate, term_months)
         return "{:.2f}".format(payment)
 
 def calculate_lease_payment(msrp, negotiated_price, fees, down_payment, rebate, money_factor, term_months, residual_percentage, tax_rate):
+    residual_percentage /= 100  # Convert percentage to fraction if input is in percentage
     # Calculate residual value
     residual_value = msrp * residual_percentage
     # Calculate gross and adjusted capitalized cost
