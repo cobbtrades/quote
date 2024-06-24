@@ -120,11 +120,11 @@ def generate_pdf(data, filename='quote.pdf'):
     selection_data = [
         ["SELECTION", "", "", "", "", ""],
         ["YEAR", "MAKE", "MODEL", "STOCK NO.", "VIN", "MILES"],
-        [data['year'], data['make'], data['model'], data['stock_no'], data['vin'], data['miles']]
+        [data['year'], data['make'], data['model'], data['stock_no'], data['vin'], data['miles']],
+        ["TRADE-IN", "", "", "", ""],
+        ["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"]
     ]
     if data['trade_vin'] is not None:
-        selection_data.append(["TRADE-IN", "", "", "", ""])
-        selection_data.append(["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"])
         selection_data.append([data['trade_year'], data['trade_make'], data['trade_model'], "", data['trade_vin'], data['trade_miles']])
     if data['trade_vin_2'] is not None:
         selection_data.append(["TRADE-IN 2", "", "", "", ""])
@@ -140,10 +140,7 @@ def generate_pdf(data, filename='quote.pdf'):
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('BACKGROUND', (0, 3), (-1, 3), colors.grey),  # This line styles the "TRADE-IN:" row
         ('TEXTCOLOR', (0, 3), (-1, 3), colors.white),
-        ('FONTNAME', (0, 3), (-1, 3), 'Helvetica-Bold'),
-        ('BACKGROUND', (0, 6), (-1, 6), colors.grey),  # This line styles the "TRADE-IN 2:" row
-        ('TEXTCOLOR', (0, 6), (-1, 6), colors.white),
-        ('FONTNAME', (0, 6), (-1, 6), 'Helvetica-Bold')
+        ('FONTNAME', (0, 3), (-1, 3), 'Helvetica-Bold')
     ]))
     elements.append(selection_table)
     elements.append(Spacer(1, 20))
