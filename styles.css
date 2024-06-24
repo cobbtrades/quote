@@ -1,9 +1,9 @@
 /* styles.css */
 
-#MainMenu, footer {
-    visibility: hidden;
+.title {
+    font-size: 24px !important;
+    margin-bottom: 0.5rem;
 }
-
 /* Full page container */
 .main .block-container {
     padding: 0;
