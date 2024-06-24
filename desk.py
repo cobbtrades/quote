@@ -396,6 +396,11 @@ with lbc:
         with open(pdf_file, 'rb') as f:
             st.download_button('Download Quote', f, file_name=pdf_file)
     with rbc:
+        market_value = market_value or 0
+        discount = discount or 0
+        veh_cost = veh_cost or 0
+        trade_acv = trade_acv or 0
+        trade_value = trade_value or 0
         gross_profit = market_value - discount - veh_cost + (trade_acv - trade_value)
         color = "lightgreen" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
         st.markdown(f"<p style='color:{color}; font-size:24px;'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
