@@ -236,7 +236,7 @@ with finance:
         state = sc2.text_input(label="State", key="state", placeholder="State", max_chars=2, label_visibility="collapsed", help="State")
         zipcode = tc2.text_input(label="Zip", key="zip", placeholder="Zip", max_chars=5, label_visibility="collapsed", help="Zip")
         email_address = fc2.text_input(label="Email", key="emailaddress", placeholder="Email", label_visibility="collapsed", help="Email")
-        phone_num = tc2.text_input(label="Phone", key="phonenumber", placeholder="Phone", max_chars=5, label_visibility="collapsed", help="Phone")
+        phone_num = tc2.text_input(label="Phone", key="phonenumber", placeholder="Phone", max_chars=12, label_visibility="collapsed", help="Phone")
     
     with sc:
         fc3, sc3 = st.columns([2, 4])
