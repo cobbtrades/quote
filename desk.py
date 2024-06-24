@@ -348,7 +348,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         inputs_col.text_input(label="Balance", key=f"{prefix}_balance", value=f"{balance:.2f}", label_visibility='collapsed', help="Balance", disabled=True)
     
     with left_col:
-        col1, col2, col3, col4, col5 = st.columns([1,1,2,2,2])
+        col1, col2, col3, col4, col5, col6 = st.columns([.5,1,.5,2,2,2,2])
     
         col1.text("")
         col1.text("")
@@ -360,11 +360,13 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         col2.text("")
         col2.text("")
         col2.text("")
-    
+
+        if is_lease:
+            residual_value = col3.number_input(label="Residual Percent", key=f"{prefix}_residual_percent", value=0.70)
         # Input values
-        value1 = col3.number_input(label="Down Payment", key=f"{prefix}_value1", value=1000)
-        value2 = col4.number_input(label="Down Payment", key=f"{prefix}_value2", value=2000)
-        value3 = col5.number_input(label="Down Payment", key=f"{prefix}_value3", value=3000)
+        value1 = col4.number_input(label="Down Payment", key=f"{prefix}_value1", value=1000)
+        value2 = col5.number_input(label="Down Payment", key=f"{prefix}_value2", value=2000)
+        value3 = col6.number_input(label="Down Payment", key=f"{prefix}_value3", value=3000)
         down_payments = [value1, value2, value3]
     
         terms = []
@@ -387,24 +389,20 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                     monthly_payment = calc_payment_func(balance, down_payments[j], rates[i], terms[i])
                 ltv = ((balance - down_payments[j]) / book_value) * 100 if book_value else 0
                 if j == 0:
-                    col3.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
-                elif j == 1:
                     col4.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
-                elif j == 2:
+                elif j == 1:
                     col5.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
+                elif j == 2:
+                    col6.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
         
         # Display LTV percentages under each column
         ltv1 = ((balance - down_payments[0]) / book_value) * 100 if book_value else 0
         ltv2 = ((balance - down_payments[1]) / book_value) * 100 if book_value else 0
         ltv3 = ((balance - down_payments[2]) / book_value) * 100 if book_value else 0
         
-        col3.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv1:.2f}%</span></div></div>', unsafe_allow_html=True)
-        col4.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv2:.2f}%</span></div></div>', unsafe_allow_html=True)
-        col5.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv3:.2f}%</span></div></div>', unsafe_allow_html=True)
-
-        if is_lease:
-                col1.markdown('<input class="label-input" type="text" value="Residual" disabled>', unsafe_allow_html=True)
-                residual_value = col2.number_input(label="Residual Percent", key=f"{prefix}_residual_percent", value=0, label_visibility="collapsed")
+        col4.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv1:.2f}%</span></div></div>', unsafe_allow_html=True)
+        col5.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv2:.2f}%</span></div></div>', unsafe_allow_html=True)
+        col6.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv3:.2f}%</span></div></div>', unsafe_allow_html=True)
 
     lbc, rbc, blankbc = st.columns([2, 3, 10])
     with lbc:
