@@ -300,16 +300,16 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         rebate = inputs_col.number_input(label="Rebate", key=f"{prefix}_rebate", value=0, label_visibility='collapsed', help="Rebate")
         
         labels_col.markdown('<input class="label-input" type="text" value="Trade Value" disabled>', unsafe_allow_html=True)
-        trade_value = st.session_state.get(f"{prefix}_trade_value", 0)
-        inputs_col.text_input(label="Trade Value", key=f"{prefix}_trade_value", value=f"{trade_value:.2f}", label_visibility='collapsed', help="Trade Value", disabled=True)
+        trade_value = sum(st.session_state.get(f"{prefix}_trade_value", [0]))
+        inputs_col.text_input(label="Trade Value", key=f"{prefix}_trade_value_display", value=f"{trade_value:.2f}", label_visibility='collapsed', help="Trade Value", disabled=True)
         
         labels_col.markdown('<input class="label-input" type="text" value="Trade ACV" disabled>', unsafe_allow_html=True)
-        trade_acv = st.session_state.get(f"{prefix}_trade_acv", 0)
-        inputs_col.text_input(label="Trade ACV", key=f"{prefix}_trade_acv", value=f"{trade_acv:.2f}", label_visibility='collapsed', help="Trade ACV", disabled=True)
+        trade_acv = sum(st.session_state.get(f"{prefix}_trade_acv", [0]))
+        inputs_col.text_input(label="Trade ACV", key=f"{prefix}_trade_acv_display", value=f"{trade_acv:.2f}", label_visibility='collapsed', help="Trade ACV", disabled=True)
         
         labels_col.markdown('<input class="label-input" type="text" value="Trade Payoff" disabled>', unsafe_allow_html=True)
-        trade_payoff = st.session_state.get(f"{prefix}_trade_payoff", 0)
-        inputs_col.text_input(label="Trade Payoff", key=f"{prefix}_trade_payoff", value=f"{trade_payoff:.2f}", label_visibility='collapsed', help="Trade Payoff", disabled=True)
+        trade_payoff = sum(st.session_state.get(f"{prefix}_trade_payoff", [0]))
+        inputs_col.text_input(label="Trade Payoff", key=f"{prefix}_trade_payoff_display", value=f"{trade_payoff:.2f}", label_visibility='collapsed', help="Trade Payoff", disabled=True)
         
         labels_col.markdown('<input class="label-input" type="text" value="Doc Fee" disabled>', unsafe_allow_html=True)
         doc_fee = inputs_col.number_input(label="Doc Fee", key=f"{prefix}_doc_fee", value=799, label_visibility='collapsed', help="Doc Fee")
@@ -321,7 +321,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             taxes = inputs_col.number_input(label="Taxes", key=f"{prefix}_taxes", value=0, label_visibility='collapsed', help="Taxes")
         else:
             labels_col.markdown('<input class="label-input" type="text" value="Taxes" disabled>', unsafe_allow_html=True)
-            inputs_col.text_input(label="Taxes", key=f"{prefix}_taxes", value=f"{taxes:.2f}", label_visibility='collapsed', help="Taxes", disabled=True)
+            inputs_col.text_input(label="Taxes", key=f"{prefix}_taxes_display", value=f"{taxes:.2f}", label_visibility='collapsed', help="Taxes", disabled=True)
         
         labels_col.markdown('<input class="label-input" type="text" value="Non-Tax Fees" disabled>', unsafe_allow_html=True)
         non_tax_fees = inputs_col.number_input(label="Non-Tax Fees", key=f"{prefix}_non_tax_fees", value=106.75, label_visibility='collapsed', help="Non-Tax Fees")
@@ -330,7 +330,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees
         )
         labels_col.markdown('<input class="label-input" type="text" value="Balance" disabled>', unsafe_allow_html=True)
-        inputs_col.text_input(label="Balance", key=f"{prefix}_balance", value=f"{balance:.2f}", label_visibility='collapsed', help="Balance", disabled=True)
+        inputs_col.text_input(label="Balance", key=f"{prefix}_balance_display", value=f"{balance:.2f}", label_visibility='collapsed', help="Balance", disabled=True)
     
     with left_col:
         col1, col2, col3, col4, col5, col6 = st.columns([.5,1.5,1,1.5,1.5,1.5])
