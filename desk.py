@@ -230,6 +230,7 @@ def generate_pdf(data, filename='quote.pdf'):
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-BoldOblique'),
             ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
             ('FONTSIZE', (0, 0), (-1, 0), 12),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica-Oblique'),
             ('FONTSIZE', (0, 1), (-1, -1), 12),
             ('BACKGROUND', (0, 1), (-1, -1), colors.white),
             ('GRID', (0, 0), (-1, -1), 1, colors.black),
