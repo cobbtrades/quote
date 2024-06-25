@@ -299,16 +299,17 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         labels_col.markdown('<input class="label-input" type="text" value="Rebate" disabled>', unsafe_allow_html=True)
         rebate = inputs_col.number_input(label="Rebate", key=f"{prefix}_rebate", value=0, label_visibility='collapsed', help="Rebate")
         
+        trade_value = sum(st.session_state.get(f"{prefix}_trade_values", [0]))
+        trade_acv = sum(st.session_state.get(f"{prefix}_trade_acvs", [0]))
+        trade_payoff = sum(st.session_state.get(f"{prefix}_trade_payoffs", [0]))
+        
         labels_col.markdown('<input class="label-input" type="text" value="Trade Value" disabled>', unsafe_allow_html=True)
-        trade_value = sum(st.session_state.get(f"{prefix}_trade_value", [0]))
         inputs_col.text_input(label="Trade Value", key=f"{prefix}_trade_value_display", value=f"{trade_value:.2f}", label_visibility='collapsed', help="Trade Value", disabled=True)
         
         labels_col.markdown('<input class="label-input" type="text" value="Trade ACV" disabled>', unsafe_allow_html=True)
-        trade_acv = sum(st.session_state.get(f"{prefix}_trade_acv", [0]))
         inputs_col.text_input(label="Trade ACV", key=f"{prefix}_trade_acv_display", value=f"{trade_acv:.2f}", label_visibility='collapsed', help="Trade ACV", disabled=True)
         
         labels_col.markdown('<input class="label-input" type="text" value="Trade Payoff" disabled>', unsafe_allow_html=True)
-        trade_payoff = sum(st.session_state.get(f"{prefix}_trade_payoff", [0]))
         inputs_col.text_input(label="Trade Payoff", key=f"{prefix}_trade_payoff_display", value=f"{trade_payoff:.2f}", label_visibility='collapsed', help="Trade Payoff", disabled=True)
         
         labels_col.markdown('<input class="label-input" type="text" value="Doc Fee" disabled>', unsafe_allow_html=True)
@@ -451,9 +452,9 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 'trade_model': st.session_state.get(f"{prefix}_trade_model_1", ""),
                 'trade_vin': st.session_state.get(f"{prefix}_trade_vin_1", ""),
                 'trade_miles': st.session_state.get(f"{prefix}_trade_miles_1", ""),
-                'trade_value': sum(st.session_state.get(f"{prefix}_trade_value", [0])),
-                'trade_payoff': sum(st.session_state.get(f"{prefix}_trade_payoff", [0])),
-                'trade_acv': sum(st.session_state.get(f"{prefix}_trade_acv", [0])),
+                'trade_value': sum(st.session_state.get(f"{prefix}_trade_values", [0])),
+                'trade_payoff': sum(st.session_state.get(f"{prefix}_trade_payoffs", [0])),
+                'trade_acv': sum(st.session_state.get(f"{prefix}_trade_acvs", [0])),
                 'trade_year_2': st.session_state.get(f"{prefix}_trade_year_2", ""),
                 'trade_make_2': st.session_state.get(f"{prefix}_trade_make_2", ""),
                 'trade_model_2': st.session_state.get(f"{prefix}_trade_model_2", ""),
