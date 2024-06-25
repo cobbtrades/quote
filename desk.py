@@ -478,16 +478,14 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         col4.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv1:.2f}%</span></div></div>', unsafe_allow_html=True)
         col5.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv2:.2f}%</span></div></div>', unsafe_allow_html=True)
         col6.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv3:.2f}%</span></div></div>', unsafe_allow_html=True)
-        col1, col2 = st.columns(2)
-        with col2:
-            market_value = market_value or 0
-            discount = discount or 0
-            veh_cost = veh_cost or 0
-            trade_acv = trade_acv or 0
-            trade_value = trade_value or 0
-            gross_profit = market_value - discount - veh_cost + (trade_acv - trade_value)
-            color = "green" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
-            col4.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
+        market_value = market_value or 0
+        discount = discount or 0
+        veh_cost = veh_cost or 0
+        trade_acv = trade_acv or 0
+        trade_value = trade_value or 0
+        gross_profit = market_value - discount - veh_cost + (trade_acv - trade_value)
+        color = "green" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
+        col6.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
 
     lbc, blankbc = st.columns([2, 10])
     with lbc:
