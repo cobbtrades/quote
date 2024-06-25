@@ -544,7 +544,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         color = "green" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
         col6.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
 
-    lbc, blankbc = st.columns([2, 10])
+    lbc, blankbc, rbc = st.columns([2, 8, 2])  # Added a new column for the second button
     with lbc:
         submit_button = st.button(label="Generate Quote", key=f"{prefix}_submit_button")
         
@@ -607,6 +607,52 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             pdf_file = generate_pdf(data)
             with open(pdf_file, 'rb') as f:
                 st.download_button('Download Quote', f, file_name=pdf_file, key=f"{prefix}_download_button")
+
+    with rbc:
+        bos_button = st.button(label="Generate Bill of Sale", key=f"{prefix}_bos_button")
+        
+        if bos_button:
+            data = {
+                'date': datetime.today().strftime('%B %d, %Y').upper(),
+                'deal_no': '',  # You can add the appropriate value here
+                'buyer': customer,
+                'co_buyer': '',  # You can add the appropriate value here
+                'address': address,
+                'city': city,
+                'state': state,
+                'zip': zipcode,
+                'res_phone': '',  # You can add the appropriate value here
+                'cell_phone': phone_num,
+                'email_add': email_address,
+                'year': year,
+                'make': make,
+                'model': model,
+                'body_style': '',  # You can add the appropriate value here
+                'payoff': '',  # You can add the appropriate value here
+                'serial_no': vin,
+                'color': '',  # You can add the appropriate value here
+                'miles': odometer,
+                'stock_no': stocknum,
+                'sls_mgr': '',  # You can add the appropriate value here
+                'bus_mgr': '',  # You can add the appropriate value here
+                'trade_year_1': st.session_state.get(f"{prefix}_trade_year_1", ""),
+                'trade_make_1': st.session_state.get(f"{prefix}_trade_make_1", ""),
+                'trade_model_1': st.session_state.get(f"{prefix}_trade_model_1", ""),
+                'trade_miles_1': st.session_state.get(f"{prefix}_trade_miles_1", ""),
+                'trade_stock_1': '',  # You can add the appropriate value here
+                'trade_serial_1': st.session_state.get(f"{prefix}_trade_vin_1", ""),
+                'trade_year_2': st.session_state.get(f"{prefix}_trade_year_2", ""),
+                'trade_make_2': st.session_state.get(f"{prefix}_trade_make_2", ""),
+                'trade_model_2': st.session_state.get(f"{prefix}_trade_model_2", ""),
+                'trade_miles_2': st.session_state.get(f"{prefix}_trade_miles_2", ""),
+                'trade_stock_2': '',  # You can add the appropriate value here
+                'trade_serial_2': st.session_state.get(f"{prefix}_trade_vin_2", ""),
+            }
+            
+            bos_pdf_file = generate_bos_pdf(data)
+            if bos_pdf_file:
+                with open(bos_pdf_file, 'rb') as f:
+                    st.download_button('Download Bill of Sale', f, file_name=bos_pdf_file, key=f"{prefix}_bos_download_button")
 
 finance, lease = st.tabs(["Finance", "Lease"])
 
