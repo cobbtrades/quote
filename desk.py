@@ -608,55 +608,6 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             with open(pdf_file, 'rb') as f:
                 st.download_button('Download Quote', f, file_name=pdf_file, key=f"{prefix}_download_button")
 
-    with blankbc:
-        bos_button = st.button(label="Generate BoS", key=f"{prefix}_bos")
-        if bos_button:
-            data = {
-                'date': datetime.today().strftime('%B %d, %Y').upper(),
-                'dealer': dealer,
-                'salesperson': consultant,
-                'manager': manager,
-                'buyer': customer,
-                'address': address,
-                'city': city,
-                'state': state,
-                'zip': zipcode,
-                'cell_phone': phone_num,
-                'email_add': email_address,
-                'newused': newused,
-                'year': year,
-                'make': make,
-                'model': model,
-                'trim': trim,
-                'stock_no': stocknum,
-                'vin': vin,
-                'miles': odometer,
-                'trade_year': st.session_state.get(f"{prefix}_trade_year_1", ""),
-                'trade_make': st.session_state.get(f"{prefix}_trade_make_1", ""),
-                'trade_model': st.session_state.get(f"{prefix}_trade_model_1", ""),
-                'trade_vin': st.session_state.get(f"{prefix}_trade_vin_1", ""),
-                'trade_miles': st.session_state.get(f"{prefix}_trade_miles_1", ""),
-                'trade_value': sum(trade_values),
-                'trade_payoff': sum(trade_payoffs),
-                'trade_acv': sum(trade_acvs),
-                'trade_year_2': st.session_state.get(f"{prefix}_trade_year_2", ""),
-                'trade_make_2': st.session_state.get(f"{prefix}_trade_make_2", ""),
-                'trade_model_2': st.session_state.get(f"{prefix}_trade_model_2", ""),
-                'trade_vin_2': st.session_state.get(f"{prefix}_trade_vin_2", ""),
-                'trade_miles_2': st.session_state.get(f"{prefix}_trade_miles_2", ""),
-                'sale_price': market_value,
-                'discount': discount,
-                'rebate': rebate,
-                'doc_fee': doc_fee,
-                'sales_tax': taxes,
-                'non_tax_fees': non_tax_fees,
-                'balance': balance,
-                'quotes': quotes,
-            }
-            bos_file = generate_bos_pdf(data)
-            with open(pdf_file, 'rb') as f:
-                st.download_button('Download BoS', f, file_name=bos_file, key=f"{prefix}_download_button")
-
 finance, lease = st.tabs(["Finance", "Lease"])
 
 with finance:
