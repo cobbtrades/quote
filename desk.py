@@ -24,14 +24,14 @@ def generate_bos_pdf(data, filename='bill_of_sale.pdf'):
             ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
             ('FONTSIZE', (0, 0), (-1, -1), 6),
             ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
-        ]
+        ]))
         row2 = Table([['DATE:', data.get('date', ''), 'SALESPERSON:', data.get('salesperson', '')]], colWidths=[30,50,60, 100])
         row2.setStyle(TableStyle([
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
             ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
             ('FONTSIZE', (0, 0), (-1, -1), 8),
             ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
-        ]
+        ]))
         row3 = Table([['DEAL #', data.get('dealnumber', ''), 'VEHICLE SALE PRICE', data.get('saleprice', '')]])
         row4 = Table([["BUYER:", data.get('buyer', ''), 'ACCESSORIES', data.get('accessories', '')]])
         elements.append(row1)
