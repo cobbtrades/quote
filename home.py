@@ -287,27 +287,44 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
     fc, sc, tc = st.columns([3, 3, 2])
     
     with fc:
-        customer = st.text_input(label="Customer", key=f"{prefix}_cust", placeholder="Customer", label_visibility='collapsed', help="Customer")
-        address = st.text_input(label="Address", key=f"{prefix}_addr", placeholder="Address", label_visibility="collapsed", help="Address")
-        fc2, sc2, tc2 = st.columns([3, 1, 2])
-        city = fc2.text_input(label="City", key=f"{prefix}_city", placeholder="City", label_visibility="collapsed", help="City")
-        state = sc2.text_input(label="State", key=f"{prefix}_state", placeholder="State", max_chars=2, label_visibility="collapsed", help="State")
-        zipcode = tc2.text_input(label="Zip", key=f"{prefix}_zip", placeholder="Zip", max_chars=5, label_visibility="collapsed", help="Zip")
-        email_address = fc2.text_input(label="Email", key=f"{prefix}_emailaddress", placeholder="Email", label_visibility="collapsed", help="Email")
-        phone_num = tc2.text_input(label="Phone", key=f"{prefix}_phonenumber", placeholder="Phone", max_chars=12, label_visibility="collapsed", help="Phone")
+        fc1, sc1 = st.columns([.6,4])
+        fc1.markdown('<input class="label-input" type="text" value="Customer" disabled>', unsafe_allow_html=True)
+        customer = sc1.text_input(label="Customer", key=f"{prefix}_cust", label_visibility='collapsed', help="Customer")
+        fc1.markdown('<input class="label-input" type="text" value="Address" disabled>', unsafe_allow_html=True)
+        address = sc1.text_input(label="Address", key=f"{prefix}_addr", label_visibility="collapsed", help="Address")
+
+        
+        fc2, sc2, tc2, fr2, ft2, st2 = st.columns([.6, 2.5, .5, .5, .5, 1])
+        fc2.markdown('<input class="label-input" type="text" value="City" disabled>', unsafe_allow_html=True)
+        city = sc2.text_input(label="City", key=f"{prefix}_city", label_visibility="collapsed", help="City")
+        tc2.markdown('<input class="label-input" type="text" value="State" disabled>', unsafe_allow_html=True)
+        state = fr2.text_input(label="State", key=f"{prefix}_state", max_chars=2, label_visibility="collapsed", help="State")
+        ft2.markdown('<input class="label-input" type="text" value="Zip" disabled>', unsafe_allow_html=True)
+        zipcode = st2.text_input(label="Zip", key=f"{prefix}_zip", max_chars=5, label_visibility="collapsed", help="Zip")
+        fc2.markdown('<input class="label-input" type="text" value="Email" disabled>', unsafe_allow_html=True)
+        email_address = sc2.text_input(label="Email", key=f"{prefix}_emailaddress", label_visibility="collapsed", help="Email")
+        ft2.markdown('<input class="label-input" type="text" value="Phone" disabled>', unsafe_allow_html=True)
+        phone_num = st2.text_input(label="Phone", key=f"{prefix}_phonenumber", max_chars=12, label_visibility="collapsed", help="Phone")
     
     with sc:
-        fc3, sc3 = st.columns([2, 4])
-        stocknum = fc3.text_input(label="Stock #", key=f"{prefix}_stock", placeholder="Stock #", label_visibility="collapsed", help="Stock #")
-        vin = sc3.text_input(label="VIN", key=f"{prefix}_vin", placeholder="VIN", max_chars=17, label_visibility="collapsed", help="VIN")
-        fc4, sc4, tc4 = st.columns([1, 2, 3])
+        fc3, sc3, tc3, fr3 = st.columns([1, 2, 1, 4])
+        fc3.markdown('<input class="label-input" type="text" value="Stock #" disabled>', unsafe_allow_html=True)
+        stocknum = sc3.text_input(label="Stock #", key=f"{prefix}_stock", label_visibility="collapsed", help="Stock #")
+        tc3.markdown('<input class="label-input" type="text" value="VIN" disabled>', unsafe_allow_html=True)
+        vin = fr3.text_input(label="VIN", key=f"{prefix}_vin", max_chars=17, label_visibility="collapsed", help="VIN")
+        fc4, sc4, tc4, fr4, ft4 = st.columns([1, 1, 1, 1, 2])
         newused = fc4.selectbox(label="N/U", options=["New", "Used", "CPO"], key=f"{prefix}_newused", label_visibility="collapsed", help="N/U")
-        year = sc4.text_input(label="Year", key=f"{prefix}_year", placeholder="Year", max_chars=4, label_visibility="collapsed", help="Year")
-        make = tc4.text_input(label="Make", key=f"{prefix}_make", placeholder="Make", label_visibility="collapsed", help="Make")
-        fc5, sc5, tc5 = st.columns([3, 1.5, 1.5])
-        model = fc5.text_input(label="Model", key=f"{prefix}_model", placeholder="Model", label_visibility="collapsed", help="Model")
-        trim = sc5.text_input(label="Trim", key=f"{prefix}_trim", max_chars=4, placeholder="Trim", label_visibility="collapsed", help="Trim")
-        odometer = tc5.text_input(label="Odometer", key=f"{prefix}_odometer", placeholder="Odometer", label_visibility="collapsed", help="Odometer")
+        sc4.markdown('<input class="label-input" type="text" value="Year" disabled>', unsafe_allow_html=True)
+        year = tc4.text_input(label="Year", key=f"{prefix}_year", max_chars=4, label_visibility="collapsed", help="Year")
+        fr4.markdown('<input class="label-input" type="text" value="Make" disabled>', unsafe_allow_html=True)
+        make = ft4.text_input(label="Make", key=f"{prefix}_make", label_visibility="collapsed", help="Make")
+        fc5, sc5, tc5, fr5, ft5, st5 = st.columns([1, 2, 1, 1.5, 1, 1.5])
+        fc5.markdown('<input class="label-input" type="text" value="Model" disabled>', unsafe_allow_html=True)
+        model = sc5.text_input(label="Model", key=f"{prefix}_model", label_visibility="collapsed", help="Model")
+        tc5.markdown('<input class="label-input" type="text" value="Trim" disabled>', unsafe_allow_html=True)
+        trim = fr5.text_input(label="Trim", key=f"{prefix}_trim", max_chars=4, label_visibility="collapsed", help="Trim")
+        ft5.markdown('<input class="label-input" type="text" value="Odometer" disabled>', unsafe_allow_html=True)
+        odometer = st5.text_input(label="Odometer", key=f"{prefix}_odometer", label_visibility="collapsed", help="Odometer")
         fc6, sc6, tc6, fr6 = st.columns(4)
         fc6.markdown('<input class="label-input" type="text" value="Cost" disabled>', unsafe_allow_html=True)
         veh_cost = sc6.number_input(label="Cost", key=f"{prefix}_veh_cost", value=0, label_visibility='collapsed', help="Cost")
@@ -315,9 +332,13 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         book_value = fr6.number_input(label="Book Value", key=f"{prefix}_book_value", value=0, label_visibility='collapsed', help="Book Value")
     
     with tc:
-        dealer = st.text_input(label="Dealership", key=f"{prefix}_dealer", placeholder="Dealership", label_visibility="collapsed", help="Dealership")
-        consultant = st.text_input(label="Sales Person", key=f"{prefix}_consultant", placeholder="Sales Person", label_visibility="collapsed", help="Sales Person")
-        manager = st.text_input(label="Sales Manager", key=f"{prefix}_manager", placeholder="Sales Manager", label_visibility="collapsed", help="Sales Manager")
+        fc7, sc7 = st.columns([1.5,4])
+        fc7.markdown('<input class="label-input" type="text" value="Dealer" disabled>', unsafe_allow_html=True)
+        dealer = sc7.text_input(label="Dealership", key=f"{prefix}_dealer", label_visibility="collapsed", help="Dealership")
+        fc7.markdown('<input class="label-input" type="text" value="Sales Person" disabled>', unsafe_allow_html=True)
+        consultant = sc7.text_input(label="Sales Person", key=f"{prefix}_consultant", label_visibility="collapsed", help="Sales Person")
+        fc7.markdown('<input class="label-input" type="text" value="Sales Manager" disabled>', unsafe_allow_html=True)
+        manager = sc7.text_input(label="Sales Manager", key=f"{prefix}_manager", label_visibility="collapsed", help="Sales Manager")
 
     trade_values = [0] * 2
     trade_payoffs = [0] * 2
@@ -329,18 +350,18 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             col_data = f"Trade-in {i+1}"
             tt1.markdown(f'<input class="label-input" type="text" value="{col_data}" disabled>', unsafe_allow_html=True)
             fc1.markdown('<input class="label-input" type="text" value="Year" disabled>', unsafe_allow_html=True)
-            trade_year = sc1.text_input(f"Trade-in {i+1} Year", key=f"{prefix}_trade_year_{i+1}", placeholder="Year", label_visibility="collapsed", max_chars=4)
+            trade_year = sc1.text_input(f"Trade-in {i+1} Year", key=f"{prefix}_trade_year_{i+1}", label_visibility="collapsed", max_chars=4)
             tc1.markdown('<input class="label-input" type="text" value="Make" disabled>', unsafe_allow_html=True)
-            trade_make = fr1.text_input(f"Trade-in {i+1} Make", key=f"{prefix}_trade_make_{i+1}", placeholder="Make", label_visibility="collapsed")
+            trade_make = fr1.text_input(f"Trade-in {i+1} Make", key=f"{prefix}_trade_make_{i+1}", label_visibility="collapsed")
             ft1.markdown('<input class="label-input" type="text" value="Model" disabled>', unsafe_allow_html=True)
-            trade_model = st1.text_input(f"Trade-in {i+1} Model", key=f"{prefix}_trade_model_{i+1}", placeholder="Model", label_visibility="collapsed")
+            trade_model = st1.text_input(f"Trade-in {i+1} Model", key=f"{prefix}_trade_model_{i+1}", label_visibility="collapsed")
             sv1.markdown('<input class="label-input" type="text" value="VIN" disabled>', unsafe_allow_html=True)
-            trade_vin = ec1.text_input(f"Trade-in {i+1} VIN", key=f"{prefix}_trade_vin_{i+1}", placeholder="VIN", label_visibility="collapsed", max_chars=17)
+            trade_vin = ec1.text_input(f"Trade-in {i+1} VIN", key=f"{prefix}_trade_vin_{i+1}", label_visibility="collapsed", max_chars=17)
     
             # Second row of trade-in details
             tt2, fc2, sc2, tc2, fr2, ft2, st2, sv2, ec2 = st.columns([1, 1, 2, 1, 2, 1, 2, 1, 4])
             fc2.markdown('<input class="label-input" type="text" value="Miles" disabled>', unsafe_allow_html=True)
-            trade_miles = sc2.text_input(f"Trade-in {i+1} Miles", key=f"{prefix}_trade_miles_{i+1}", placeholder="Miles", label_visibility="collapsed")
+            trade_miles = sc2.text_input(f"Trade-in {i+1} Miles", key=f"{prefix}_trade_miles_{i+1}", label_visibility="collapsed")
             tc2.markdown('<input class="label-input" type="text" value="Trade Value" disabled>', unsafe_allow_html=True)
             trade_values[i] = fr2.number_input(f"Trade-in {i+1} Value", key=f"{prefix}_trade_value_{i+1}", value=0, label_visibility="collapsed")
             ft2.markdown('<input class="label-input" type="text" value="Payoff" disabled>', unsafe_allow_html=True)
@@ -457,16 +478,14 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         col4.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv1:.2f}%</span></div></div>', unsafe_allow_html=True)
         col5.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv2:.2f}%</span></div></div>', unsafe_allow_html=True)
         col6.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv3:.2f}%</span></div></div>', unsafe_allow_html=True)
-        col1, col2 = st.columns(2)
-        with col1:
-            market_value = market_value or 0
-            discount = discount or 0
-            veh_cost = veh_cost or 0
-            trade_acv = trade_acv or 0
-            trade_value = trade_value or 0
-            gross_profit = market_value - discount - veh_cost + (trade_acv - trade_value)
-            color = "green" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
-            col4.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
+        market_value = market_value or 0
+        discount = discount or 0
+        veh_cost = veh_cost or 0
+        trade_acv = trade_acv or 0
+        trade_value = trade_value or 0
+        gross_profit = market_value - discount - veh_cost + (trade_acv - trade_value)
+        color = "green" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
+        col6.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
 
     lbc, blankbc = st.columns([2, 10])
     with lbc:
