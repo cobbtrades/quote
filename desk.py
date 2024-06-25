@@ -479,7 +479,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         col5.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv2:.2f}%</span></div></div>', unsafe_allow_html=True)
         col6.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv3:.2f}%</span></div></div>', unsafe_allow_html=True)
         col1, col2 = st.columns(2)
-        with col1:
+        with col2:
             market_value = market_value or 0
             discount = discount or 0
             veh_cost = veh_cost or 0
