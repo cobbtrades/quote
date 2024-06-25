@@ -135,24 +135,21 @@ def generate_pdf(data, filename='quote.pdf'):
         selection_table = Table(selection_data, colWidths=[65, 65, 90, 80, 135, 80])
         selection_table.setStyle(TableStyle([
             ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.black),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            # Remove vertical borders
-            ('LINEBEFORE', (1, 0), (-1, -1), 0, colors.transparent),
-            ('LINEAFTER', (0, 0), (-2, -1), 0, colors.transparent)
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER')
         ]))
         
         if data.get('trade_vin'):
             selection_table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 3), (-1, 3), colors.grey),
+                ('BACKGROUND', (0, 3), (-1, 3), colors.black),
                 ('TEXTCOLOR', (0, 3), (-1, 3), colors.white),
                 ('FONTNAME', (0, 3), (-1, 3), 'Helvetica-Bold')
             ]))
         if data.get('trade_vin_2'):
             selection_table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 6), (-1, 6), colors.grey),
+                ('BACKGROUND', (0, 6), (-1, 6), colors.black),
                 ('TEXTCOLOR', (0, 6), (-1, 6), colors.white),
                 ('FONTNAME', (0, 6), (-1, 6), 'Helvetica-Bold')
             ]))
