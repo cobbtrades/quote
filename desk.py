@@ -12,83 +12,6 @@ with open("styles.css") as f:
 
 st.subheader("")
 
-def generate_bos_pdf(data, filename='bill_of_sale.pdf'):
-    try:
-        doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=50, leftMargin=36, rightMargin=36)
-        elements = []
-        styles = getSampleStyleSheet()
-
-        row1 = Table([["Purchase/Lease Agreement: Buyer(s) offers to purchase or lease the selected motor vehicle on the terms set forth below and on the back of this Purchase/Lease Aggreement"]], colWidth=[None])
-        row1.setStyle(TableStyle([
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 0), (-1, -1), 6),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
-        ]))
-        row2 = Table([['DATE:', data.get('date', ''), 'SALESPERSON:', data.get('salesperson', '')]], colWidths=[30,50,60, 100])
-        row2.setStyle(TableStyle([
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 0), (-1, -1), 8),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
-        ]))
-        row3 = Table([['DEAL #', data.get('dealnumber', ''), 'VEHICLE SALE PRICE', data.get('saleprice', '')]])
-        row4 = Table([["BUYER:", data.get('buyer', ''), 'ACCESSORIES', data.get('accessories', '')]])
-        elements.append(row1)
-        elements.append(row2)
-        elements.append(row3)
-        elements.append(row4)
-        header_data = [
-            ["CO-BUYER:", data.get('co_buyer', '')],
-            ["ADDRESS:", data.get('address', ''), "", "", ""],
-            ["CITY:", data.get('city', ''), "STATE:", data.get('state', ''), "ZIP:", data.get('zip', '')],
-            ["RES PHONE:", data.get('res_phone', ''), "CELL PHONE:", data.get('cell_phone', ''), "EMAIL ADDRESS:", data.get('email_add', '')]
-        ]
-
-        vehicle_data = [
-            ["SELECTION: ", "", "", "", "", "", ""],
-            ["YEAR", "MAKE", "MODEL", "BODY STYLE", "PAYOFF", "", ""],
-            [data.get('year', ''), data.get('make', ''), data.get('model', ''), data.get('body_style', ''), data.get('payoff', ''), "", ""],
-            ["SERIAL NO.", "COLOR", "MILES", "STOCK NO.", "SLS MGR.", "BUS MGR.", ""],
-            [data.get('serial_no', ''), data.get('color', ''), data.get('miles', ''), data.get('stock_no', ''), data.get('sls_mgr', ''), data.get('bus_mgr', ''), ""],
-            ["TRADE-IN", "", "", "", "", "", ""],
-            ["YEAR #1", "MAKE", "MODEL", "MILES", "STOCK #", "SERIAL NO.", ""],
-            [data.get('trade_year_1', ''), data.get('trade_make_1', ''), data.get('trade_model_1', ''), data.get('trade_miles_1', ''), data.get('trade_stock_1', ''), data.get('trade_serial_1', ''), ""],
-            ["YEAR #2", "MAKE", "MODEL", "MILES", "STOCK #", "SERIAL NO.", ""],
-            [data.get('trade_year_2', ''), data.get('trade_make_2', ''), data.get('trade_model_2', ''), data.get('trade_miles_2', ''), data.get('trade_stock_2', ''), data.get('trade_serial_2', ''), ""]
-        ]
-
-        # Create tables for header and vehicle data
-        header_table = Table(header_data, colWidths=[None, 50, None, 50, 70])
-        vehicle_table = Table(vehicle_data, colWidths=[70, 70, 70, 70, 70, 70, 70])
-
-        # Style the tables
-        header_table.setStyle(TableStyle([
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 0), (-1, -1), 8),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-        ]))
-
-        vehicle_table.setStyle(TableStyle([
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 0), (-1, -1), 8),
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-        ]))
-
-        # Add elements to the document
-        elements.append(header_table)
-        elements.append(Spacer(1, 12))
-        elements.append(vehicle_table)
-
-        doc.build(elements)
-        return filename
-    except Exception as e:
-        logging.error(f"Failed to generate custom PDF: {e}")
-        return None
-
 def calculate_monthly_payment(principal, down_payment, annual_rate, term_months):
     if principal == 0:
         return 0
@@ -626,52 +549,6 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             pdf_file = generate_pdf(data)
             with open(pdf_file, 'rb') as f:
                 st.download_button('Download Quote', f, file_name=pdf_file, key=f"{prefix}_download_button")
-
-    with rbc:
-        bos_button = st.button(label="Generate Bill of Sale", key=f"{prefix}_bos_button")
-        
-        if bos_button:
-            data = {
-                'date': datetime.today().strftime('%B %d, %Y').upper(),
-                'deal_no': '',  # You can add the appropriate value here
-                'buyer': customer,
-                'co_buyer': '',  # You can add the appropriate value here
-                'address': address,
-                'city': city,
-                'state': state,
-                'zip': zipcode,
-                'res_phone': '',  # You can add the appropriate value here
-                'cell_phone': phone_num,
-                'email_add': email_address,
-                'year': year,
-                'make': make,
-                'model': model,
-                'body_style': '',  # You can add the appropriate value here
-                'payoff': '',  # You can add the appropriate value here
-                'serial_no': vin,
-                'color': '',  # You can add the appropriate value here
-                'miles': odometer,
-                'stock_no': stocknum,
-                'sls_mgr': '',  # You can add the appropriate value here
-                'bus_mgr': '',  # You can add the appropriate value here
-                'trade_year_1': st.session_state.get(f"{prefix}_trade_year_1", ""),
-                'trade_make_1': st.session_state.get(f"{prefix}_trade_make_1", ""),
-                'trade_model_1': st.session_state.get(f"{prefix}_trade_model_1", ""),
-                'trade_miles_1': st.session_state.get(f"{prefix}_trade_miles_1", ""),
-                'trade_stock_1': '',  # You can add the appropriate value here
-                'trade_serial_1': st.session_state.get(f"{prefix}_trade_vin_1", ""),
-                'trade_year_2': st.session_state.get(f"{prefix}_trade_year_2", ""),
-                'trade_make_2': st.session_state.get(f"{prefix}_trade_make_2", ""),
-                'trade_model_2': st.session_state.get(f"{prefix}_trade_model_2", ""),
-                'trade_miles_2': st.session_state.get(f"{prefix}_trade_miles_2", ""),
-                'trade_stock_2': '',  # You can add the appropriate value here
-                'trade_serial_2': st.session_state.get(f"{prefix}_trade_vin_2", ""),
-            }
-            
-            bos_pdf_file = generate_bos_pdf(data)
-            if bos_pdf_file:
-                with open(bos_pdf_file, 'rb') as f:
-                    st.download_button('Download Bill of Sale', f, file_name=bos_pdf_file, key=f"{prefix}_bos_download_button")
 
 finance, lease = st.tabs(["Finance", "Lease"])
 
