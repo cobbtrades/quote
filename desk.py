@@ -61,7 +61,7 @@ def calculate_taxes(state, market_value, discount, doc_fee, trade_value):
     elif state == "SC" or state == 'sc':
         return 500.00
     else:
-        return 0.00
+        return None
 
 def generate_pdf(data, filename='quote.pdf'):
     try:
@@ -379,8 +379,13 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         doc_fee = inputs_col.number_input(label="Doc Fee", key=f"{prefix}_doc_fee", value=799, label_visibility='collapsed', help="Doc Fee")
         
         taxes = calculate_taxes(state, market_value, discount, doc_fee, trade_value)
-        labels_col.markdown('<input class="label-input" type="text" value="Taxes" disabled>', unsafe_allow_html=True)
-        inputs_col.text_input(label="Taxes", key=f"{prefix}_taxes", value=f"{taxes:.2f}", label_visibility='collapsed', help="Taxes", disabled=True)
+        
+        if taxes is None:
+            labels_col.markdown('<input class="label-input" type="text" value="Taxes" disabled>', unsafe_allow_html=True)
+            taxes = inputs_col.number_input(label="Taxes", key=f"{prefix}_taxes", value=0, label_visibility='collapsed', help="Taxes")
+        else:
+            labels_col.markdown('<input class="label-input" type="text" value="Taxes" disabled>', unsafe_allow_html=True)
+            inputs_col.text_input(label="Taxes", key=f"{prefix}_taxes", value=f"{taxes:.2f}", label_visibility='collapsed', help="Taxes", disabled=True)
         
         labels_col.markdown('<input class="label-input" type="text" value="Non-Tax Fees" disabled>', unsafe_allow_html=True)
         non_tax_fees = inputs_col.number_input(label="Non-Tax Fees", key=f"{prefix}_non_tax_fees", value=106.75, label_visibility='collapsed', help="Non-Tax Fees")
