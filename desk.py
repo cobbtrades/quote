@@ -18,11 +18,15 @@ def generate_bos_pdf(data, filename='bill_of_sale.pdf'):
         elements = []
         styles = getSampleStyleSheet()
 
+        row1 = Table([["Purchase/Lease Agreement: Buyer(s) offers to purchase or lease the selected motor vehicle on the terms set forth below and on the back of this Purchase/Lease Aggreement"]]
+        row2 = Table([['DATE:', data.get('date', ''), 'SALESPERSON:', data.get('salesperson', '')]])
+        row3 = Table([['DEAL #', data.get('dealnumber', ''), 'VEHICLE SALE PRICE', data.get('saleprice', '')]])
+        row4 = Table([["BUYER:", data.get('buyer', ''), 'ACCESSORIES', data.get('accessories', '')]])
+        elements.append(row1)
+        elements.append(row2)
+        elements.append(row3)
+        elements.append(row4)
         header_data = [
-            ["Purchase/Lease Agreement: Buyer(s) offers to purchase or lease the selected motor vehicle on the terms set forth below and on the back of this Purchase/Lease Aggreement"],
-            ['DATE:', data.get('date', ''), 'SALESPERSON:', data.get('salesperson', '')],
-            ['DEAL #', data.get('dealnumber', ''), 'VEHICLE SALE PRICE', data.get('saleprice', '')],
-            ["BUYER:", data.get('buyer', ''), 'ACCESSORIES', data.get('accessories', '')], 
             ["CO-BUYER:", data.get('co_buyer', '')],
             ["ADDRESS:", data.get('address', ''), "", "", ""],
             ["CITY:", data.get('city', ''), "STATE:", data.get('state', ''), "ZIP:", data.get('zip', '')],
