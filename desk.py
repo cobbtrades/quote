@@ -138,7 +138,10 @@ def generate_pdf(data, filename='quote.pdf'):
             ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER')
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            # Remove vertical borders
+            ('LINEBEFORE', (1, 0), (-1, -1), 0, colors.transparent),
+            ('LINEAFTER', (0, 0), (-2, -1), 0, colors.transparent)
         ]))
         
         if data.get('trade_vin'):
@@ -156,7 +159,6 @@ def generate_pdf(data, filename='quote.pdf'):
             
         elements.append(selection_table)
         elements.append(Spacer(1, 20))
-
 
         if data.get('quotes'):
             grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
