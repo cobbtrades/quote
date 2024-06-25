@@ -56,9 +56,9 @@ def calculate_taxes(state, market_value, discount, doc_fee, trade_value):
     doc_fee = doc_fee or 0
     trade_value = trade_value or 0
     taxable_amount = market_value - discount - trade_value + doc_fee
-    if state == "NC":
+    if state == "NC" or state == "nc":
         return taxable_amount * 0.03
-    elif state == "SC":
+    elif state == "SC" or state == 'sc':
         return 500.00
     else:
         return 0.00
