@@ -118,6 +118,20 @@ def generate_pdf(data, filename='quote.pdf'):
         elements.append(Spacer(1, 20))
         
         # Vehicle selection and trade-in details
+        selection_data = [
+            ["SELECTION", "", "", "", "", ""],
+            ["YEAR", "MAKE", "MODEL", "STOCK NO.", "VIN", "MILES"],
+            [data.get('year', ''), data.get('make', ''), data.get('model', ''), data.get('stock_no', ''), data.get('vin', ''), data.get('miles', '')]
+        ]
+        if data.get('trade_vin'):
+            selection_data.append(["TRADE-IN", "", "", "", ""])
+            selection_data.append(["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"])
+            selection_data.append([data.get('trade_year', ''), data.get('trade_make', ''), data.get('trade_model', ''), "", data.get('trade_vin', ''), data.get('trade_miles', '')])
+        if data.get('trade_vin_2'):
+            selection_data.append(["TRADE-IN 2", "", "", "", ""])
+            selection_data.append(["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"])
+            selection_data.append([data.get('trade_year_2', ''), data.get('trade_make_2', ''), data.get('trade_model_2', ''), "", data.get('trade_vin_2', ''), data.get('trade_miles_2', '')])
+        
         selection_table = Table(selection_data, colWidths=[65, 65, 90, 80, 135, 80])
         selection_table.setStyle(TableStyle([
             ('GRID', (0, 0), (-1, -1), 1, colors.black),
@@ -142,6 +156,7 @@ def generate_pdf(data, filename='quote.pdf'):
             
         elements.append(selection_table)
         elements.append(Spacer(1, 20))
+
 
         if data.get('quotes'):
             grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
