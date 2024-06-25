@@ -322,7 +322,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
     trade_values = [0] * 2
     trade_payoffs = [0] * 2
     trade_acvs = [0] * 2
-    with st.expander("Enter Trade-in Details"):
+    with st.popover("Enter Trade-in Details", use_container_width=True):
         for i in range(2):  # For up to 2 trades
             # First row of trade-in details
             tt1, fc1, sc1, tc1, fr1, ft1, st1, sv1, ec1 = st.columns([1, 1, 2, 1, 2, 1, 2, 1, 4])
