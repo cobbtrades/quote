@@ -198,7 +198,7 @@ def generate_pdf(data, filename='quote.pdf'):
             ["Sales Price", f"${sales_price:.2f}"] if market_value != 0 else None,
             ["Trade Value", f"${data.get('trade_value', 0):.2f}"] if data.get('trade_value', 0) != 0 else None,
             ["Trade Payoff", f"${data.get('trade_payoff', 0):.2f}"] if data.get('trade_payoff', 0) != 0 else None,
-            ["Doc Fee", f"${data.get('doc_fee', 0):.2f}"] if data.get('doc_fee', 0) != 0 else None,
+            ["Doc Fee", f"${data.get('doc_fee', 0)::.2f}"] if data.get('doc_fee', 0) != 0 else None,
             ["Sales Tax", f"${data.get('sales_tax', 0):.2f}"] if data.get('sales_tax', 0) != 0 else None,
             ["Non Tax Fees", f"${data.get('non_tax_fees', 0):.2f}"] if data.get('non_tax_fees', 0) != 0 else None,
             ["Balance", f"${data.get('balance', 0):.2f}"] if data.get('balance', 0) != 0 else None,
@@ -392,9 +392,10 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                     col6.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
         
         # Display LTV percentages under each column
-        ltv1 = ((balance - down_payments[0]) / st.session_state.get(f"{prefix}_book_value", 1)) * 100
-        ltv2 = ((balance - down_payments[1]) / st.session_state.get(f"{prefix}_book_value", 1)) * 100
-        ltv3 = ((balance - down_payments[2]) / st.session_state.get(f"{prefix}_book_value", 1)) * 100
+        book_value = st.session_state.get(f"{prefix}_book_value", 1) or 1  # Ensure book_value is not zero
+        ltv1 = ((balance - down_payments[0]) / book_value) * 100
+        ltv2 = ((balance - down_payments[1]) / book_value) * 100
+        ltv3 = ((balance - down_payments[2]) / book_value) * 100
         
         col4.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv1:.2f}%</span></div></div>', unsafe_allow_html=True)
         col5.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv2:.2f}%</span></div></div>', unsafe_allow_html=True)
@@ -656,9 +657,10 @@ with left_col:
                 col6.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
     
     # Display LTV percentages under each column
-    ltv1 = ((balance - down_payments[0]) / book_value) * 100 if book_value else 0
-    ltv2 = ((balance - down_payments[1]) / book_value) * 100 if book_value else 0
-    ltv3 = ((balance - down_payments[2]) / book_value) * 100 if book_value else 0
+    book_value = book_value or 1  # Ensure book_value is not zero
+    ltv1 = ((balance - down_payments[0]) / book_value) * 100
+    ltv2 = ((balance - down_payments[1]) / book_value) * 100
+    ltv3 = ((balance - down_payments[2]) / book_value) * 100
     
     col4.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv1:.2f}%</span></div></div>', unsafe_allow_html=True)
     col5.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv2:.2f}%</span></div></div>', unsafe_allow_html=True)
