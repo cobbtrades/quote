@@ -292,12 +292,19 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         customer = sc1.text_input(label="Customer", key=f"{prefix}_cust", label_visibility='collapsed', help="Customer")
         fc1.markdown('<input class="label-input" type="text" value="Address" disabled>', unsafe_allow_html=True)
         address = sc1.text_input(label="Address", key=f"{prefix}_addr", label_visibility="collapsed", help="Address")
-        fc2, sc2, tc2 = st.columns([3, 1, 2])
-        city = fc2.text_input(label="City", key=f"{prefix}_city", placeholder="City", label_visibility="collapsed", help="City")
-        state = sc2.text_input(label="State", key=f"{prefix}_state", placeholder="State", max_chars=2, label_visibility="collapsed", help="State")
-        zipcode = tc2.text_input(label="Zip", key=f"{prefix}_zip", placeholder="Zip", max_chars=5, label_visibility="collapsed", help="Zip")
-        email_address = fc2.text_input(label="Email", key=f"{prefix}_emailaddress", placeholder="Email", label_visibility="collapsed", help="Email")
-        phone_num = tc2.text_input(label="Phone", key=f"{prefix}_phonenumber", placeholder="Phone", max_chars=12, label_visibility="collapsed", help="Phone")
+
+        
+        fc2, sc2, tc2, fr2, ft2, st2 = st.columns([.6, 2, .5, .5, .5, 1])
+        fc2.markdown('<input class="label-input" type="text" value="City" disabled>', unsafe_allow_html=True)
+        city = sc2.text_input(label="City", key=f"{prefix}_city", label_visibility="collapsed", help="City")
+        tc2.markdown('<input class="label-input" type="text" value="State" disabled>', unsafe_allow_html=True)
+        state = fr2.text_input(label="State", key=f"{prefix}_state", max_chars=2, label_visibility="collapsed", help="State")
+        ft2.markdown('<input class="label-input" type="text" value="Zip" disabled>', unsafe_allow_html=True)
+        zipcode = st2.text_input(label="Zip", key=f"{prefix}_zip", max_chars=5, label_visibility="collapsed", help="Zip")
+        fc2.markdown('<input class="label-input" type="text" value="Email" disabled>', unsafe_allow_html=True)
+        email_address = sc2.text_input(label="Email", key=f"{prefix}_emailaddress", label_visibility="collapsed", help="Email")
+        ft2.markdown('<input class="label-input" type="text" value="Phone" disabled>', unsafe_allow_html=True)
+        phone_num = st2.text_input(label="Phone", key=f"{prefix}_phonenumber", max_chars=12, label_visibility="collapsed", help="Phone")
     
     with sc:
         fc3, sc3, tc3, fr3 = st.columns([1, 2, 1, 4])
