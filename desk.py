@@ -345,13 +345,12 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
     fc, sc, tc = st.columns([3, 3, 2])
     
     with fc:
-        fc1, sc1 = st.columns([.6,4])
+        fc1, sc1 = st.columns([.6, 4])
         fc1.markdown('<input class="label-input" type="text" value="Customer" disabled>', unsafe_allow_html=True)
         customer = sc1.text_input(label="Customer", key=f"{prefix}_cust", label_visibility='collapsed', help="Customer")
         fc1.markdown('<input class="label-input" type="text" value="Address" disabled>', unsafe_allow_html=True)
         address = sc1.text_input(label="Address", key=f"{prefix}_addr", label_visibility="collapsed", help="Address")
 
-        
         fc2, sc2, tc2, fr2, ft2, st2 = st.columns([.6, 2.5, .5, .5, .5, 1])
         fc2.markdown('<input class="label-input" type="text" value="City" disabled>', unsafe_allow_html=True)
         city = sc2.text_input(label="City", key=f"{prefix}_city", label_visibility="collapsed", help="City")
@@ -390,7 +389,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         book_value = fr6.number_input(label="Book Value", key=f"{prefix}_book_value", value=0, label_visibility='collapsed', help="Book Value")
     
     with tc:
-        fc7, sc7 = st.columns([1.5,4])
+        fc7, sc7 = st.columns([1.5, 4])
         fc7.markdown('<input class="label-input" type="text" value="Dealer" disabled>', unsafe_allow_html=True)
         dealer = sc7.text_input(label="Dealership", key=f"{prefix}_dealer", label_visibility="collapsed", help="Dealership")
         fc7.markdown('<input class="label-input" type="text" value="Sales Person" disabled>', unsafe_allow_html=True)
@@ -471,7 +470,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         inputs_col.text_input(label="Balance", key=f"{prefix}_balance", value=f"{balance:.2f}", label_visibility='collapsed', help="Balance", disabled=True)
     
     with left_col:
-        col1, col2, col3, col4, col5, col6 = st.columns([.5,1.5,1,1.5,1.5,1.5])
+        col1, col2, col3, col4, col5, col6 = st.columns([.5, 1.5, 1, 1.5, 1.5, 1.5])
     
         col1.text("")
         col1.text("")
@@ -656,8 +655,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             }
             bos_file = generate_bos_pdf(data)
             with open(pdf_file, 'rb') as f:
-                blankbc.download_button('Download BoS', f, file_name=bos_file, key=f"{prefix}_download_button")
-
+                st.download_button('Download BoS', f, file_name=bos_file, key=f"{prefix}_download_button")
 
 finance, lease = st.tabs(["Finance", "Lease"])
 
