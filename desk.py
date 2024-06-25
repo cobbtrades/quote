@@ -120,17 +120,11 @@ def generate_pdf(data, filename='quote.pdf'):
         # Vehicle selection and trade-in details
         selection_table = Table(selection_data, colWidths=[65, 65, 90, 80, 135, 80])
         selection_table.setStyle(TableStyle([
-            ('BOX', (0, 0), (-1, -1), 1, colors.black),  # Outer border
-            ('LINEABOVE', (0, 1), (-1, 1), 1, colors.black),  # Top border of header
-            ('LINEBELOW', (0, -1), (-1, -1), 1, colors.black),  # Bottom border
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
             ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-            ('LINEBEFORE', (0, 0), (-1, -1), 0, colors.white),  # Remove vertical borders
-            ('LINEAFTER', (0, 0), (-1, -1), 0, colors.white),  # Remove vertical borders
-            ('LINEBEFORE', (0, 1), (-1, -2), 1, colors.black),  # Left border for internal rows
-            ('LINEAFTER', (-1, 1), (-1, -2), 1, colors.black),  # Right border for internal rows
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER')
         ]))
         
         if data.get('trade_vin'):
