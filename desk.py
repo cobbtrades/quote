@@ -38,6 +38,9 @@ def calculate_lease_payment(market_value, doc_fee, non_tax_fees, doc, down_payme
         total_monthly_lease_payment = monthly_depreciation + monthly_rent_charge + monthly_tax
         return "{:.2f}".format(total_monthly_lease_payment)
 
+def to_uppercase(text):
+    return text.upper() if text else ""
+    
 def calculate_balance(market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees):
     market_value = market_value or 0
     discount = discount or 0
@@ -287,11 +290,20 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
     fc, sc, tc = st.columns([3, 3, 2])
     
     with fc:
-        customer = st.text_input(label="Customer", key=f"{prefix}_cust", value=to_uppercase(st.session_state.get(f"{prefix}_cust", "")), placeholder="Customer", label_visibility='collapsed', help="Customer", on_change=lambda: st.session_state.update({f"{prefix}_cust": to_uppercase(st.session_state[f"{prefix}_cust"])}))
-        address = st.text_input(label="Address", key=f"{prefix}_addr", value=to_uppercase(st.session_state.get(f"{prefix}_addr", "")), placeholder="Address", label_visibility="collapsed", help="Address", on_change=lambda: st.session_state.update({f"{prefix}_addr": to_uppercase(st.session_state[f"{prefix}_addr"])}))
+        customer = st.text_input(label="Customer", key=f"{prefix}_cust", placeholder="Customer", label_visibility='collapsed', help="Customer")
+        address = st.text_input(label="Address", key=f"{prefix}_addr", placeholder="Address", label_visibility="collapsed", help="Address")
         fc2, sc2, tc2 = st.columns([3, 1, 2])
-        city = fc2.text_input(label="City", key=f"{prefix}_city", value=to_uppercase(st.session_state.get(f"{prefix}_city", "")), placeholder="City", label_visibility="collapsed", help="City", on_change=lambda: st.session_state.update({f"{prefix}_city": to_uppercase(st.session_state[f"{prefix}_city"])}))
-        state = sc2.text_input(label="State", key=f"{prefix}_state", value=to_uppercase(st.session_state.get(f"{prefix}_state", "")), placeholder="State", max_chars=2, label_visibility="collapsed", help="State", on_change=lambda: st.session_state.update({f"{prefix}_state": to_uppercase(st.session_state[f"{prefix}_state"])}))
+        city = fc2.text_input(label="City", key=f"{prefix}_city", placeholder="City", label_visibility="collapsed", help="City")
+        state = sc2.text_input(
+            label="State", 
+            key=f"{prefix}_state", 
+            value=to_uppercase(st.session_state.get(f"{prefix}_state", "")),
+            placeholder="State", 
+            max_chars=2, 
+            label_visibility="collapsed", 
+            help="State",
+            on_change=lambda: st.session_state.update({f"{prefix}_state": to_uppercase(st.session_state[f"{prefix}_state"])})
+        )
         zipcode = tc2.text_input(label="Zip", key=f"{prefix}_zip", placeholder="Zip", max_chars=5, label_visibility="collapsed", help="Zip")
         email_address = fc2.text_input(label="Email", key=f"{prefix}_emailaddress", placeholder="Email", label_visibility="collapsed", help="Email")
         phone_num = tc2.text_input(label="Phone", key=f"{prefix}_phonenumber", placeholder="Phone", max_chars=12, label_visibility="collapsed", help="Phone")
