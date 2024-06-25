@@ -19,18 +19,18 @@ def generate_bos_pdf(data, filename='bill_of_sale.pdf'):
         styles = getSampleStyleSheet()
 
         header_data = [
-            ["Purchase/Lease Agreement: Buyer(s) offers to purchase or lease the selected motor vehicle on the terms set forth below and on the back of this Purchase/Lease Aggreement"],
-            ['DATE:', data.get('date', ''), 'SALESPERSON:', data.get('salesperson', '')],
+            ["Purchase/Lease Agreement: Buyer(s) offers to purchase or lease the selected motor vehicle on the terms set forth below and on the back of this Purchase/Lease Agreement"],
+            ['DATE:', data.get('date', ''), 'SALES PERSON:', data.get('salesperson', ''), 'NO:', data.get('sales_no', '')],
             ['DEAL #', data.get('dealnumber', ''), 'VEHICLE SALE PRICE', data.get('saleprice', '')],
-            ["BUYER:", data.get('buyer', ''), 'ACCESSORIES', data.get('accessories', '')], 
-            ["CO-BUYER:", data.get('co_buyer', '')],
-            ["ADDRESS:", data.get('address', ''), "", "", ""],
-            ["CITY:", data.get('city', ''), "STATE:", data.get('state', ''), "ZIP:", data.get('zip', '')],
-            ["RES PHONE:", data.get('res_phone', ''), "CELL PHONE:", data.get('cell_phone', ''), "EMAIL ADDRESS:", data.get('email_add', '')]
+            ['BUYER:', data.get('buyer', ''), 'ACCESSORIES', data.get('accessories', '')], 
+            ['CO-BUYER:', data.get('co_buyer', '')],
+            ['ADDRESS:', data.get('address', ''), '', '', ''],
+            ['CITY:', data.get('city', ''), 'STATE:', data.get('state', ''), 'ZIP:', data.get('zip', '')],
+            ['RES PHONE:', data.get('res_phone', ''), 'CELL PHONE:', data.get('cell_phone', ''), 'EMAIL ADDRESS:', data.get('email_add', '')]
         ]
 
         vehicle_data = [
-            ["SELECTION: ", "", "", "", "", "", ""],
+            ["SELECTION: ", "NEW", "", "USED", "", "", ""],
             ["YEAR", "MAKE", "MODEL", "BODY STYLE", "PAYOFF", "", ""],
             [data.get('year', ''), data.get('make', ''), data.get('model', ''), data.get('body_style', ''), data.get('payoff', ''), "", ""],
             ["SERIAL NO.", "COLOR", "MILES", "STOCK NO.", "SLS MGR.", "BUS MGR.", ""],
@@ -42,30 +42,50 @@ def generate_bos_pdf(data, filename='bill_of_sale.pdf'):
             [data.get('trade_year_2', ''), data.get('trade_make_2', ''), data.get('trade_model_2', ''), data.get('trade_miles_2', ''), data.get('trade_stock_2', ''), data.get('trade_serial_2', ''), ""]
         ]
 
-        # Create tables for header and vehicle data
-        header_table = Table(header_data, colWidths=[30, 50, 180, 50, 70])
+        totals_data = [
+            ["TOTAL", data.get('total', '')],
+            ["INVOICING & SERVICES", data.get('invoicing_services', '')],
+            ["HIGHWAY USE TAX", data.get('highway_use_tax', '')],
+            ["TITLE - TAG - REGISTRATION FEES", data.get('title_tag_registration', '')],
+            ["OPTIONAL ELECTRONIC TITLING FEE", data.get('optional_electronic_titling_fee', '')]
+        ]
+
+        payment_data = [
+            ["SUBTOTAL", data.get('subtotal', '')],
+            ["DOWN PAYMENT", data.get('down_payment', '')],
+            ["REBATE", data.get('rebate', '')],
+            ["BALANCE DUE", data.get('balance_due', '')]
+        ]
+
+        # Create tables for header, vehicle, totals, and payment data
+        header_table = Table(header_data, colWidths=[100, 80, 80, 80, 80])
         vehicle_table = Table(vehicle_data, colWidths=[70, 70, 70, 70, 70, 70, 70])
+        totals_table = Table(totals_data, colWidths=[180, 180])
+        payment_table = Table(payment_data, colWidths=[180, 180])
 
         # Style the tables
-        header_table.setStyle(TableStyle([
+        common_style = TableStyle([
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
             ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
             ('FONTSIZE', (0, 0), (-1, -1), 8),
             ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-        ]))
+        ])
 
-        vehicle_table.setStyle(TableStyle([
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 0), (-1, -1), 8),
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-        ]))
+        header_table.setStyle(common_style)
+        vehicle_table.setStyle(common_style + [
+            ('GRID', (0, 0), (-1, -1), 1, colors.black)
+        ])
+        totals_table.setStyle(common_style)
+        payment_table.setStyle(common_style)
 
         # Add elements to the document
         elements.append(header_table)
         elements.append(Spacer(1, 12))
         elements.append(vehicle_table)
+        elements.append(Spacer(1, 12))
+        elements.append(totals_table)
+        elements.append(Spacer(1, 12))
+        elements.append(payment_table)
 
         doc.build(elements)
         return filename
