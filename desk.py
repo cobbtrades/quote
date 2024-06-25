@@ -43,7 +43,7 @@ def generate_bos_pdf(data, filename='bill_of_sale.pdf'):
         ]
 
         # Create tables for header and vehicle data
-        header_table = Table(header_data, colWidths=[30, 50, 180, 50, 70])
+        header_table = Table(header_data, colWidths=[None, 50, None, 50, 70])
         vehicle_table = Table(vehicle_data, colWidths=[70, 70, 70, 70, 70, 70, 70])
 
         # Style the tables
