@@ -310,7 +310,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         make = ft4.text_input(label="Make", key=f"{prefix}_make", label_visibility="collapsed", help="Make")
         
         
-        fc5, sc5, tc5, fr5, ft5, st5 = st.columns([1, 3, 1, 1.5, 1, 1.5])
+        fc5, sc5, tc5, fr5, ft5, st5 = st.columns([1, 2, 1, 1.5, 1, 1.5])
         fc5.markdown('<input class="label-input" type="text" value="Model" disabled>', unsafe_allow_html=True)
         model = sc5.text_input(label="Model", key=f"{prefix}_model", placeholder="Model", label_visibility="collapsed", help="Model")
         tc5.markdown('<input class="label-input" type="text" value="Trim" disabled>', unsafe_allow_html=True)
