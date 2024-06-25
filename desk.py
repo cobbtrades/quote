@@ -332,7 +332,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         book_value = fr6.number_input(label="Book Value", key=f"{prefix}_book_value", value=0, label_visibility='collapsed', help="Book Value")
     
     with tc:
-        fc7, sc7 = st.columns([.6,4])
+        fc7, sc7 = st.columns([1.5,4])
         fc7.markdown('<input class="label-input" type="text" value="Dealer" disabled>', unsafe_allow_html=True)
         dealer = sc7.text_input(label="Dealership", key=f"{prefix}_dealer", label_visibility="collapsed", help="Dealership")
         fc7.markdown('<input class="label-input" type="text" value="Sales Person" disabled>', unsafe_allow_html=True)
