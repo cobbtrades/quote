@@ -19,7 +19,7 @@ def generate_bos_pdf(data, filename='bill_of_sale.pdf'):
         styles = getSampleStyleSheet()
 
         header_data = [
-            ["Purchase/Lease Agreement: "],
+            ["Purchase/Lease Agreement: Buyer(s) offers to purchase or lease the selected motor vehicle on the terms set forth below and on the back of this Purchase/Lease Aggreement"],
             ['DATE:', data.get('date', ''), 'SALESPERSON:', data.get('salesperson', '')],
             ['DEAL #', data.get('dealnumber', ''), 'VEHICLE SALE PRICE', data.get('saleprice', '')],
             ["BUYER:", data.get('buyer', ''), 'ACCESSORIES', data.get('accessories', '')], 
@@ -43,7 +43,7 @@ def generate_bos_pdf(data, filename='bill_of_sale.pdf'):
         ]
 
         # Create tables for header and vehicle data
-        header_table = Table(header_data, colWidths=[70, 50, 150, 50, 100])
+        header_table = Table(header_data, colWidths=[50, 50, 150, 50, 100])
         vehicle_table = Table(vehicle_data, colWidths=[70, 70, 70, 70, 70, 70, 70])
 
         # Style the tables
