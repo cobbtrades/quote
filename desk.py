@@ -10,7 +10,7 @@ st.set_page_config(page_title="Desking App", page_icon="📝")
 with open("styles.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-st.subheader("")
+st.subheader("Desking App")
 
 def calculate_monthly_payment(principal, down_payment, annual_rate, term_months):
     if principal == 0:
@@ -532,10 +532,10 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             with open(pdf_file, 'rb') as f:
                 st.download_button('Download Quote', f, file_name=pdf_file, key=f"{prefix}_download_button")
 
-finance, lease = st.tabs(["Finance", "Lease"])
+# Use a toggle for switching between finance and lease
+is_lease_toggle = st.toggle("Lease Calculation", value=False, help="Switch between finance and lease calculations")
 
-with finance:
-    render_tab(calculate_monthly_payment, prefix="finance")
-
-with lease:
+if is_lease_toggle:
     render_tab(calculate_lease_payment, prefix="lease", is_lease=True)
+else:
+    render_tab(calculate_monthly_payment, prefix="finance")
