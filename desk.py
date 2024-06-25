@@ -18,7 +18,7 @@ def generate_bos_pdf(data, filename='bill_of_sale.pdf'):
         elements = []
         styles = getSampleStyleSheet()
 
-        row1 = Table([["Purchase/Lease Agreement: Buyer(s) offers to purchase or lease the selected motor vehicle on the terms set forth below and on the back of this Purchase/Lease Aggreement"]]
+        row1 = Table([["Purchase/Lease Agreement: Buyer(s) offers to purchase or lease the selected motor vehicle on the terms set forth below and on the back of this Purchase/Lease Aggreement"]])
         row2 = Table([['DATE:', data.get('date', ''), 'SALESPERSON:', data.get('salesperson', '')]])
         row3 = Table([['DEAL #', data.get('dealnumber', ''), 'VEHICLE SALE PRICE', data.get('saleprice', '')]])
         row4 = Table([["BUYER:", data.get('buyer', ''), 'ACCESSORIES', data.get('accessories', '')]])
