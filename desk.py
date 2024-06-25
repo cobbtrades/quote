@@ -302,7 +302,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         stocknum = sc3.text_input(label="Stock #", key=f"{prefix}_stock", label_visibility="collapsed", help="Stock #")
         tc3.markdown('<input class="label-input" type="text" value="VIN" disabled>', unsafe_allow_html=True)
         vin = fr3.text_input(label="VIN", key=f"{prefix}_vin", max_chars=17, label_visibility="collapsed", help="VIN")
-        fc4, sc4, tc4, fr4, ft5 = st.columns([1, 1, 2, 1, 3])
+        fc4, sc4, tc4, fr4, ft4 = st.columns([1, 1, 2, 1, 3])
         newused = fc4.selectbox(label="N/U", options=["New", "Used", "CPO"], key=f"{prefix}_newused", label_visibility="collapsed", help="N/U")
         sc4.markdown('<input class="label-input" type="text" value="Year" disabled>', unsafe_allow_html=True)
         year = tc4.text_input(label="Year", key=f"{prefix}_year", placeholder="Year", max_chars=4, label_visibility="collapsed", help="Year")
