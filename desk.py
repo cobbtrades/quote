@@ -10,7 +10,7 @@ st.set_page_config(page_title="Desking App", page_icon="📝")
 with open("styles.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-st.header("")
+st.subheader("")
 
 def calculate_monthly_payment(principal, down_payment, annual_rate, term_months):
     if principal == 0:
@@ -68,7 +68,7 @@ def generate_pdf(data, filename='quote.pdf'):
         doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=50, leftMargin=36, rightMargin=36)
         elements = []
         styles = getSampleStyleSheet()
-        
+
         # Header
         header_data_left = [["MODERN AUTOMOTIVE"]]
         header_table_left = Table(header_data_left, colWidths=[200])
@@ -78,10 +78,11 @@ def generate_pdf(data, filename='quote.pdf'):
             ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
             ('FONTSIZE', (0, 0), (-1, -1), 14),
         ]))
-        
+
         header_data_right = [
             ["Date:", data.get('date', '')],
-            ["Salesperson:", data.get('salesperson', '')]
+            ["Sales Person:", data.get('salesperson', '')],
+            ["Manager:", data.get('manager', '')]
         ]
         header_table_right = Table(header_data_right, colWidths=[80, 150])
         header_table_right.setStyle(TableStyle([
@@ -98,13 +99,13 @@ def generate_pdf(data, filename='quote.pdf'):
         ]))
         elements.append(combined_header_table)
         elements.append(Spacer(1, 8))
-        
+
         # Customer and vehicle details
         details_data = [
-            ["CUSTOMER", data.get('buyer', ''), "", ""],
+            ["Customer", data.get('buyer', ''), "", ""],
             ["", data.get('address', ''), "", ""],
             ["", f"{data.get('city', '')}, {data.get('state', '')} {data.get('zip', '')}", "", ""],
-            ["EMAIL", data.get('email_add', ''), "PHONE", data.get('cell_phone', '')]
+            ["Email", data.get('email_add', ''), "Phone", data.get('cell_phone', '')]
         ]
         details_table = Table(details_data, colWidths=[70, 230, 55, 160])
         details_table.setStyle(TableStyle([
@@ -115,24 +116,44 @@ def generate_pdf(data, filename='quote.pdf'):
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ]))
         elements.append(details_table)
-        elements.append(Spacer(1, 20))
-        
+        elements.append(Spacer(1, 40))
+
         # Vehicle selection and trade-in details
         selection_data = [
-            ["SELECTION", "", "", "", "", ""],
+            ["VEHICLE", "", "", "", "", ""],
             ["YEAR", "MAKE", "MODEL", "STOCK NO.", "VIN", "MILES"],
-            [data.get('year', ''), data.get('make', ''), data.get('model', ''), data.get('stock_no', ''), data.get('vin', ''), data.get('miles', '')]
+            [
+                data.get('year', ''),
+                data.get('make', ''),
+                f"{data.get('model', '')} {data.get('trim', '')}".strip(),  # Concatenating model and trim
+                data.get('stock_no', ''),
+                data.get('vin', ''),
+                data.get('miles', '')
+            ]
         ]
         if data.get('trade_vin'):
             selection_data.append(["TRADE-IN", "", "", "", ""])
             selection_data.append(["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"])
-            selection_data.append([data.get('trade_year', ''), data.get('trade_make', ''), data.get('trade_model', ''), "", data.get('trade_vin', ''), data.get('trade_miles', '')])
+            selection_data.append([
+                data.get('trade_year', ''),
+                data.get('trade_make', ''),
+                f"{data.get('trade_model', '')} {data.get('trade_trim', '')}".strip(),  # Concatenating trade model and trade trim
+                "",
+                data.get('trade_vin', ''),
+                data.get('trade_miles', '')
+            ])
         if data.get('trade_vin_2'):
             selection_data.append(["TRADE-IN 2", "", "", "", ""])
             selection_data.append(["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"])
-            selection_data.append([data.get('trade_year_2', ''), data.get('trade_make_2', ''), data.get('trade_model_2', ''), "", data.get('trade_vin_2', ''), data.get('trade_miles_2', '')])
-        
-        selection_table = Table(selection_data, colWidths=[65, 65, 90, 80, 135, 80])
+            selection_data.append([
+                data.get('trade_year_2', ''),
+                data.get('trade_make_2', ''),
+                f"{data.get('trade_model_2', '')} {data.get('trade_trim_2', '')}".strip(),  # Concatenating trade model 2 and trade trim 2
+                "",
+                data.get('trade_vin_2', ''),
+                data.get('trade_miles_2', '')
+            ])
+        selection_table = Table(selection_data, colWidths=[55, 65, 100, 80, 135, 80])
         selection_table.setStyle(TableStyle([
             ('GRID', (0, 0), (-1, -1), 1, colors.black),
             ('BACKGROUND', (0, 0), (-1, 0), colors.black),
@@ -140,7 +161,7 @@ def generate_pdf(data, filename='quote.pdf'):
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
             ('ALIGN', (0, 0), (-1, -1), 'CENTER')
         ]))
-        
+
         if data.get('trade_vin'):
             selection_table.setStyle(TableStyle([
                 ('BACKGROUND', (0, 3), (-1, 3), colors.black),
@@ -153,33 +174,18 @@ def generate_pdf(data, filename='quote.pdf'):
                 ('TEXTCOLOR', (0, 6), (-1, 6), colors.white),
                 ('FONTNAME', (0, 6), (-1, 6), 'Helvetica-Bold')
             ]))
-            
+
         elements.append(selection_table)
         elements.append(Spacer(1, 20))
 
-        if data.get('quotes'):
-            grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
-            for term, payments in data['quotes'].items():
-                row = [term]
-                for dp, payment in payments.items():
-                    row.append(f"${payment:.2f}")
-                grid_data.append(row)
-            
-            grid_table = Table(grid_data, colWidths=[75] + [75]*len(data['quotes'][list(data['quotes'].keys())[0]].keys()))
-            grid_table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), colors.black),
-                ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-BoldOblique'),
-                ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
-                ('FONTSIZE', (0, 0), (-1, 0), 12),  # Increase font size for the header row
-                ('FONTSIZE', (0, 1), (-1, -1), 12),
-                ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-                ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ]))
-        else:
-            logging.error("No quotes data found")
-        
+        # Payment grid data (without creating a table yet)
+        grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
+        for term, payments in data['quotes'].items():
+            row = [term]
+            for dp, payment in payments.items():
+                row.append(f"${payment:.2f}")
+            grid_data.append(row)
+
         # Detailed breakdown table
         market_value = data.get('sale_price', 0)
         savings = data.get('rebate', 0) + data.get('discount', 0)
@@ -196,9 +202,8 @@ def generate_pdf(data, filename='quote.pdf'):
             ["Non Tax Fees", f"${data.get('non_tax_fees', 0):.2f}"] if data.get('non_tax_fees', 0) != 0 else None,
             ["Balance", f"${data.get('balance', 0):.2f}"] if data.get('balance', 0) != 0 else None,
         ]
-        # Filter out None values
         breakdown_data = [row for row in breakdown_data if row is not None]
-        
+
         breakdown_table = Table(breakdown_data, colWidths=[100, 80])
         breakdown_table.setStyle(TableStyle([
             ('ALIGN', (0, 0), (0, -1), 'LEFT'),
@@ -206,30 +211,42 @@ def generate_pdf(data, filename='quote.pdf'):
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica'),
             ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
             ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP')  # Align to the top
+            ('VALIGN', (0, 0), (-1, -1), 'TOP')
         ]))
         
-        # Add underlines to the values
         for row_idx in range(len(breakdown_data)):
             breakdown_table.setStyle(TableStyle([
                 ('LINEBELOW', (1, row_idx), (1, row_idx), 1, colors.black)
             ]))
 
-        spacer = Spacer(width=20, height=0)
+        elements.append(Spacer(1, 30))
 
-        # Combine the payment grid and breakdown tables side by side with spacer
+        # Create the payment grid table and combine it with the breakdown table
+        grid_table = Table(grid_data, colWidths=[75] + [75]*len(data['quotes'][list(data['quotes'].keys())[0]].keys()))
+        grid_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.black),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-BoldOblique'),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
+            ('FONTSIZE', (0, 0), (-1, 0), 12),
+            ('FONTSIZE', (0, 1), (-1, -1), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ]))
+
         combined_data = [
             [grid_table, spacer, breakdown_table]
         ]
-        
+
         combined_table = Table(combined_data, colWidths=[300, 20, 220], rowHeights=None, hAlign='LEFT')
         combined_table.setStyle(TableStyle([
-            ('VALIGN', (0, 0), (-1, -1), 'TOP')  # Align to the top
+            ('VALIGN', (0, 0), (-1, -1), 'TOP')
         ]))
 
         elements.append(combined_table)
         elements.append(Spacer(1, 20))
-        
+
         disclaimer_line = Table([["* A.P.R Subject to equity and credit requirements."]], colWidths=[470])
         disclaimer_line.setStyle(TableStyle([
             ('SPAN', (0, 0), (-1, -1)),
@@ -288,7 +305,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         make = tc4.text_input(label="Make", key=f"{prefix}_make", placeholder="Make", label_visibility="collapsed", help="Make")
         fc5, sc5, tc5 = st.columns([3, 1.5, 1.5])
         model = fc5.text_input(label="Model", key=f"{prefix}_model", placeholder="Model", label_visibility="collapsed", help="Model")
-        trim = sc5.text_input(label="Trim", key=f"{prefix}_trim", placeholder="Trim", label_visibility="collapsed", help="Trim")
+        trim = sc5.text_input(label="Trim", key=f"{prefix}_trim", max_chars=4, placeholder="Trim", label_visibility="collapsed", help="Trim")
         odometer = tc5.text_input(label="Odometer", key=f"{prefix}_odometer", placeholder="Odometer", label_visibility="collapsed", help="Odometer")
         fc6, sc6, tc6, fr6 = st.columns(4)
         fc6.markdown('<input class="label-input" type="text" value="Cost" disabled>', unsafe_allow_html=True)
@@ -424,7 +441,6 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                         monthly_payment = calculate_lease_payment(market_value, doc_fee, non_tax_fees, 0, down_payments[j], 0, rates[i], terms[i], residual_values[i], trade_value, trade_payoff, discount)
                     else:
                         monthly_payment = calc_payment_func(balance, down_payments[j], rates[i], terms[i])
-                ltv = ((balance - down_payments[j]) / book_value) * 100 if book_value else 0
                 if j == 0:
                     col4.markdown(f'<div class="centered-metric"><div class="stMetric">{monthly_payment}</div></div>', unsafe_allow_html=True)
                 elif j == 1:
@@ -440,8 +456,18 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         col4.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv1:.2f}%</span></div></div>', unsafe_allow_html=True)
         col5.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv2:.2f}%</span></div></div>', unsafe_allow_html=True)
         col6.markdown(f'<div class="centered-metric"><div class="stMetric"><span style="font-size: 14px;">{ltv3:.2f}%</span></div></div>', unsafe_allow_html=True)
+        col1, col2 = st.columns(2)
+        with col1:
+            market_value = market_value or 0
+            discount = discount or 0
+            veh_cost = veh_cost or 0
+            trade_acv = trade_acv or 0
+            trade_value = trade_value or 0
+            gross_profit = market_value - discount - veh_cost + (trade_acv - trade_value)
+            color = "green" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
+            col4.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
 
-    lbc, rbc, blankbc = st.columns([2, 3, 10])
+    lbc, blankbc = st.columns([2, 10])
     with lbc:
         submit_button = st.button(label="Generate Quote", key=f"{prefix}_submit_button")
         
@@ -460,7 +486,9 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             
             data = {
                 'date': datetime.today().strftime('%B %d, %Y').upper(),
+                'dealer': dealer,
                 'salesperson': consultant,
+                'manager': manager,
                 'buyer': customer,
                 'address': address,
                 'city': city,
@@ -468,9 +496,11 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 'zip': zipcode,
                 'cell_phone': phone_num,
                 'email_add': email_address,
+                'newused': newused,
                 'year': year,
                 'make': make,
                 'model': model,
+                'trim': trim,
                 'stock_no': stocknum,
                 'vin': vin,
                 'miles': odometer,
@@ -500,15 +530,6 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             pdf_file = generate_pdf(data)
             with open(pdf_file, 'rb') as f:
                 st.download_button('Download Quote', f, file_name=pdf_file, key=f"{prefix}_download_button")
-        with rbc:
-            market_value = market_value or 0
-            discount = discount or 0
-            veh_cost = veh_cost or 0
-            trade_acv = trade_acv or 0
-            trade_value = trade_value or 0
-            gross_profit = market_value - discount - veh_cost + (trade_acv - trade_value)
-            color = "green" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
-            st.markdown(f"<p style='color:{color}; font-size:24px;'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
 
 finance, lease = st.tabs(["Finance", "Lease"])
 
