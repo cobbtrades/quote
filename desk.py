@@ -307,7 +307,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         sc4.markdown('<input class="label-input" type="text" value="Year" disabled>', unsafe_allow_html=True)
         year = tc4.text_input(label="Year", key=f"{prefix}_year", placeholder="Year", max_chars=4, label_visibility="collapsed", help="Year")
         fr4.markdown('<input class="label-input" type="text" value="Make" disabled>', unsafe_allow_html=True)
-        make = tc4.text_input(label="Make", key=f"{prefix}_make", placeholder="Make", label_visibility="collapsed", help="Make")
+        make = ft4.text_input(label="Make", key=f"{prefix}_make", placeholder="Make", label_visibility="collapsed", help="Make")
         fc5, sc5, tc5 = st.columns([3, 1.5, 1.5])
         model = fc5.text_input(label="Model", key=f"{prefix}_model", placeholder="Model", label_visibility="collapsed", help="Model")
         trim = sc5.text_input(label="Trim", key=f"{prefix}_trim", max_chars=4, placeholder="Trim", label_visibility="collapsed", help="Trim")
