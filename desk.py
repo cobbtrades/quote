@@ -290,7 +290,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         customer = st.text_input(label="Customer", key=f"{prefix}_cust", placeholder="Customer", label_visibility='collapsed', help="Customer")
         address = st.text_input(label="Address", key=f"{prefix}_addr", placeholder="Address", label_visibility="collapsed", help="Address")
         fc2, sc2, tc2 = st.columns([3, 1, 2])
-        city = fc2.text_input(label="City", key=f"{prefix}_city", placeholder="City", label_visibility="collapsed", help="City")
+        city = fc2.text_input(label="City", key=f"{prefix}_city", placeholder="City", label_visibility="collapsed", help="City").upper()
         state = sc2.text_input(label="State", key=f"{prefix}_state", placeholder="State", max_chars=2, label_visibility="collapsed", help="State")
         zipcode = tc2.text_input(label="Zip", key=f"{prefix}_zip", placeholder="Zip", max_chars=5, label_visibility="collapsed", help="Zip")
         email_address = fc2.text_input(label="Email", key=f"{prefix}_emailaddress", placeholder="Email", label_visibility="collapsed", help="Email")
