@@ -381,7 +381,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         
         taxes = calculate_taxes(state, market_value, discount, doc_fee, trade_value)
         labels_col.markdown('<input class="label-input" type="text" value="Taxes" disabled>', unsafe_allow_html=True)
-        tax_disabled = state.lower() not in ["nc", "sc"]
+        tax_disabled = state.lower() in ["nc", "sc"]
         taxes_input = inputs_col.number_input(label="Taxes", key=f"{prefix}_taxes", value=taxes, label_visibility='collapsed', help="Taxes", disabled=tax_disabled)
         
         labels_col.markdown('<input class="label-input" type="text" value="Non-Tax Fees" disabled>', unsafe_allow_html=True)
