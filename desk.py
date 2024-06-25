@@ -1,4 +1,5 @@
-import streamlit as st, logging
+import streamlit as st
+import logging
 from datetime import datetime
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
@@ -56,9 +57,9 @@ def calculate_taxes(state, market_value, discount, doc_fee, trade_value):
     doc_fee = doc_fee or 0
     trade_value = trade_value or 0
     taxable_amount = market_value - discount - trade_value + doc_fee
-    if state == "NC" or state == "nc":
+    if state.lower() == "nc":
         return taxable_amount * 0.03
-    elif state == "SC" or state == 'sc':
+    elif state.lower() == "sc":
         return 500.00
     else:
         return 0.00
@@ -380,7 +381,8 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         
         taxes = calculate_taxes(state, market_value, discount, doc_fee, trade_value)
         labels_col.markdown('<input class="label-input" type="text" value="Taxes" disabled>', unsafe_allow_html=True)
-        inputs_col.text_input(label="Taxes", key=f"{prefix}_taxes", value=f"{taxes:.2f}", label_visibility='collapsed', help="Taxes", disabled=True)
+        tax_disabled = state.lower() not in ["nc", "sc"]
+        taxes_input = inputs_col.number_input(label="Taxes", key=f"{prefix}_taxes", value=taxes, label_visibility='collapsed', help="Taxes", disabled=tax_disabled)
         
         labels_col.markdown('<input class="label-input" type="text" value="Non-Tax Fees" disabled>', unsafe_allow_html=True)
         non_tax_fees = inputs_col.number_input(label="Non-Tax Fees", key=f"{prefix}_non_tax_fees", value=106.75, label_visibility='collapsed', help="Non-Tax Fees")
@@ -522,7 +524,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 'discount': discount,
                 'rebate': rebate,
                 'doc_fee': doc_fee,
-                'sales_tax': taxes,
+                'sales_tax': taxes_input,
                 'non_tax_fees': non_tax_fees,
                 'balance': balance,
                 'quotes': quotes,
