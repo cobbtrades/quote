@@ -1,6 +1,6 @@
 import streamlit as st, logging
 from datetime import datetime
-from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import letter, landscape
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
@@ -11,6 +11,64 @@ with open("styles.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 st.subheader("")
+
+def generate_bos_pdf(data, filename='bill_of_sale.pdf'):
+    try:
+        doc = SimpleDocTemplate(filename, pagesize=landscape(letter), topMargin=50, leftMargin=36, rightMargin=36)
+        elements = []
+        styles = getSampleStyleSheet()
+
+        header_data = [
+            ["Purchase/Lease Agreement: ", "DATE:", data.get('date', ''), "DEAL #:", data.get('deal_no', '')],
+            ["BUYER:", data.get('buyer', ''), "", "CO-BUYER:", data.get('co_buyer', '')],
+            ["ADDRESS:", data.get('address', ''), "", "", ""],
+            ["CITY:", data.get('city', ''), "STATE:", data.get('state', ''), "ZIP:", data.get('zip', '')],
+            ["RES PHONE:", data.get('res_phone', ''), "CELL PHONE:", data.get('cell_phone', ''), "EMAIL ADDRESS:", data.get('email_add', '')]
+        ]
+
+        vehicle_data = [
+            ["SELECTION: ", "", "", "", "", "", ""],
+            ["YEAR", "MAKE", "MODEL", "BODY STYLE", "PAYOFF", "", ""],
+            [data.get('year', ''), data.get('make', ''), data.get('model', ''), data.get('body_style', ''), data.get('payoff', ''), "", ""],
+            ["SERIAL NO.", "COLOR", "MILES", "STOCK NO.", "SLS MGR.", "BUS MGR.", ""],
+            [data.get('serial_no', ''), data.get('color', ''), data.get('miles', ''), data.get('stock_no', ''), data.get('sls_mgr', ''), data.get('bus_mgr', ''), ""],
+            ["TRADE-IN", "", "", "", "", "", ""],
+            ["YEAR #1", "MAKE", "MODEL", "MILES", "STOCK #", "SERIAL NO.", ""],
+            [data.get('trade_year_1', ''), data.get('trade_make_1', ''), data.get('trade_model_1', ''), data.get('trade_miles_1', ''), data.get('trade_stock_1', ''), data.get('trade_serial_1', ''), ""],
+            ["YEAR #2", "MAKE", "MODEL", "MILES", "STOCK #", "SERIAL NO.", ""],
+            [data.get('trade_year_2', ''), data.get('trade_make_2', ''), data.get('trade_model_2', ''), data.get('trade_miles_2', ''), data.get('trade_stock_2', ''), data.get('trade_serial_2', ''), ""]
+        ]
+
+        # Create tables for header and vehicle data
+        header_table = Table(header_data, colWidths=[70, 50, 150, 50, 100])
+        vehicle_table = Table(vehicle_data, colWidths=[70, 70, 70, 70, 70, 70, 70])
+
+        # Style the tables
+        header_table.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ]))
+
+        vehicle_table.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ]))
+
+        # Add elements to the document
+        elements.append(header_table)
+        elements.append(Spacer(1, 12))
+        elements.append(vehicle_table)
+
+        doc.build(elements)
+        return filename
+    except Exception as e:
+        logging.error(f"Failed to generate custom PDF: {e}")
+        return None
 
 def calculate_monthly_payment(principal, down_payment, annual_rate, term_months):
     if principal == 0:
@@ -550,6 +608,56 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             pdf_file = generate_pdf(data)
             with open(pdf_file, 'rb') as f:
                 st.download_button('Download Quote', f, file_name=pdf_file, key=f"{prefix}_download_button")
+
+    with blankbc:
+        bos_button = st.button(label="Generate BoS", key=f"{prefix}_bos")
+        if bos_button:
+            data = {
+                'date': datetime.today().strftime('%B %d, %Y').upper(),
+                'dealer': dealer,
+                'salesperson': consultant,
+                'manager': manager,
+                'buyer': customer,
+                'address': address,
+                'city': city,
+                'state': state,
+                'zip': zipcode,
+                'cell_phone': phone_num,
+                'email_add': email_address,
+                'newused': newused,
+                'year': year,
+                'make': make,
+                'model': model,
+                'trim': trim,
+                'stock_no': stocknum,
+                'vin': vin,
+                'miles': odometer,
+                'trade_year': st.session_state.get(f"{prefix}_trade_year_1", ""),
+                'trade_make': st.session_state.get(f"{prefix}_trade_make_1", ""),
+                'trade_model': st.session_state.get(f"{prefix}_trade_model_1", ""),
+                'trade_vin': st.session_state.get(f"{prefix}_trade_vin_1", ""),
+                'trade_miles': st.session_state.get(f"{prefix}_trade_miles_1", ""),
+                'trade_value': sum(trade_values),
+                'trade_payoff': sum(trade_payoffs),
+                'trade_acv': sum(trade_acvs),
+                'trade_year_2': st.session_state.get(f"{prefix}_trade_year_2", ""),
+                'trade_make_2': st.session_state.get(f"{prefix}_trade_make_2", ""),
+                'trade_model_2': st.session_state.get(f"{prefix}_trade_model_2", ""),
+                'trade_vin_2': st.session_state.get(f"{prefix}_trade_vin_2", ""),
+                'trade_miles_2': st.session_state.get(f"{prefix}_trade_miles_2", ""),
+                'sale_price': market_value,
+                'discount': discount,
+                'rebate': rebate,
+                'doc_fee': doc_fee,
+                'sales_tax': taxes,
+                'non_tax_fees': non_tax_fees,
+                'balance': balance,
+                'quotes': quotes,
+            }
+            bos_file = generate_bos_pdf(data)
+            with open(pdf_file, 'rb') as f:
+                st.download_button('Download BoS', f, file_name=bos_file, key=f"{prefix}_download_button")
+
 
 finance, lease = st.tabs(["Finance", "Lease"])
 
