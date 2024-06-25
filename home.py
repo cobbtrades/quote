@@ -83,11 +83,11 @@ def generate_pdf(data, filename='quote.pdf'):
     selection_table = Table(selection_data, colWidths=[65, 65, 90, 80, 135, 80])
     selection_table.setStyle(TableStyle([
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.black),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('BACKGROUND', (0, 3), (-1, 3), colors.grey),  # This line styles the "TRADE-IN:" row
+        ('BACKGROUND', (0, 3), (-1, 3), colors.black),  # This line styles the "TRADE-IN:" row
         ('TEXTCOLOR', (0, 3), (-1, 3), colors.white),
         ('FONTNAME', (0, 3), (-1, 3), 'Helvetica-Bold')
     ]))
@@ -104,7 +104,7 @@ def generate_pdf(data, filename='quote.pdf'):
     
     grid_table = Table(grid_data, colWidths=[75] + [75]*len(data['quotes'][list(data['quotes'].keys())[0]].keys()))
     grid_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.black),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-BoldOblique'),
