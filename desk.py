@@ -656,7 +656,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             }
             bos_file = generate_bos_pdf(data)
             with open(pdf_file, 'rb') as f:
-                st.download_button('Download BoS', f, file_name=bos_file, key=f"{prefix}_download_button")
+                blankbc.download_button('Download BoS', f, file_name=bos_file, key=f"{prefix}_download_button")
 
 
 finance, lease = st.tabs(["Finance", "Lease"])
