@@ -1,6 +1,6 @@
 import streamlit as st, logging
 from datetime import datetime
-from reportlab.lib.pagesizes import letter, landscape
+from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
@@ -14,13 +14,16 @@ st.subheader("")
 
 def generate_bos_pdf(data, filename='bill_of_sale.pdf'):
     try:
-        doc = SimpleDocTemplate(filename, pagesize=landscape(letter), topMargin=50, leftMargin=36, rightMargin=36)
+        doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=50, leftMargin=36, rightMargin=36)
         elements = []
         styles = getSampleStyleSheet()
 
         header_data = [
-            ["Purchase/Lease Agreement: ", "DATE:", data.get('date', ''), "DEAL #:", data.get('deal_no', '')],
-            ["BUYER:", data.get('buyer', ''), "", "CO-BUYER:", data.get('co_buyer', '')],
+            ["Purchase/Lease Agreement: "],
+            ['DATE:', data.get('date', ''), 'SALESPERSON:', data.get('salesperson', '')],
+            ['DEAL #', data.get('dealnumber', ''), 'VEHICLE SALE PRICE', data.get('saleprice', '')],
+            ["BUYER:", data.get('buyer', ''), 'ACCESSORIES', data.get('accessories', '')], 
+            ["CO-BUYER:", data.get('co_buyer', '')],
             ["ADDRESS:", data.get('address', ''), "", "", ""],
             ["CITY:", data.get('city', ''), "STATE:", data.get('state', ''), "ZIP:", data.get('zip', '')],
             ["RES PHONE:", data.get('res_phone', ''), "CELL PHONE:", data.get('cell_phone', ''), "EMAIL ADDRESS:", data.get('email_add', '')]
