@@ -290,23 +290,83 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
     fc, sc, tc = st.columns([3, 3, 2])
     
     with fc:
-        customer = st.text_input(label="Customer", key=f"{prefix}_cust", placeholder="Customer", label_visibility='collapsed', help="Customer")
-        address = st.text_input(label="Address", key=f"{prefix}_addr", placeholder="Address", label_visibility="collapsed", help="Address")
+        customer_key = f"{prefix}_cust"
+        address_key = f"{prefix}_addr"
+        city_key = f"{prefix}_city"
+        state_key = f"{prefix}_state"
+        zip_key = f"{prefix}_zip"
+        email_key = f"{prefix}_emailaddress"
+        phone_key = f"{prefix}_phonenumber"
+
+        customer = st.text_input(
+            label="Customer", 
+            key=customer_key, 
+            value=st.session_state.get(customer_key, "").upper(),
+            placeholder="Customer", 
+            label_visibility='collapsed', 
+            help="Customer"
+        )
+        address = st.text_input(
+            label="Address", 
+            key=address_key, 
+            value=st.session_state.get(address_key, "").upper(),
+            placeholder="Address", 
+            label_visibility="collapsed", 
+            help="Address"
+        )
         fc2, sc2, tc2 = st.columns([3, 1, 2])
-        city = fc2.text_input(label="City", key=f"{prefix}_city", placeholder="City", label_visibility="collapsed", help="City")
+        city = fc2.text_input(
+            label="City", 
+            key=city_key, 
+            value=st.session_state.get(city_key, "").upper(),
+            placeholder="City", 
+            label_visibility="collapsed", 
+            help="City"
+        )
         state = sc2.text_input(
             label="State", 
-            key=f"{prefix}_state", 
-            value=to_uppercase(st.session_state.get(f"{prefix}_state", "")),
+            key=state_key, 
+            value=st.session_state.get(state_key, "").upper(),
             placeholder="State", 
             max_chars=2, 
             label_visibility="collapsed", 
-            help="State",
-            on_change=lambda: st.session_state.update({f"{prefix}_state": to_uppercase(st.session_state[f"{prefix}_state"])})
+            help="State"
         )
-        zipcode = tc2.text_input(label="Zip", key=f"{prefix}_zip", placeholder="Zip", max_chars=5, label_visibility="collapsed", help="Zip")
-        email_address = fc2.text_input(label="Email", key=f"{prefix}_emailaddress", placeholder="Email", label_visibility="collapsed", help="Email")
-        phone_num = tc2.text_input(label="Phone", key=f"{prefix}_phonenumber", placeholder="Phone", max_chars=12, label_visibility="collapsed", help="Phone")
+        zipcode = tc2.text_input(
+            label="Zip", 
+            key=zip_key, 
+            value=st.session_state.get(zip_key, "").upper(),
+            placeholder="Zip", 
+            max_chars=5, 
+            label_visibility="collapsed", 
+            help="Zip"
+        )
+        email_address = fc2.text_input(
+            label="Email", 
+            key=email_key, 
+            value=st.session_state.get(email_key, "").upper(),
+            placeholder="Email", 
+            label_visibility="collapsed", 
+            help="Email"
+        )
+        phone_num = tc2.text_input(
+            label="Phone", 
+            key=phone_key, 
+            value=st.session_state.get(phone_key, "").upper(),
+            placeholder="Phone", 
+            max_chars=12, 
+            label_visibility="collapsed", 
+            help="Phone"
+        )
+
+        # Update session state to ensure all caps input
+        st.session_state[customer_key] = customer.upper()
+        st.session_state[address_key] = address.upper()
+        st.session_state[city_key] = city.upper()
+        st.session_state[state_key] = state.upper()
+        st.session_state[zip_key] = zipcode.upper()
+        st.session_state[email_key] = email_address.upper()
+        st.session_state[phone_key] = phone_num.upper()
     
     with sc:
         fc3, sc3 = st.columns([2, 4])
