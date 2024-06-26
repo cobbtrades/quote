@@ -4,7 +4,6 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
-import PyPDF2
 
 st.set_page_config(page_title="Desking App", page_icon="📝")
 
@@ -284,61 +283,62 @@ def generate_pdf(data, filename='quote.pdf'):
         logging.error(f"Failed to generate PDF: {e}")
         return None
 
-def render_tab(calc_payment_func, prefix, is_lease=False, prefilled_data=None):
+def render_tab(calc_payment_func, prefix, is_lease=False):
     fc, sc, tc = st.columns([3, 3, 2])
     
     with fc:
-        fc1, sc1 = st.columns([.6, 4])
+        fc1, sc1 = st.columns([.6,4])
         fc1.markdown('<input class="label-input" type="text" value="Customer" disabled>', unsafe_allow_html=True)
-        customer = sc1.text_input(label="Customer", key=f"{prefix}_cust", value=prefilled_data.get('buyer', '') if prefilled_data else "", label_visibility='collapsed', help="Customer")
+        customer = sc1.text_input(label="Customer", key=f"{prefix}_cust", label_visibility='collapsed', help="Customer")
         fc1.markdown('<input class="label-input" type="text" value="Address" disabled>', unsafe_allow_html=True)
-        address = sc1.text_input(label="Address", key=f"{prefix}_addr", value=prefilled_data.get('address', '') if prefilled_data else "", label_visibility="collapsed", help="Address")
+        address = sc1.text_input(label="Address", key=f"{prefix}_addr", label_visibility="collapsed", help="Address")
 
+        
         fc2, sc2, tc2, fr2, ft2, st2 = st.columns([.6, 2.5, .5, .5, .5, 1])
         fc2.markdown('<input class="label-input" type="text" value="City" disabled>', unsafe_allow_html=True)
-        city = sc2.text_input(label="City", key=f"{prefix}_city", value=prefilled_data.get('city', '') if prefilled_data else "", label_visibility="collapsed", help="City")
+        city = sc2.text_input(label="City", key=f"{prefix}_city", label_visibility="collapsed", help="City")
         tc2.markdown('<input class="label-input" type="text" value="State" disabled>', unsafe_allow_html=True)
-        state = fr2.text_input(label="State", key=f"{prefix}_state", max_chars=2, value=prefilled_data.get('state', '') if prefilled_data else "", label_visibility="collapsed", help="State")
+        state = fr2.text_input(label="State", key=f"{prefix}_state", max_chars=2, label_visibility="collapsed", help="State")
         ft2.markdown('<input class="label-input" type="text" value="Zip" disabled>', unsafe_allow_html=True)
-        zipcode = st2.text_input(label="Zip", key=f"{prefix}_zip", max_chars=5, value=prefilled_data.get('zip', '') if prefilled_data else "", label_visibility="collapsed", help="Zip")
+        zipcode = st2.text_input(label="Zip", key=f"{prefix}_zip", max_chars=5, label_visibility="collapsed", help="Zip")
         fc2.markdown('<input class="label-input" type="text" value="Email" disabled>', unsafe_allow_html=True)
-        email_address = sc2.text_input(label="Email", key=f"{prefix}_emailaddress", value=prefilled_data.get('email_add', '') if prefilled_data else "", label_visibility="collapsed", help="Email")
+        email_address = sc2.text_input(label="Email", key=f"{prefix}_emailaddress", label_visibility="collapsed", help="Email")
         ft2.markdown('<input class="label-input" type="text" value="Phone" disabled>', unsafe_allow_html=True)
-        phone_num = st2.text_input(label="Phone", key=f"{prefix}_phonenumber", max_chars=12, value=prefilled_data.get('cell_phone', '') if prefilled_data else "", label_visibility="collapsed", help="Phone")
+        phone_num = st2.text_input(label="Phone", key=f"{prefix}_phonenumber", max_chars=12, label_visibility="collapsed", help="Phone")
     
     with sc:
         fc3, sc3, tc3, fr3 = st.columns([1, 2, 1, 4])
         fc3.markdown('<input class="label-input" type="text" value="Stock #" disabled>', unsafe_allow_html=True)
-        stocknum = sc3.text_input(label="Stock #", key=f"{prefix}_stock", value=prefilled_data.get('stock_no', '') if prefilled_data else "", label_visibility="collapsed", help="Stock #")
+        stocknum = sc3.text_input(label="Stock #", key=f"{prefix}_stock", label_visibility="collapsed", help="Stock #")
         tc3.markdown('<input class="label-input" type="text" value="VIN" disabled>', unsafe_allow_html=True)
-        vin = fr3.text_input(label="VIN", key=f"{prefix}_vin", max_chars=17, value=prefilled_data.get('vin', '') if prefilled_data else "", label_visibility="collapsed", help="VIN")
+        vin = fr3.text_input(label="VIN", key=f"{prefix}_vin", max_chars=17, label_visibility="collapsed", help="VIN")
         fc4, sc4, tc4, fr4, ft4 = st.columns([1, 1, 1, 1, 2])
-        newused = fc4.selectbox(label="N/U", options=["New", "Used", "CPO"], key=f"{prefix}_newused", index=0 if prefilled_data is None else ["New", "Used", "CPO"].index(prefilled_data.get('newused', 'New')), label_visibility="collapsed", help="N/U")
+        newused = fc4.selectbox(label="N/U", options=["New", "Used", "CPO"], key=f"{prefix}_newused", label_visibility="collapsed", help="N/U")
         sc4.markdown('<input class="label-input" type="text" value="Year" disabled>', unsafe_allow_html=True)
-        year = tc4.text_input(label="Year", key=f"{prefix}_year", max_chars=4, value=prefilled_data.get('year', '') if prefilled_data else "", label_visibility="collapsed", help="Year")
+        year = tc4.text_input(label="Year", key=f"{prefix}_year", max_chars=4, label_visibility="collapsed", help="Year")
         fr4.markdown('<input class="label-input" type="text" value="Make" disabled>', unsafe_allow_html=True)
-        make = ft4.text_input(label="Make", key=f"{prefix}_make", value=prefilled_data.get('make', '') if prefilled_data else "", label_visibility="collapsed", help="Make")
+        make = ft4.text_input(label="Make", key=f"{prefix}_make", label_visibility="collapsed", help="Make")
         fc5, sc5, tc5, fr5, ft5, st5 = st.columns([1, 2, 1, 1.5, 1, 1.5])
         fc5.markdown('<input class="label-input" type="text" value="Model" disabled>', unsafe_allow_html=True)
-        model = sc5.text_input(label="Model", key=f"{prefix}_model", value=prefilled_data.get('model', '') if prefilled_data else "", label_visibility="collapsed", help="Model")
+        model = sc5.text_input(label="Model", key=f"{prefix}_model", label_visibility="collapsed", help="Model")
         tc5.markdown('<input class="label-input" type="text" value="Trim" disabled>', unsafe_allow_html=True)
-        trim = fr5.text_input(label="Trim", key=f"{prefix}_trim", max_chars=4, value=prefilled_data.get('trim', '') if prefilled_data else "", label_visibility="collapsed", help="Trim")
+        trim = fr5.text_input(label="Trim", key=f"{prefix}_trim", max_chars=4, label_visibility="collapsed", help="Trim")
         ft5.markdown('<input class="label-input" type="text" value="Odometer" disabled>', unsafe_allow_html=True)
-        odometer = st5.text_input(label="Odometer", key=f"{prefix}_odometer", value=prefilled_data.get('miles', '') if prefilled_data else "", label_visibility="collapsed", help="Odometer")
+        odometer = st5.text_input(label="Odometer", key=f"{prefix}_odometer", label_visibility="collapsed", help="Odometer")
         fc6, sc6, tc6, fr6 = st.columns(4)
         fc6.markdown('<input class="label-input" type="text" value="Cost" disabled>', unsafe_allow_html=True)
-        veh_cost = sc6.number_input(label="Cost", key=f"{prefix}_veh_cost", value=prefilled_data.get('veh_cost', 0) if prefilled_data else 0, label_visibility='collapsed', help="Cost")
+        veh_cost = sc6.number_input(label="Cost", key=f"{prefix}_veh_cost", value=0, label_visibility='collapsed', help="Cost")
         tc6.markdown('<input class="label-input" type="text" value="Book Value" disabled>', unsafe_allow_html=True)
-        book_value = fr6.number_input(label="Book Value", key=f"{prefix}_book_value", value=prefilled_data.get('book_value', 0) if prefilled_data else 0, label_visibility='collapsed', help="Book Value")
+        book_value = fr6.number_input(label="Book Value", key=f"{prefix}_book_value", value=0, label_visibility='collapsed', help="Book Value")
     
     with tc:
-        fc7, sc7 = st.columns([1.5, 4])
+        fc7, sc7 = st.columns([1.5,4])
         fc7.markdown('<input class="label-input" type="text" value="Dealer" disabled>', unsafe_allow_html=True)
-        dealer = sc7.text_input(label="Dealership", key=f"{prefix}_dealer", value=prefilled_data.get('dealer', '') if prefilled_data else "", label_visibility="collapsed", help="Dealership")
+        dealer = sc7.text_input(label="Dealership", key=f"{prefix}_dealer", label_visibility="collapsed", help="Dealership")
         fc7.markdown('<input class="label-input" type="text" value="Sales Person" disabled>', unsafe_allow_html=True)
-        consultant = sc7.text_input(label="Sales Person", key=f"{prefix}_consultant", value=prefilled_data.get('salesperson', '') if prefilled_data else "", label_visibility="collapsed", help="Sales Person")
+        consultant = sc7.text_input(label="Sales Person", key=f"{prefix}_consultant", label_visibility="collapsed", help="Sales Person")
         fc7.markdown('<input class="label-input" type="text" value="Sales Manager" disabled>', unsafe_allow_html=True)
-        manager = sc7.text_input(label="Sales Manager", key=f"{prefix}_manager", value=prefilled_data.get('manager', '') if prefilled_data else "", label_visibility="collapsed", help="Sales Manager")
+        manager = sc7.text_input(label="Sales Manager", key=f"{prefix}_manager", label_visibility="collapsed", help="Sales Manager")
 
     trade_values = [0] * 2
     trade_payoffs = [0] * 2
@@ -350,24 +350,24 @@ def render_tab(calc_payment_func, prefix, is_lease=False, prefilled_data=None):
             col_data = f"Trade-in {i+1}"
             tt1.markdown(f'<input class="label-input" type="text" value="{col_data}" disabled>', unsafe_allow_html=True)
             fc1.markdown('<input class="label-input" type="text" value="Year" disabled>', unsafe_allow_html=True)
-            trade_year = sc1.text_input(f"Trade-in {i+1} Year", key=f"{prefix}_trade_year_{i+1}", value=prefilled_data.get(f'trade_year_{i+1}', '') if prefilled_data else "", label_visibility="collapsed", max_chars=4)
+            trade_year = sc1.text_input(f"Trade-in {i+1} Year", key=f"{prefix}_trade_year_{i+1}", label_visibility="collapsed", max_chars=4)
             tc1.markdown('<input class="label-input" type="text" value="Make" disabled>', unsafe_allow_html=True)
-            trade_make = fr1.text_input(f"Trade-in {i+1} Make", key=f"{prefix}_trade_make_{i+1}", value=prefilled_data.get(f'trade_make_{i+1}', '') if prefilled_data else "", label_visibility="collapsed")
+            trade_make = fr1.text_input(f"Trade-in {i+1} Make", key=f"{prefix}_trade_make_{i+1}", label_visibility="collapsed")
             ft1.markdown('<input class="label-input" type="text" value="Model" disabled>', unsafe_allow_html=True)
-            trade_model = st1.text_input(f"Trade-in {i+1} Model", key=f"{prefix}_trade_model_{i+1}", value=prefilled_data.get(f'trade_model_{i+1}', '') if prefilled_data else "", label_visibility="collapsed")
+            trade_model = st1.text_input(f"Trade-in {i+1} Model", key=f"{prefix}_trade_model_{i+1}", label_visibility="collapsed")
             sv1.markdown('<input class="label-input" type="text" value="VIN" disabled>', unsafe_allow_html=True)
-            trade_vin = ec1.text_input(f"Trade-in {i+1} VIN", key=f"{prefix}_trade_vin_{i+1}", value=prefilled_data.get(f'trade_vin_{i+1}', '') if prefilled_data else "", label_visibility="collapsed", max_chars=17)
+            trade_vin = ec1.text_input(f"Trade-in {i+1} VIN", key=f"{prefix}_trade_vin_{i+1}", label_visibility="collapsed", max_chars=17)
     
             # Second row of trade-in details
             tt2, fc2, sc2, tc2, fr2, ft2, st2, sv2, ec2 = st.columns([1, 1, 2, 1, 2, 1, 2, 1, 4])
             fc2.markdown('<input class="label-input" type="text" value="Miles" disabled>', unsafe_allow_html=True)
-            trade_miles = sc2.text_input(f"Trade-in {i+1} Miles", key=f"{prefix}_trade_miles_{i+1}", value=prefilled_data.get(f'trade_miles_{i+1}', '') if prefilled_data else "", label_visibility="collapsed")
+            trade_miles = sc2.text_input(f"Trade-in {i+1} Miles", key=f"{prefix}_trade_miles_{i+1}", label_visibility="collapsed")
             tc2.markdown('<input class="label-input" type="text" value="Trade Value" disabled>', unsafe_allow_html=True)
-            trade_values[i] = fr2.number_input(f"Trade-in {i+1} Value", key=f"{prefix}_trade_value_{i+1}", value=prefilled_data.get(f'trade_value_{i+1}', 0) if prefilled_data else 0, label_visibility="collapsed")
+            trade_values[i] = fr2.number_input(f"Trade-in {i+1} Value", key=f"{prefix}_trade_value_{i+1}", value=0, label_visibility="collapsed")
             ft2.markdown('<input class="label-input" type="text" value="Payoff" disabled>', unsafe_allow_html=True)
-            trade_payoffs[i] = st2.number_input(f"Trade-in {i+1} Payoff", key=f"{prefix}_trade_payoff_{i+1}", value=prefilled_data.get(f'trade_payoff_{i+1}', 0) if prefilled_data else 0, label_visibility="collapsed")
+            trade_payoffs[i] = st2.number_input(f"Trade-in {i+1} Payoff", key=f"{prefix}_trade_payoff_{i+1}", value=0, label_visibility="collapsed")
             sv2.markdown('<input class="label-input" type="text" value="Trade ACV" disabled>', unsafe_allow_html=True)
-            trade_acvs[i] = ec2.number_input(f"Trade-in {i+1} ACV", key=f"{prefix}_trade_acv_{i+1}", value=prefilled_data.get(f'trade_acv_{i+1}', 0) if prefilled_data else 0, label_visibility="collapsed")
+            trade_acvs[i] = ec2.number_input(f"Trade-in {i+1} ACV", key=f"{prefix}_trade_acv_{i+1}", value=0, label_visibility="collapsed")
             st.divider()
     
     left_col, right_col = st.columns(2)
@@ -376,13 +376,13 @@ def render_tab(calc_payment_func, prefix, is_lease=False, prefilled_data=None):
         labels_col, inputs_col = st.columns([1, 4])
         
         labels_col.markdown('<input class="label-input" type="text" value="Market Value" disabled>', unsafe_allow_html=True)
-        market_value = inputs_col.number_input(label="Market Value", key=f"{prefix}_market_value", value=prefilled_data.get('sale_price', 0) if prefilled_data else 0, label_visibility='collapsed', help="Market Value")
+        market_value = inputs_col.number_input(label="Market Value", key=f"{prefix}_market_value", value=0, label_visibility='collapsed', help="Market Value")
         
         labels_col.markdown('<input class="label-input" type="text" value="Discount" disabled>', unsafe_allow_html=True)
-        discount = inputs_col.number_input(label="Discount", key=f"{prefix}_discount", value=prefilled_data.get('discount', 0) if prefilled_data else 0, label_visibility='collapsed', help="Discount")
+        discount = inputs_col.number_input(label="Discount", key=f"{prefix}_discount", value=0, label_visibility='collapsed', help="Discount")
         
         labels_col.markdown('<input class="label-input" type="text" value="Rebate" disabled>', unsafe_allow_html=True)
-        rebate = inputs_col.number_input(label="Rebate", key=f"{prefix}_rebate", value=prefilled_data.get('rebate', 0) if prefilled_data else 0, label_visibility='collapsed', help="Rebate")
+        rebate = inputs_col.number_input(label="Rebate", key=f"{prefix}_rebate", value=0, label_visibility='collapsed', help="Rebate")
         
         labels_col.markdown('<input class="label-input" type="text" value="Trade Value" disabled>', unsafe_allow_html=True)
         trade_value = sum(trade_values)
@@ -397,14 +397,14 @@ def render_tab(calc_payment_func, prefix, is_lease=False, prefilled_data=None):
         inputs_col.text_input(label="Trade Payoff", key=f"{prefix}_trade_payoff", value=f"{trade_payoff:.2f}", label_visibility='collapsed', help="Trade Payoff", disabled=True)
         
         labels_col.markdown('<input class="label-input" type="text" value="Doc Fee" disabled>', unsafe_allow_html=True)
-        doc_fee = inputs_col.number_input(label="Doc Fee", key=f"{prefix}_doc_fee", value=prefilled_data.get('doc_fee', 799) if prefilled_data else 799, label_visibility='collapsed', help="Doc Fee")
+        doc_fee = inputs_col.number_input(label="Doc Fee", key=f"{prefix}_doc_fee", value=799, label_visibility='collapsed', help="Doc Fee")
         
         taxes = calculate_taxes(state, market_value, discount, doc_fee, trade_value)
         labels_col.markdown('<input class="label-input" type="text" value="Taxes" disabled>', unsafe_allow_html=True)
         inputs_col.text_input(label="Taxes", key=f"{prefix}_taxes", value=f"{taxes:.2f}", label_visibility='collapsed', help="Taxes", disabled=True)
         
         labels_col.markdown('<input class="label-input" type="text" value="Non-Tax Fees" disabled>', unsafe_allow_html=True)
-        non_tax_fees = inputs_col.number_input(label="Non-Tax Fees", key=f"{prefix}_non_tax_fees", value=prefilled_data.get('non_tax_fees', 106.75) if prefilled_data else 106.75, label_visibility='collapsed', help="Non-Tax Fees")
+        non_tax_fees = inputs_col.number_input(label="Non-Tax Fees", key=f"{prefix}_non_tax_fees", value=106.75, label_visibility='collapsed', help="Non-Tax Fees")
         
         balance = calculate_balance(
             market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees
@@ -413,7 +413,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False, prefilled_data=None):
         inputs_col.text_input(label="Balance", key=f"{prefix}_balance", value=f"{balance:.2f}", label_visibility='collapsed', help="Balance", disabled=True)
     
     with left_col:
-        col1, col2, col3, col4, col5, col6 = st.columns([.5, 1.5, 1, 1.5, 1.5, 1.5])
+        col1, col2, col3, col4, col5, col6 = st.columns([.5,1.5,1,1.5,1.5,1.5])
     
         col1.text("")
         col1.text("")
@@ -434,7 +434,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False, prefilled_data=None):
         residual_values = []
         if is_lease:
             for i in range(3):
-                residual_value = col3.number_input(label=f"Residual Percent {i+1}", key=f"{prefix}_residual_percent_{i+1}", value=prefilled_data.get(f'residual_percent_{i+1}', 0.70) if prefilled_data else 0.70)
+                residual_value = col3.number_input(label=f"Residual Percent {i+1}", key=f"{prefix}_residual_percent_{i+1}", value=0.70)
                 residual_values.append(residual_value)
         # Input values
         value1 = col4.number_input(label="Down Payment", key=f"{prefix}_value1", value=1000)
@@ -446,11 +446,11 @@ def render_tab(calc_payment_func, prefix, is_lease=False, prefilled_data=None):
         rates = []
         default_terms = [36, 48, 60]  # Changed to typical lease terms
         for i in range(3):
-            term = col1.number_input(f"Term {i+1}", min_value=1, value=prefilled_data.get(f'term_{i+1}', default_terms[i]) if prefilled_data else default_terms[i], key=f'{prefix}_term_{i+1}')
+            term = col1.number_input(f"Term {i+1}", min_value=1, value=default_terms[i], key=f'{prefix}_term_{i+1}')
             if is_lease:
-                rate = col2.number_input(f"Money Factor {i+1}", min_value=0.00000, max_value=1.00000, value=prefilled_data.get(f'rate_{i+1}', 0.00275) if prefilled_data else 0.00275, format="%.5f", key=f'{prefix}_rate_{i+1}')
+                rate = col2.number_input(f"Money Factor {i+1}", min_value=0.00000, max_value=1.00000, value=0.00275, format="%.5f", key=f'{prefix}_rate_{i+1}')
             else:
-                rate = col2.number_input(f"Rate {i+1} (%)", min_value=0.0, max_value=100.0, value=prefilled_data.get(f'rate_{i+1}', 14.0) if prefilled_data else 14.0, format="%.2f", key=f'{prefix}_rate_{i+1}')
+                rate = col2.number_input(f"Rate {i+1} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'{prefix}_rate_{i+1}')
             terms.append(term)
             rates.append(rate)
     
@@ -487,7 +487,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False, prefilled_data=None):
         color = "green" if gross_profit > 0 else "red" if gross_profit < 0 else "white"
         col6.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
 
-    lbc, blankbc, rbc = st.columns([2, 8, 2])  # Added a new column for the second button
+    lbc, blankbc = st.columns([2, 10])
     with lbc:
         submit_button = st.button(label="Generate Quote", key=f"{prefix}_submit_button")
         
@@ -551,79 +551,10 @@ def render_tab(calc_payment_func, prefix, is_lease=False, prefilled_data=None):
             with open(pdf_file, 'rb') as f:
                 st.download_button('Download Quote', f, file_name=pdf_file, key=f"{prefix}_download_button")
 
-def extract_pdf_data(uploaded_pdf):
-    data = {}
-    try:
-        reader = PyPDF2.PdfReader(uploaded_pdf)
-        for page_num in range(len(reader.pages)):
-            page = reader.pages[page_num]
-            text = page.extract_text()
-            lines = text.split('\n')
-            for line in lines:
-                if "Customer" in line:
-                    data['buyer'] = line.split("Customer")[-1].strip()
-                elif "Address" in line:
-                    data['address'] = line.split("Address")[-1].strip()
-                elif "City" in line:
-                    data['city'] = line.split("City")[-1].strip()
-                elif "State" in line:
-                    data['state'] = line.split("State")[-1].strip()
-                elif "Zip" in line:
-                    data['zip'] = line.split("Zip")[-1].strip()
-                elif "Email" in line:
-                    data['email_add'] = line.split("Email")[-1].strip()
-                elif "Phone" in line:
-                    data['cell_phone'] = line.split("Phone")[-1].strip()
-                elif "Stock #" in line:
-                    data['stock_no'] = line.split("Stock #")[-1].strip()
-                elif "VIN" in line:
-                    data['vin'] = line.split("VIN")[-1].strip()
-                elif "Year" in line:
-                    data['year'] = line.split("Year")[-1].strip()
-                elif "Make" in line:
-                    data['make'] = line.split("Make")[-1].strip()
-                elif "Model" in line:
-                    data['model'] = line.split("Model")[-1].strip()
-                elif "Trim" in line:
-                    data['trim'] = line.split("Trim")[-1].strip()
-                elif "Odometer" in line:
-                    data['miles'] = line.split("Odometer")[-1].strip()
-                elif "Market Value" in line:
-                    data['sale_price'] = float(line.split("$")[-1].strip())
-                elif "Discount" in line:
-                    data['discount'] = float(line.split("$")[-1].strip())
-                elif "Rebate" in line:
-                    data['rebate'] = float(line.split("$")[-1].strip())
-                elif "Trade Value" in line:
-                    data['trade_value'] = float(line.split("$")[-1].strip())
-                elif "Doc Fee" in line:
-                    data['doc_fee'] = float(line.split("$")[-1].strip())
-                elif "Taxes" in line:
-                    data['sales_tax'] = float(line.split("$")[-1].strip())
-                elif "Non-Tax Fees" in line:
-                    data['non_tax_fees'] = float(line.split("$")[-1].strip())
-                elif "Balance" in line:
-                    data['balance'] = float(line.split("$")[-1].strip())
-                elif "Dealership" in line:
-                    data['dealer'] = line.split("Dealership")[-1].strip()
-                elif "Sales Person" in line:
-                    data['salesperson'] = line.split("Sales Person")[-1].strip()
-                elif "Sales Manager" in line:
-                    data['manager'] = line.split("Sales Manager")[-1].strip()
-    except Exception as e:
-        st.error(f"Failed to extract PDF data: {e}")
-    return data
-
-finance, lease, update = st.tabs(["Finance", "Lease", "Update"])
+finance, lease = st.tabs(["Finance", "Lease"])
 
 with finance:
     render_tab(calculate_monthly_payment, prefix="finance")
 
 with lease:
     render_tab(calculate_lease_payment, prefix="lease", is_lease=True)
-
-with update:
-    uploaded_pdf = st.file_uploader("Upload PDF", type=["pdf"])
-    if uploaded_pdf is not None:
-        prefilled_data = extract_pdf_data(uploaded_pdf)
-        render_tab(calculate_monthly_payment, prefix="update", prefilled_data=prefilled_data)
