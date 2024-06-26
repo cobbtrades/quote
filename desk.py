@@ -1,4 +1,4 @@
-import streamlit as st, logging, fitz
+import streamlit as st, logging
 from datetime import datetime
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
@@ -12,24 +12,6 @@ with open("styles.css") as f:
 
 st.subheader("")
 
-def fill_bill_of_sale(data, template_path='BillofSale.pdf', output_path='filled_BillofSale.pdf'):
-    try:
-        # Open the template PDF
-        doc = fitz.open(template_path)
-        
-        # Iterate through each page and fill the form fields
-        for page in doc:
-            for field in page.widgets():
-                if field.field_name in data:
-                    field.set_value(data[field.field_name])
-        
-        # Save the filled PDF
-        doc.save(output_path)
-        return output_path
-    except Exception as e:
-        logging.error(f"Failed to fill Bill of Sale PDF: {e}")
-        return None
-        
 def calculate_monthly_payment(principal, down_payment, annual_rate, term_months):
     if principal == 0:
         return 0
@@ -568,29 +550,6 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             pdf_file = generate_pdf(data)
             with open(pdf_file, 'rb') as f:
                 st.download_button('Download Quote', f, file_name=pdf_file, key=f"{prefix}_download_button")
-
-    bill_of_sale_button = st.button(label="Generate Bill of Sale", key=f"{prefix}_bill_of_sale_button")
-
-    if bill_of_sale_button:
-        bill_of_sale_data = {
-            'Text1': customer,
-            'Text2': address,
-            'Text3': city,
-            'Text4': state,
-            'Text5': zipcode,
-            'Text6': phone_num,
-            'Text7': email_address,
-            'Text8': vin,
-            'Text9': make,
-            'Text10': model,
-            'Text11': year,
-            # Add more fields as needed
-        }
-        
-        filled_pdf_path = fill_bill_of_sale(bill_of_sale_data)
-        if filled_pdf_path:
-            with open(filled_pdf_path, 'rb') as f:
-                st.download_button('Download Bill of Sale', f, file_name=filled_pdf_path, key=f"{prefix}_bill_of_sale_download_button")
 
 finance, lease = st.tabs(["Finance", "Lease"])
 
