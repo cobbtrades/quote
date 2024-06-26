@@ -1,4 +1,4 @@
-import streamlit as st, logging
+import streamlit as st, logging, fitz
 from datetime import datetime
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
