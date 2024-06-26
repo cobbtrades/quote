@@ -569,28 +569,28 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             with open(pdf_file, 'rb') as f:
                 st.download_button('Download Quote', f, file_name=pdf_file, key=f"{prefix}_download_button")
 
-        bill_of_sale_button = st.button(label="Generate Bill of Sale", key=f"{prefix}_bill_of_sale_button")
+    bill_of_sale_button = st.button(label="Generate Bill of Sale", key=f"{prefix}_bill_of_sale_button")
 
-        if bill_of_sale_button:
-            bill_of_sale_data = {
-                'Text1': customer,
-                'Text2': address,
-                'Text3': city,
-                'Text4': state,
-                'Text5': zipcode,
-                'Text6': phone_num,
-                'Text7': email_address,
-                'Text8': vin,
-                'Text9': make,
-                'Text10': model,
-                'Text11': year,
-                # Add more fields as needed
-            }
-            
-            filled_pdf_path = fill_bill_of_sale(bill_of_sale_data)
-            if filled_pdf_path:
-                with open(filled_pdf_path, 'rb') as f:
-                    st.download_button('Download Bill of Sale', f, file_name=filled_pdf_path, key=f"{prefix}_bill_of_sale_download_button")
+    if bill_of_sale_button:
+        bill_of_sale_data = {
+            'Text1': customer,
+            'Text2': address,
+            'Text3': city,
+            'Text4': state,
+            'Text5': zipcode,
+            'Text6': phone_num,
+            'Text7': email_address,
+            'Text8': vin,
+            'Text9': make,
+            'Text10': model,
+            'Text11': year,
+            # Add more fields as needed
+        }
+        
+        filled_pdf_path = fill_bill_of_sale(bill_of_sale_data)
+        if filled_pdf_path:
+            with open(filled_pdf_path, 'rb') as f:
+                st.download_button('Download Bill of Sale', f, file_name=filled_pdf_path, key=f"{prefix}_bill_of_sale_download_button")
 
 finance, lease = st.tabs(["Finance", "Lease"])
 
