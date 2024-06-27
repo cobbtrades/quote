@@ -284,12 +284,28 @@ def generate_pdf(data, filename='quote.pdf'):
         logging.error(f"Failed to generate PDF: {e}")
         return None
 
-def set_appearance(annotation, value, font_size):
-    # Calculate the length of the text to determine the width of the bounding box
-    text_width = len(value) * (font_size * 0.6)  # Estimate width based on average character width
-    bbox_width = max(100, text_width + 4)  # Ensure a minimum width of 100
-
-    # Create a simple appearance stream
+def get_field_positions(template_pdf):
+    field_positions = {}
+    for page_number, page in enumerate(template_pdf.pages):
+        annotations = page['/Annots']
+        if annotations:
+            for annotation in annotations:
+                if annotation['/Subtype'] == '/Widget' and annotation['/T']:
+                    key = annotation['/T'][1:-1]  # Remove parentheses around the key
+                    rect = annotation['/Rect']
+                    x1, y1, x2, y2 = rect
+                    width = x2 - x1
+                    height = y2 - y1
+                    field_positions[key] = {
+                        'page_number': page_number,
+                        'x': x1,
+                        'y': y1,
+                        'width': width,
+                        'height': height
+                    }
+    return field_positions
+    
+def set_appearance(annotation, value, width, height, font_size):
     appearance_stream = f"""
     q
     1 0 0 1 0 0 cm
@@ -306,13 +322,13 @@ def set_appearance(annotation, value, font_size):
     appearance = PdfDict(
         Type=PdfName('XObject'),
         Subtype=PdfName('Form'),
-        BBox=PdfArray([0, 0, bbox_width, font_size + 4]),  # Adjust the height based on the font size
+        BBox=PdfArray([0, 0, width, height]),
         Resources=PdfDict(
             Font=PdfDict(
                 F1=PdfDict(
                     Type=PdfName('Font'),
                     Subtype=PdfName('Type1'),
-                    BaseFont=PdfName('Arial')
+                    BaseFont=PdfName('Helvetica')
                 )
             )
         ),
@@ -332,19 +348,25 @@ def fill_pdf(input_pdf_path, output_pdf_path, data_dict, font_sizes=None):
     default_font_size = 10  # Default font size if not specified in the font_sizes dictionary
 
     template_pdf = PdfReader(input_pdf_path)
-    for page in template_pdf.pages:
+    field_positions = get_field_positions(template_pdf)
+
+    for page_number, page in enumerate(template_pdf.pages):
         annotations = page['/Annots']
         if annotations:
             for annotation in annotations:
                 if annotation['/Subtype'] == '/Widget' and annotation['/T']:
                     key = annotation['/T'][1:-1]  # Remove the parentheses around the key
                     if key in data_dict:
+                        print(f"Updating field: {key} with value: {data_dict[key]}")
                         font_size = font_sizes.get(key, default_font_size)
+                        position = field_positions[key]
+                        width = position['width']
+                        height = position['height']
                         annotation.update({
                             PdfName('/V'): PdfString(data_dict[key]),
                             PdfName('/Ff'): 1,  # Make the field read-only
                         })
-                        set_appearance(annotation, data_dict[key], font_size)
+                        set_appearance(annotation, data_dict[key], width, height, font_size)
     PdfWriter().write(output_pdf_path, template_pdf)
 
 def render_tab(calc_payment_func, prefix, is_lease=False):
