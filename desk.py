@@ -330,6 +330,7 @@ def fill_pdf(input_pdf_path, output_pdf_path, data_dict, font_sizes=None):
     if font_sizes is None:
         font_sizes = {}
     default_font_size = 10  # Default font size if not specified in the font_sizes dictionary
+
     template_pdf = PdfReader(input_pdf_path)
     for page in template_pdf.pages:
         annotations = page['/Annots']
