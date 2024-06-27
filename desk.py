@@ -312,7 +312,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 # Fill the PDF form
                 pdf_template_path = 'MVR-1.pdf'
                 filled_pdf_path = 'MVR1.pdf'
-                fill_pdf(pdf_template_path, output_pdf_path, data)
+                fill_pdf(pdf_template_path, filled_pdf_path, pdf_data)
                 
                 # Provide download link for filled MRV-1 PDF
                 with open(filled_pdf_path, 'rb') as f:
