@@ -514,7 +514,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
     
     if st.session_state.get("show_modal", False):
         with st.popover("Enter Finance Details", use_container_width=True):
-            c1, c2, c3, c4 = st.columns(3)
+            c1, c2, c3, c4 = st.columns(4)
             bodystyle = c1.text_input(label="Body Style", key=f"{prefix}_bodystyle")
             fuel_type = c1.text_input(label="Fuel Type", key=f"{prefix}_fuel_type")
             drivers_license = c2.text_input(label="Driver's License", key=f"{prefix}_drivers_license")
