@@ -508,7 +508,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
 
     lbc, blankbc = st.columns([2, 10])
     with st.popover("Enter Finance Details", use_container_width=True):
-        c1, c2, c3, c4, c5 = st.columns([1,1,1,3,3])
+        c1, c2, c3, c4, c5, c6, c7, c8 = st.columns([1,1,1,1,1,3,1,3])
         c1.markdown('<input class="label-input" type="text" value="Body Style" disabled>', unsafe_allow_html=True)
         bodystyle = c2.text_input(label="Body Style", key=f"{prefix}_bodystyle", label_visibility="collapsed")
         c1.markdown('<input class="label-input" type="text" value="Fuel Type" disabled>', unsafe_allow_html=True)
