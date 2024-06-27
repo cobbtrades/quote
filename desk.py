@@ -284,14 +284,25 @@ def generate_pdf(data, filename='quote.pdf'):
         logging.error(f"Failed to generate PDF: {e}")
         return None
 
-def set_appearance(annotation, value, font_size):
-    # Split the value into lines
+def set_appearance(annotation, value, max_font_size):
     lines = value.split('\n')
-    
-    # Calculate the height of the text box based on the number of lines and font size
+    max_length = max(len(line) for line in lines)
+    field_width = annotation['/Rect'][2] - annotation['/Rect'][0]
+    field_height = annotation['/Rect'][3] - annotation['/Rect'][1]
+
+    # Calculate the font size based on the width and height of the field
+    font_size = max_font_size
+    while font_size > 1:
+        text_width = font_size * 0.6 * max_length
+        text_height = font_size * len(lines)
+        if text_width <= field_width and text_height <= field_height:
+            break
+        font_size -= 1
+
+    # Split the value into lines
     line_height = font_size + 2
     box_height = line_height * len(lines)
-    
+
     # Create the appearance stream for multiline text
     appearance_stream = f"""
     q
@@ -315,7 +326,7 @@ def set_appearance(annotation, value, font_size):
     appearance = PdfDict(
         Type=PdfName('XObject'),
         Subtype=PdfName('Form'),
-        BBox=PdfArray([0, 0, 200, box_height]),
+        BBox=PdfArray([0, 0, field_width, box_height]),
         Resources=PdfDict(
             Font=PdfDict(
                 F1=PdfDict(
@@ -335,7 +346,7 @@ def set_appearance(annotation, value, font_size):
         PdfName('V'): PdfString(value)
     })
 
-def fill_pdf(input_pdf_path, output_pdf_path, data_dict, font_size=10):
+def fill_pdf(input_pdf_path, output_pdf_path, data_dict, max_font_size=10):
     template_pdf = PdfReader(input_pdf_path)
     for page in template_pdf.pages:
         annotations = page['/Annots']
@@ -348,7 +359,7 @@ def fill_pdf(input_pdf_path, output_pdf_path, data_dict, font_size=10):
                             PdfName('/V'): PdfString(data_dict[key]),
                             PdfName('/Ff'): 1,  # Make the field read-only
                         })
-                        set_appearance(annotation, data_dict[key], font_size)
+                        set_appearance(annotation, data_dict[key], max_font_size)
     PdfWriter().write(output_pdf_path, template_pdf)
 
 def render_tab(calc_payment_func, prefix, is_lease=False):
