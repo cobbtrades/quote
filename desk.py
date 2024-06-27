@@ -544,6 +544,49 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         col6.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
 
     lbc, blankbc = st.columns([2, 10])
+    with blankbc:
+        # Adding a button for filling the PDF form
+        fill_pdf_button = st.button(label="Generate MVR-1", key=f"{prefix}_fill_pdf_button")
+
+        if fill_pdf_button:
+            # Example data to fill in the form (replace with your actual data)
+            pdf_data = {
+                "List Plate Number and Expiration": "",
+                "YEAR": year,
+                "MAKE": make,
+                "BODY STYLE": "TRUCK",
+                "SERIES MODEL": model,
+                "VEHICLE IDENTIFICATION NUMBER": vin,
+                "FUEL TYPE": "GAS",
+                "ODOMETER READING": odometer,
+                "Owner 1 ID": "",
+                "Full Legal Name of Owner 1 First Middle Last Suffix or Company Name": customer,
+                "Owner 2 ID": "",
+                "Full Legal Name of Owner 2 First Middle Last Suffix or Company Name": "",
+                "Residence Address Individual Business Address Firm City and State Zip Code": f"{address}, {city}, {state} {zipcode}",
+                "Mail Address if different from above City and State Zip Code": "",
+                "Vehicle Location Address if different from residence address above City and State Zip Code": "",
+                "Tax County": "GASTON",
+                "Date 1": "",
+                "Lienholder 1 ID": "",
+                "Lienholder 1 name": "NISSAN MOTOR ACCEPTANCE CORP",
+                "Address": "",
+                "City": "SACRAMENTO",
+                "State": "CA",
+                "Zip Code": "",
+                "Insurance Company authorized in NC": "",
+                "Policy Number": "",
+                "From Whom Purchased Name and Address": "",
+                "New": "",
+                "Used": ""
+            }
+
+            # Path to your PDF form
+            pdf_path = 'MVR-1.pdf'
+            output_pdf_path = 'MVR1.pdf'
+            fill_pdf(pdf_path, output_pdf_path, pdf_data)
+            with open(output_pdf_path, 'rb') as f:
+                st.download_button('Download MVR1', f, file_name=output_pdf_path, key=f"{prefix}_filled_pdf_download_button")
     with lbc:
         submit_button = st.button(label="Generate Quote", key=f"{prefix}_submit_button")
         
@@ -606,49 +649,6 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             pdf_file = generate_pdf(data)
             with open(pdf_file, 'rb') as f:
                 st.download_button('Download Quote', f, file_name=pdf_file, key=f"{prefix}_download_button")
-
-        # Adding a button for filling the PDF form
-        fill_pdf_button = st.button(label="Fill PDF Form", key=f"{prefix}_fill_pdf_button")
-
-        if fill_pdf_button:
-            # Example data to fill in the form (replace with your actual data)
-            pdf_data = {
-                "List Plate Number and Expiration": "",
-                "YEAR": year,
-                "MAKE": make,
-                "BODY STYLE": "TRUCK",
-                "SERIES MODEL": model,
-                "VEHICLE IDENTIFICATION NUMBER": vin,
-                "FUEL TYPE": "GAS",
-                "ODOMETER READING": odometer,
-                "Owner 1 ID": "",
-                "Full Legal Name of Owner 1 First Middle Last Suffix or Company Name": customer,
-                "Owner 2 ID": "",
-                "Full Legal Name of Owner 2 First Middle Last Suffix or Company Name": "",
-                "Residence Address Individual Business Address Firm City and State Zip Code": f"{address}, {city}, {state} {zipcode}",
-                "Mail Address if different from above City and State Zip Code": "",
-                "Vehicle Location Address if different from residence address above City and State Zip Code": "",
-                "Tax County": "GASTON",
-                "Date 1": "",
-                "Lienholder 1 ID": "",
-                "Lienholder 1 name": "NISSAN MOTOR ACCEPTANCE CORP",
-                "Address": "",
-                "City": "SACRAMENTO",
-                "State": "CA",
-                "Zip Code": "",
-                "Insurance Company authorized in NC": "",
-                "Policy Number": "",
-                "From Whom Purchased Name and Address": "",
-                "New": "",
-                "Used": ""
-            }
-
-            # Path to your PDF form
-            pdf_path = 'MVR-1.pdf'
-            output_pdf_path = 'MVR1.pdf'
-            fill_pdf(pdf_path, output_pdf_path, pdf_data)
-            with open(output_pdf_path, 'rb') as f:
-                st.download_button('Download Filled Form', f, file_name=output_pdf_path, key=f"{prefix}_filled_pdf_download_button")
 
 finance, lease = st.tabs(["Finance", "Lease"])
 
