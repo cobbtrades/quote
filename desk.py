@@ -507,11 +507,6 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         col6.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
 
     lbc, blankbc = st.columns([2, 10])
-    with blankbc:
-        mvr1_button = st.button(label="Generate MVR-1", key=f"{prefix}_mvr_button")
-        if mvr1_button:
-            st.session_state.show_modal = True
-    
     if st.session_state.get("show_modal", False):
         with st.popover("Enter Finance Details", use_container_width=True):
             c1, c2, c3, c4 = st.columns(4)
