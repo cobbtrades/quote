@@ -526,13 +526,15 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         c5.markdown('<input class="label-input" type="text" value="Lienholder Address" disabled>', unsafe_allow_html=True)
         lienholder_address = c6.text_input(label="Lienholder Address", key=f"{prefix}_lienholder_address", label_visibility="collapsed")
         c5.markdown('<input class="label-input" type="text" value="Lienholder City" disabled>', unsafe_allow_html=True)
-        lienholder_city = c6.text_input(label="Lienholder City", key=f"{prefix}_lienholder_city", label_visibility="collapsed")
+        lienholder_city = c6.text_input(label="Lienholder City", key=f"{prefix}_lienholder_city", label_visibility="collapsed", max_chars=2)
         c5.markdown('<input class="label-input" type="text" value="Lienholder State" disabled>', unsafe_allow_html=True)
         lienholder_state = c6.text_input(label="Lienholder State", key=f"{prefix}_lienholder_state", label_visibility="collapsed")
         c5.markdown('<input class="label-input" type="text" value="Lienholder Zip" disabled>', unsafe_allow_html=True)
         lienholder_zip = c6.text_input(label="Lienholder Zip Code", key=f"{prefix}_lienholder_zip", label_visibility="collapsed")
-        ins_company = c8.text_input(label="Insurance Company", key=f"{prefix}_ins_company")
-        policy = c8.text_input(label="Policy #", key=f"{prefix}_policy")
+        c7.markdown('<input class="label-input" type="text" value="Ins Company" disabled>', unsafe_allow_html=True)
+        ins_company = c8.text_input(label="Insurance Company", key=f"{prefix}_ins_company", label_visibility="collapsed")
+        c7.markdown('<input class="label-input" type="text" value="Policy #" disabled>', unsafe_allow_html=True)
+        policy = c8.text_input(label="Policy #", key=f"{prefix}_policy", label_visibility="collapsed")
         submit_modal_button = c8.button("Submit", key=f"{prefix}_submit_modal")
         if submit_modal_button:
             template_pdf_path = 'MVR-1.pdf'
