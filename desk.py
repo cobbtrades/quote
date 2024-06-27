@@ -4,7 +4,6 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
-from utils import calculate_monthly_payment, calculate_lease_payment, calculate_balance, calculate_taxes, generate_pdf, fill_pdf
 
 st.set_page_config(page_title="Desking App", page_icon="📝")
 
@@ -13,6 +12,297 @@ with open("styles.css") as f:
 
 st.subheader("")
 
+def calculate_monthly_payment(principal, down_payment, annual_rate, term_months):
+    if principal == 0:
+        return 0
+    else:
+        principal = principal - down_payment
+        monthly_rate = annual_rate / 100 / 12
+        if monthly_rate == 0:
+            payment = principal / term_months
+        else:
+            payment = principal * monthly_rate / (1 - (1 + monthly_rate) ** -term_months)
+        return "{:.2f}".format(payment)
+
+def calculate_lease_payment(market_value, doc_fee, non_tax_fees, doc, down_payment, rebate, money_factor, term_months, residual_percentage, trade_value, trade_payoff, discount):
+    if market_value == 0:
+        return 0
+    else:
+        residual_value = market_value * residual_percentage
+        gross_cap_cost = market_value - discount + doc_fee + non_tax_fees + doc
+        cap_cost_reduction = down_payment + rebate + (trade_value - trade_payoff)
+        adjusted_cap_cost = gross_cap_cost - cap_cost_reduction
+        monthly_depreciation = (adjusted_cap_cost - residual_value) / term_months
+        monthly_rent_charge = (adjusted_cap_cost + residual_value) * money_factor
+        monthly_tax = (monthly_depreciation + monthly_rent_charge) * 0.03
+        total_monthly_lease_payment = monthly_depreciation + monthly_rent_charge + monthly_tax
+        return "{:.2f}".format(total_monthly_lease_payment)
+
+def calculate_balance(market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees):
+    market_value = market_value or 0
+    discount = discount or 0
+    rebate = rebate or 0
+    trade_value = trade_value or 0
+    trade_payoff = trade_payoff or 0
+    taxes = taxes or 0
+    doc_fee = doc_fee or 0
+    non_tax_fees = non_tax_fees or 0
+    balance = market_value - discount - rebate - trade_value + trade_payoff + taxes + doc_fee + non_tax_fees
+    return balance
+
+def calculate_taxes(state, market_value, discount, doc_fee, trade_value):
+    market_value = market_value or 0
+    discount = discount or 0
+    doc_fee = doc_fee or 0
+    trade_value = trade_value or 0
+    taxable_amount = market_value - discount - trade_value + doc_fee
+    if state == "NC" or state == "nc":
+        return taxable_amount * 0.03
+    elif state == "SC" or state == 'sc':
+        return 500.00
+    else:
+        return 0.00
+
+def generate_pdf(data, filename='quote.pdf'):
+    try:
+        doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=50, leftMargin=36, rightMargin=36)
+        elements = []
+        styles = getSampleStyleSheet()
+
+        # Header
+        header_data_left = [["MODERN AUTOMOTIVE"]]
+        header_table_left = Table(header_data_left, colWidths=[200])
+        header_table_left.setStyle(TableStyle([
+            ('SPAN', (0, 0), (-1, -1)),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 14),
+        ]))
+
+        header_data_right = [
+            ["Date:", data.get('date', '')],
+            ["Sales Person:", data.get('salesperson', '')],
+            ["Manager:", data.get('manager', '')]
+        ]
+        header_table_right = Table(header_data_right, colWidths=[80, 150])
+        header_table_right.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+        ]))
+        spacer = Spacer(width=100, height=0)
+        combined_header_data = [
+            [header_table_left, spacer, header_table_right]
+        ]
+        combined_header_table = Table(combined_header_data, colWidths=[200, 100, 260])
+        combined_header_table.setStyle(TableStyle([
+            ('VALIGN', (0, 0), (-1, -1), 'TOP')
+        ]))
+        elements.append(combined_header_table)
+        elements.append(Spacer(1, 8))
+
+        # Customer and vehicle details
+        details_data = [
+            ["Customer", data.get('buyer', ''), "", ""],
+            ["", data.get('address', ''), "", ""],
+            ["", f"{data.get('city', '')}, {data.get('state', '')} {data.get('zip', '')}", "", ""],
+            ["Email", data.get('email_add', ''), "Phone", data.get('cell_phone', '')]
+        ]
+        details_table = Table(details_data, colWidths=[70, 230, 55, 160])
+        details_table.setStyle(TableStyle([
+            ('GRID', (0, 0), (-1, -1), 1, colors.white),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.white),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica'),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ]))
+        elements.append(details_table)
+        elements.append(Spacer(1, 40))
+
+        # Vehicle selection and trade-in details
+        selection_data = [
+            ["VEHICLE", "", "", "", "", ""],
+            ["YEAR", "MAKE", "MODEL", "STOCK NO.", "VIN", "MILES"],
+            [
+                data.get('year', ''),
+                data.get('make', ''),
+                f"{data.get('model', '')} {data.get('trim', '')}".strip(),  # Concatenating model and trim
+                data.get('stock_no', ''),
+                data.get('vin', ''),
+                data.get('miles', '')
+            ]
+        ]
+        if data.get('trade_vin'):
+            selection_data.append(["TRADE-IN", "", "", "", ""])
+            selection_data.append(["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"])
+            selection_data.append([
+                data.get('trade_year', ''),
+                data.get('trade_make', ''),
+                f"{data.get('trade_model', '')} {data.get('trade_trim', '')}".strip(),  # Concatenating trade model and trade trim
+                "",
+                data.get('trade_vin', ''),
+                data.get('trade_miles', '')
+            ])
+        if data.get('trade_vin_2'):
+            selection_data.append(["TRADE-IN 2", "", "", "", ""])
+            selection_data.append(["YEAR", "MAKE", "MODEL", "", "VIN", "MILES"])
+            selection_data.append([
+                data.get('trade_year_2', ''),
+                data.get('trade_make_2', ''),
+                f"{data.get('trade_model_2', '')} {data.get('trade_trim_2', '')}".strip(),  # Concatenating trade model 2 and trade trim 2
+                "",
+                data.get('trade_vin_2', ''),
+                data.get('trade_miles_2', '')
+            ])
+        selection_table = Table(selection_data, colWidths=[55, 65, 100, 80, 135, 80])
+        selection_table.setStyle(TableStyle([
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.black),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER')
+        ]))
+
+        if data.get('trade_vin'):
+            selection_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 3), (-1, 3), colors.black),
+                ('TEXTCOLOR', (0, 3), (-1, 3), colors.white),
+                ('FONTNAME', (0, 3), (-1, 3), 'Helvetica-Bold')
+            ]))
+        if data.get('trade_vin_2'):
+            selection_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 6), (-1, 6), colors.black),
+                ('TEXTCOLOR', (0, 6), (-1, 6), colors.white),
+                ('FONTNAME', (0, 6), (-1, 6), 'Helvetica-Bold')
+            ]))
+
+        elements.append(selection_table)
+        elements.append(Spacer(1, 20))
+
+        # Payment grid data (without creating a table yet)
+        grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
+        for term, payments in data['quotes'].items():
+            row = [term]
+            for dp, payment in payments.items():
+                row.append(f"${payment:.2f}")
+            grid_data.append(row)
+
+        # Detailed breakdown table
+        market_value = data.get('sale_price', 0)
+        savings = data.get('rebate', 0) + data.get('discount', 0)
+        sales_price = market_value - savings
+
+        breakdown_data = [
+            ["Market Value", f"${market_value:.2f}"] if market_value != 0 else None,
+            ["Savings", f"${savings:.2f}"] if savings != 0 else None,
+            ["Sales Price", f"${sales_price:.2f}"] if market_value != 0 else None,
+            ["Trade Value", f"${data.get('trade_value', 0):.2f}"] if data.get('trade_value', 0) != 0 else None,
+            ["Trade Payoff", f"${data.get('trade_payoff', 0):.2f}"] if data.get('trade_payoff', 0) != 0 else None,
+            ["Doc Fee", f"${data.get('doc_fee', 0):.2f}"] if data.get('doc_fee', 0) != 0 else None,
+            ["Sales Tax", f"${data.get('sales_tax', 0):.2f}"] if data.get('sales_tax', 0) != 0 else None,
+            ["Non Tax Fees", f"${data.get('non_tax_fees', 0):.2f}"] if data.get('non_tax_fees', 0) != 0 else None,
+            ["Balance", f"${data.get('balance', 0):.2f}"] if data.get('balance', 0) != 0 else None,
+        ]
+        breakdown_data = [row for row in breakdown_data if row is not None]
+
+        breakdown_table = Table(breakdown_data, colWidths=[100, 80])
+        breakdown_table.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+            ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica'),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP')
+        ]))
+        
+        for row_idx in range(len(breakdown_data)):
+            breakdown_table.setStyle(TableStyle([
+                ('LINEBELOW', (1, row_idx), (1, row_idx), 1, colors.black)
+            ]))
+
+        elements.append(Spacer(1, 30))
+
+        # Create the payment grid table and combine it with the breakdown table
+        grid_table = Table(grid_data, colWidths=[75] + [75]*len(data['quotes'][list(data['quotes'].keys())[0]].keys()))
+        grid_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.black),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-BoldOblique'),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
+            ('FONTSIZE', (0, 0), (-1, 0), 12),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica-Oblique'),
+            ('FONTSIZE', (0, 1), (-1, -1), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ]))
+
+        combined_data = [
+            [grid_table, spacer, breakdown_table]
+        ]
+
+        combined_table = Table(combined_data, colWidths=[300, 20, 220], rowHeights=None, hAlign='LEFT')
+        combined_table.setStyle(TableStyle([
+            ('VALIGN', (0, 0), (-1, -1), 'TOP')
+        ]))
+
+        elements.append(combined_table)
+        elements.append(Spacer(1, 20))
+
+        disclaimer_line = Table([["* A.P.R Subject to equity and credit requirements."]], colWidths=[470])
+        disclaimer_line.setStyle(TableStyle([
+            ('SPAN', (0, 0), (-1, -1)),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ]))
+        elements.append(disclaimer_line)
+        elements.append(Spacer(1, 20))
+
+        # Add signature lines
+        signature_data = [
+            ["Customer Approval: ", "_________________________ ", "Management Approval: ", "_________________________"]
+        ]
+        signature_table = Table(signature_data, colWidths=[150, 100, 150, 100])
+        signature_table.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+        ]))
+        elements.append(signature_table)
+
+        # Add paragraph
+        paragraph_text = "By signing this authorization form, you certify that the above personal information is correct and accurate, and authorize the release of credit and employment information. By signing above, I provide to the dealership and its affiliates consent to communicate with me about my vehicle or any future vehicles using electronic, verbal and written communications including but not limited to email, text messaging, SMS, phone calls and direct mail. Terms and Conditions subject to credit approval. For Information Only. This is not an offer or contract for sale."
+        paragraph_style = styles["Normal"]
+        paragraph_style.fontSize = 6
+        paragraph = Paragraph(paragraph_text, paragraph_style)
+        
+        elements.append(paragraph)
+        
+        doc.build(elements)
+        return filename
+    except Exception as e:
+        logging.error(f"Failed to generate PDF: {e}")
+        return None
+
+def fill_pdf(template_pdf_path, output_pdf_path, data):
+    template_pdf = pdfrw.PdfReader(template_pdf_path)
+    for page in template_pdf.pages:
+        annotations = page['/Annots']
+        if annotations:
+            for annotation in annotations:
+                if annotation['/Subtype'] == '/Widget':
+                    field = annotation.get('/T')
+                    if field:
+                        field_name = field[1:-1]
+                        if field_name in data:
+                            annotation.update(
+                                pdfrw.PdfDict(
+                                    V=pdfrw.PdfString.encode(data[field_name]),
+                                    AP=''
+                                )
+                            )
+                            annotation.update(pdfrw.PdfDict(AS=pdfrw.PdfName('Yes')))
+    pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
+    
 def render_tab(calc_payment_func, prefix, is_lease=False):
     fc, sc, tc = st.columns([3, 3, 2])
     
@@ -217,203 +507,44 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         col6.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
 
     lbc, blankbc = st.columns([2, 10])
-    with st.popover("Enter Finance Details", use_container_width=True):
-        c1, c2, c3, c4, c5, c6, c7, c8 = st.columns([1,1,1,1,1,3,1,3])
-        c1.markdown('<input class="label-input" type="text" value="Body Style" disabled>', unsafe_allow_html=True)
-        bodystyle = c2.text_input(label="Body Style", key=f"{prefix}_bodystyle", label_visibility="collapsed")
-        c1.markdown('<input class="label-input" type="text" value="Fuel Type" disabled>', unsafe_allow_html=True)
-        fuel_type = c2.text_input(label="Fuel Type", key=f"{prefix}_fuel_type", label_visibility="collapsed")
-        c3.markdown('<input class="label-input" type="text" value="Driver\'s License" disabled>', unsafe_allow_html=True)
-        drivers_license = c4.text_input(label="Driver's License", key=f"{prefix}_drivers_license", label_visibility="collapsed")
-        c3.markdown('<input class="label-input" type="text" value="County" disabled>', unsafe_allow_html=True)
-        county = c4.text_input(label="County", key=f"{prefix}_county", label_visibility="collapsed")
-        c3.markdown('<input class="label-input" type="text" value="Plate Number" disabled>', unsafe_allow_html=True)
-        platenum = c4.text_input(label="License Plate Number", key=f"{prefix}_platenum", label_visibility="collapsed")
-        c3.markdown('<input class="label-input" type="text" value="Plate Expire" disabled>', unsafe_allow_html=True)
-        plate_exp = c4.text_input(label="Plate Expiration", key=f"{prefix}_plate_exp", label_visibility="collapsed")
-        c5.markdown('<input class="label-input" type="text" value="Lienholder Name" disabled>', unsafe_allow_html=True)
-        lienholder_name = c6.text_input(label="Lienholder Name", key=f"{prefix}_lienholder_name", label_visibility="collapsed")
-        c5.markdown('<input class="label-input" type="text" value="Lienholder Address" disabled>', unsafe_allow_html=True)
-        lienholder_address = c6.text_input(label="Lienholder Address", key=f"{prefix}_lienholder_address", label_visibility="collapsed")
-        c5.markdown('<input class="label-input" type="text" value="Lienholder City" disabled>', unsafe_allow_html=True)
-        lienholder_city = c6.text_input(label="Lienholder City", key=f"{prefix}_lienholder_city", label_visibility="collapsed")
-        c5.markdown('<input class="label-input" type="text" value="Lienholder State" disabled>', unsafe_allow_html=True)
-        lienholder_state = c6.text_input(label="Lienholder State", key=f"{prefix}_lienholder_state", label_visibility="collapsed", max_chars=2)
-        c5.markdown('<input class="label-input" type="text" value="Lienholder Zip" disabled>', unsafe_allow_html=True)
-        lienholder_zip = c6.text_input(label="Lienholder Zip Code", key=f"{prefix}_lienholder_zip", label_visibility="collapsed", max_chars=5)
-        c7.markdown('<input class="label-input" type="text" value="Ins Company" disabled>', unsafe_allow_html=True)
-        ins_company = c8.text_input(label="Insurance Company", key=f"{prefix}_ins_company", label_visibility="collapsed")
-        c7.markdown('<input class="label-input" type="text" value="Policy #" disabled>', unsafe_allow_html=True)
-        policy = c8.text_input(label="Policy #", key=f"{prefix}_policy", label_visibility="collapsed")
-        submit_modal_button = c8.button("Submit", key=f"{prefix}_submit_modal")
-        if submit_modal_button:
-            #template_pdf_path = 'MVR-1.pdf'
-            #output_pdf_path = 'MVR1.pdf'
-            template_pdf_path = 'FIDocs.pdf'
-            output_pdf_path = 'FD.pdf'
+    with blankbc:
+        mvr1_button = st.button(label="Generate MVR-1", key=f"{prefix}_mvr_button")
+        if mvr1_button:
+            template_pdf_path = 'MVR-1.pdf'
+            output_pdf_path = 'MVR1.pdf'
             data = {
-                "Check Box3": "",
-                "Check Box4": "",
-                "Check Box5": "",
-                "This includes the truck trailer and load": "",
-                "Check Box6": "",
-                "Check Box7": "",
-                "Class of License": "",
-                "Check Box8": "",
-                "Check Box9": "",
-                "Check Box10": "",
-                "List Plate Number and Expiration": f"{platenum}      {plate_exp}",
+                "List Plate Number and Expiration": "",
                 "YEAR": year,
                 "MAKE": make,
-                "BODY STYLE": bodystyle,
+                "BODY STYLE": "TRUCK",
                 "SERIES MODEL": model,
                 "VEHICLE IDENTIFICATION NUMBER": vin,
-                "FUEL TYPE": fuel_type,
+                "FUEL TYPE": "GAS",
                 "ODOMETER READING": odometer,
-                "Owner 1 ID": drivers_license,
+                "Owner 1 ID": "",
                 "Full Legal Name of Owner 1 First Middle Last Suffix or Company Name": customer,
                 "Owner 2 ID": "",
                 "Full Legal Name of Owner 2 First Middle Last Suffix or Company Name": "",
-                "Check Box1": "",
-                "Check Box2": "",
                 "Residence Address Individual Business Address Firm City and State Zip Code": f"{address}, {city}, {state} {zipcode}",
                 "Mail Address if different from above City and State Zip Code": "",
                 "Vehicle Location Address if different from residence address above City and State Zip Code": "",
-                "Tax County": county,
-                "Account #1": "",
-                "Account #2": "",
-                "Text1": "",
+                "Tax County": "GASTON",
                 "Date 1": "",
-                "Text2": "",
-                "Date 2": "",
                 "Lienholder 1 ID": "",
-                "Lienholder 1 name": lienholder_name,
-                "Lienholder 2 ID": "",
-                "Lienholder 2 name": "",
-                "Address": lienholder_address,
-                "undefined": "",
-                "Address_2": "",
-                "City": lienholder_city,
-                "State": lienholder_state,
-                "Zip Code": lienholder_zip,
-                "City_2": "",
-                "State_2": "",
-                "Zip Code_2": "",
-                "Insurance Company authorized in NC": ins_company,
-                "Policy Number": policy,
-                "Purchase Date": "",
-                "From Whom Purchased Name and Address": "",
-                "NC Dealer No": "",
-                "Equipment": "",
-                "New": "",
-                "Used": "",
-                "I We would like the personal information contained in this application to be available for disclosure": "",
-                "Date": "",
-                "County": "",
-                "State_3": "",
-                "purpose stated therein and in the capacity indicated": "",
-                "or Typed Name": "",
-                "My Commission Expires": "",
-                "Owner 1 ID": "",
-                "Owner 2 ID": "",
-                "Full Legal Name of Owner 1 First Middle Last Suffix or Company Name": "",
-                "Residence Address Individual Business Address Firm": "",
-                "Mail Address if different from above": "",
-                "FIRST LIEN Account  Maturity Date MH Date of Lien": "",
-                "Lienholder Name": "",
+                "Lienholder 1 name": "NISSAN MOTOR ACCEPTANCE CORP",
                 "Address": "",
-                "State": "",
-                "Purchase Date": "",
-                "Previous NC Title Number": "",
-                "Dealer": "",
-                "Printed Firm Name": "",
-                "Date_2": "",
-                "County_2": "",
-                "State_2": "",
-                "Text1": "",
-                "Text2": "",
-                "Text3": "",
-                "Text4": "",
-                "Text5": "",
-                "Text6": "",
-                "Full Legal Name of Owner 2 First Middle Last Suffix or Company Name": "",
-                "Text7": "",
-                "Text8": "",
-                "Text9": "",
-                "Text10": "",
-                "Text11": "",
-                "Text12": "",
-                "Text13": "",
-                "Text14": "",
-                "Check Box15": "",
-                "Check Box16": "",
-                "Check Box17": "",
-                "Buyer, Seller or Legal Owner": "",
-                "Vehicle Make": "",
-                "Vehicle Type": "",
-                "Motor Number": "",
-                "Serial Number": "",
-                "Year Built": "",
-                "Model": "",
-                "POA Name": "",
-                "Day": "",
-                "Month": "",
-                "Year": "",
-                "Date": "",
-                "County": "",
-                "State": "",
-                "Name of Principals": "",
-                "Printed or typed name": "",
-                "My commission expires": "",
-                "YEAR": "",
-                "MAKE": "",
-                "BODY STYLE": "",
-                "SERIES MODEL": "",
-                "VEHICLE IDENTIFICATION NUMBER": "",
-                "I sellers printed name": "",
-                "the odometer now reads miles no tenths": "",
-                "1 I hereby certify that the odometer reading reflects the amount of mileage in excess of its": "",
-                "2 I hereby certify that the odometer reading is not the actual mileage WARNING ODOMETER": "",
-                "SELLERS SIGNATURE CERTIFYING ODOMETER READING": "",
-                "SELLERS PRINTED NAME": "",
-                "SELLERS ADDRESS": "",
-                "CITY": "",
-                "STATE": "",
-                "ZIP CODE": "",
-                "DATE OF CERTIFICATION": "",
-                "BUYERS SIGNATURE ACKNOWLEDGING ODOMETER READING AS CERTIFIED": "",
-                "BUYERS PRINTED NAME": "",
-                "BUYERS ADDRESS": "",
-                "CITY_2": "",
-                "STATE_2": "",
-                "ZIP CODE_2": "",
-                "DATE OF CERTIFICATION_2": "",
-                "Year": "",
-                "Make": "",
-                "Body Style": "",
-                "Vehicle Identification Number": "",
-                "Check Box1": "",
-                "Check Box2": "",
-                "If yes list parts that were damaged 1": "",
-                "If yes list parts that were damaged 2": "",
-                "Check Box3": "",
-                "Check Box4": "",
-                "If yes in which state was it titled": "",
-                "Check Box5": "",
-                "Check Box6": "",
-                "Check Box7": "",
-                "Check Box8": "",
-                "If yes list parts that were damaged": "",
-                "Check Box9": "",
-                "Check Box10": "",
-                "DATE": "",
-                "SELLER'S ADDRESS": "",
-                "BUYER'S ACKNOWLEDGEMENT AND SIGNATURE": ""
+                "City": "SACRAMENTO",
+                "State": "CA",
+                "Zip Code": "",
+                "Insurance Company authorized in NC": "",
+                "Policy Number": "",
+                "From Whom Purchased Name and Address": "",
+                "New": "",
+                "Used": ""
             }
-
             fill_pdf(template_pdf_path, output_pdf_path, data)
             with open(output_pdf_path, 'rb') as f:
-                c8.download_button('Download MVR-1', f, file_name=output_pdf_path)
+                st.download_button('Download MVR-1', f, file_name=output_pdf_path)
     
     with lbc:
         submit_button = st.button(label="Generate Quote", key=f"{prefix}_submit_button")
