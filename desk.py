@@ -14,53 +14,25 @@ with open("styles.css") as f:
 
 st.subheader("")
 
-def set_appearance(annotation, value, max_font_size):
-    if '/Rect' not in annotation:
-        logging.error(f"Annotation {annotation} does not have a '/Rect' attribute.")
-        return
-
-    lines = value.split('\n')
-    max_length = max(len(line) for line in lines)
-    field_width = annotation['/Rect'][2] - annotation['/Rect'][0]
-    field_height = annotation['/Rect'][3] - annotation['/Rect'][1]
-
-    # Calculate the font size based on the width and height of the field
-    font_size = max_font_size
-    while font_size > 1:
-        text_width = font_size * 0.6 * max_length
-        text_height = font_size * len(lines)
-        if text_width <= field_width and text_height <= field_height:
-            break
-        font_size -= 1
-
-    # Split the value into lines
-    line_height = font_size + 2
-    box_height = line_height * len(lines)
-
-    # Create the appearance stream for multiline text
+def set_appearance(annotation, value):
+    # Create a simple appearance stream
     appearance_stream = f"""
     q
     1 0 0 1 0 0 cm
     /Tx BMC
     BT
-    /F1 {font_size} Tf
+    /F1 12 Tf
     0 g
-    2 {box_height - font_size} Td
-    """
-
-    for line in lines:
-        appearance_stream += f"({line}) Tj\nT* "
-    
-    appearance_stream += """
+    2 2 Td
+    ({value}) Tj
     ET
     EMC
     Q
     """
-    
     appearance = PdfDict(
         Type=PdfName('XObject'),
         Subtype=PdfName('Form'),
-        BBox=PdfArray([0, 0, field_width, box_height]),
+        BBox=PdfArray([0, 0, 100, 20]),
         Resources=PdfDict(
             Font=PdfDict(
                 F1=PdfDict(
@@ -80,7 +52,7 @@ def set_appearance(annotation, value, max_font_size):
         PdfName('V'): PdfString(value)
     })
 
-def fill_pdf(input_pdf_path, output_pdf_path, data_dict, max_font_size=10):
+def fill_pdf(input_pdf_path, output_pdf_path, data_dict):
     template_pdf = PdfReader(input_pdf_path)
     for page in template_pdf.pages:
         annotations = page['/Annots']
@@ -89,11 +61,12 @@ def fill_pdf(input_pdf_path, output_pdf_path, data_dict, max_font_size=10):
                 if annotation['/Subtype'] == '/Widget' and annotation['/T']:
                     key = annotation['/T'][1:-1]  # Remove the parentheses around the key
                     if key in data_dict:
+                        print(f"Updating field: {key} with value: {data_dict[key]}")
                         annotation.update({
                             PdfName('/V'): PdfString(data_dict[key]),
                             PdfName('/Ff'): 1,  # Make the field read-only
                         })
-                        set_appearance(annotation, data_dict[key], max_font_size)
+                        set_appearance(annotation, data_dict[key])
     PdfWriter().write(output_pdf_path, template_pdf)
 
 def render_tab(calc_payment_func, prefix, is_lease=False):
@@ -338,8 +311,8 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
 
                 # Fill the PDF form
                 pdf_template_path = 'MVR-1.pdf'
-                filled_pdf_path = 'output_form_filled.pdf'
-                fill_pdf(pdf_template_path, filled_pdf_path, pdf_data, 10)
+                filled_pdf_path = 'MVR1.pdf'
+                fill_pdf(pdf_path, output_pdf_path, data)
                 
                 # Provide download link for filled MRV-1 PDF
                 with open(filled_pdf_path, 'rb') as f:
