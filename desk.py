@@ -347,20 +347,24 @@ def set_appearance(annotation, value, max_font_size):
     })
 
 def fill_pdf(input_pdf_path, output_pdf_path, data_dict, max_font_size=10):
-    template_pdf = PdfReader(input_pdf_path)
-    for page in template_pdf.pages:
-        annotations = page['/Annots']
-        if annotations:
-            for annotation in annotations:
-                if annotation['/Subtype'] == '/Widget' and annotation['/T']:
-                    key = annotation['/T'][1:-1]  # Remove the parentheses around the key
-                    if key in data_dict:
-                        annotation.update({
-                            PdfName('/V'): PdfString(data_dict[key]),
-                            PdfName('/Ff'): 1,  # Make the field read-only
-                        })
-                        set_appearance(annotation, data_dict[key], max_font_size)
-    PdfWriter().write(output_pdf_path, template_pdf)
+    try:
+        template_pdf = PdfReader(input_pdf_path)
+        for page in template_pdf.pages:
+            if '/Annots' in page:
+                annotations = page['/Annots']
+                for annotation in annotations:
+                    if annotation['/Subtype'] == '/Widget' and annotation['/T']:
+                        key = annotation['/T'][1:-1]  # Remove the parentheses around the key
+                        if key in data_dict:
+                            annotation.update({
+                                PdfName('/V'): PdfString(data_dict[key]),
+                                PdfName('/Ff'): 1,  # Make the field read-only
+                            })
+                            set_appearance(annotation, data_dict[key], max_font_size)
+        PdfWriter().write(output_pdf_path, template_pdf)
+    except Exception as e:
+        logging.error(f"Failed to fill PDF: {e}")
+        raise
 
 def render_tab(calc_payment_func, prefix, is_lease=False):
     fc, sc, tc = st.columns([3, 3, 2])
