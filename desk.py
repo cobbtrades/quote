@@ -4,8 +4,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
-from PyPDF2 import PdfReader, PdfWriter
-from PyPDF2.generic import PdfName, PdfString, PdfDict, PdfArray
+from pdfrw import PdfReader, PdfWriter, PdfName, PdfString, PdfDict, PdfArray, PdfObject
 
 st.set_page_config(page_title="Desking App", page_icon="📝")
 
@@ -14,24 +13,6 @@ with open("styles.css") as f:
 
 st.subheader("")
 
-def fill_pdf(in_path, data, out_path):
-    pdf = pdfrw.PdfReader(in_path)
-    for page in pdf.pages:
-        annotations = page['/Annots']
-        if annotations is None:
-            continue
-
-        for annotation in annotations:
-            if annotation['/Subtype'] == '/Widget':
-                key = annotation['/T'].to_unicode()
-                if key in data:
-                    pdfstr = pdfrw.objects.pdfstring.PdfString.encode(data[key])
-                    annotation.update(pdfrw.PdfDict(V=pdfstr))
-        pdf.Root.AcroForm.update(
-            pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true')))
-        pdfrw.PdfWriter().write(out_path, pdf)
-
-# Define the PDF generation and rendering functions
 def calculate_monthly_payment(principal, down_payment, annual_rate, term_months):
     if principal == 0:
         return 0
@@ -303,6 +284,62 @@ def generate_pdf(data, filename='quote.pdf'):
         logging.error(f"Failed to generate PDF: {e}")
         return None
 
+def set_appearance(annotation, value):
+    # Create a simple appearance stream
+    appearance_stream = f"""
+    q
+    1 0 0 1 0 0 cm
+    /Tx BMC
+    BT
+    /F1 10 Tf
+    0 g
+    2 2 Td
+    ({value}) Tj
+    ET
+    EMC
+    Q
+    """
+    appearance = PdfDict(
+        Type=PdfName('XObject'),
+        Subtype=PdfName('Form'),
+        BBox=PdfArray([0, 0, 100, 20]),
+        Resources=PdfDict(
+            Font=PdfDict(
+                F1=PdfDict(
+                    Type=PdfName('Font'),
+                    Subtype=PdfName('Type1'),
+                    BaseFont=PdfName('Helvetica')
+                )
+            )
+        ),
+        FormType=1,
+        Length=len(appearance_stream),
+        stream=appearance_stream
+    )
+
+    annotation.update({
+        PdfName('AP'): PdfDict(N=appearance),
+        PdfName('V'): PdfString(value)
+    })
+
+def fill_pdf(input_pdf_path, output_pdf_path, data_dict):
+    template_pdf = PdfReader(input_pdf_path)
+    for page in template_pdf.pages:
+        annotations = page['/Annots']
+        if annotations:
+            for annotation in annotations:
+                if annotation['/Subtype'] == '/Widget' and annotation['/T']:
+                    key = annotation['/T'][1:-1]  # Remove the parentheses around the key
+                    if key in data_dict:
+                        print(f"Updating field: {key} with value: {data_dict[key]}")
+                        annotation.update({
+                            PdfName('/V'): PdfString(data_dict[key]),
+                            PdfName('/Ff'): 1,  # Make the field read-only
+                        })
+                        set_appearance(annotation, data_dict[key])
+    PdfWriter().write(output_pdf_path, template_pdf)
+    print(f"Filled PDF saved to {output_pdf_path}")
+
 def render_tab(calc_payment_func, prefix, is_lease=False):
     fc, sc, tc = st.columns([3, 3, 2])
     
@@ -508,53 +545,6 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         col6.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
 
     lbc, blankbc = st.columns([2, 10])
-    with blankbc:
-        # Adding the button to fill and download the form
-        fill_form_button = st.button("Fill Form and Download", key=f"{prefix}_fill_form_button")
-        
-        if fill_form_button:
-            # Path to your PDF form
-            pdf_path = 'MVR-1.pdf'
-
-            # Example data to fill in the form (replace with your actual data)
-            form_data = {
-                "List Plate Number and Expiration": "",
-                "YEAR": "2024",
-                "MAKE": "NISSAN",
-                "BODY STYLE": "TRUCK",
-                "SERIES MODEL": "FRONTIER",
-                "VEHICLE IDENTIFICATION NUMBER": "1N4AB3AP8EC157846",
-                "FUEL TYPE": "GAS",
-                "ODOMETER READING": "112648",
-                "Owner 1 ID": "",
-                "Full Legal Name of Owner 1 First Middle Last Suffix or Company Name": "PROFESSIONAL POLICE SERVICE, INC",
-                "Owner 2 ID": "",
-                "Full Legal Name of Owner 2 First Middle Last Suffix or Company Name": "",
-                "Residence Address Individual Business Address Firm City and State Zip Code": "106 OLIVIA CT, STANLEY, NC 28164",
-                "Mail Address if different from above City and State Zip Code": "",
-                "Vehicle Location Address if different from residence address above City and State Zip Code": "",
-                "Tax County": "GASTON",
-                "Date 1": "",
-                "Lienholder 1 ID": "",
-                "Lienholder 1 name": "NISSAN MOTOR ACCEPTANCE CORP",
-                "Address": "",
-                "City": "SACRAMENTO",
-                "State": "CA",
-                "Zip Code": "",
-                "Insurance Company authorized in NC": "",
-                "Policy Number": "",
-                "From Whom Purchased Name and Address": "",
-                "New": "",
-                "Used": ""
-            }
-            
-            # Fill the form
-            output_pdf_path = 'output_form_filled.pdf'
-            fill_pdf(pdf_path, form_data, output_pdf_path)
-            
-            # Provide the download button for the filled PDF
-            with open(output_pdf_path, 'rb') as f:
-                st.download_button('Download Filled Form', f, file_name=output_pdf_path, key=f"{prefix}_download_filled_form_button")
     with lbc:
         submit_button = st.button(label="Generate Quote", key=f"{prefix}_submit_button")
         
@@ -617,6 +607,49 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             pdf_file = generate_pdf(data)
             with open(pdf_file, 'rb') as f:
                 st.download_button('Download Quote', f, file_name=pdf_file, key=f"{prefix}_download_button")
+
+        # Adding a button for filling the PDF form
+        fill_pdf_button = st.button(label="Fill PDF Form", key=f"{prefix}_fill_pdf_button")
+
+        if fill_pdf_button:
+            # Example data to fill in the form (replace with your actual data)
+            pdf_data = {
+                "List Plate Number and Expiration": "",
+                "YEAR": year,
+                "MAKE": make,
+                "BODY STYLE": "TRUCK",
+                "SERIES MODEL": model,
+                "VEHICLE IDENTIFICATION NUMBER": vin,
+                "FUEL TYPE": "GAS",
+                "ODOMETER READING": odometer,
+                "Owner 1 ID": "",
+                "Full Legal Name of Owner 1 First Middle Last Suffix or Company Name": customer,
+                "Owner 2 ID": "",
+                "Full Legal Name of Owner 2 First Middle Last Suffix or Company Name": "",
+                "Residence Address Individual Business Address Firm City and State Zip Code": f"{address}, {city}, {state} {zipcode}",
+                "Mail Address if different from above City and State Zip Code": "",
+                "Vehicle Location Address if different from residence address above City and State Zip Code": "",
+                "Tax County": "GASTON",
+                "Date 1": "",
+                "Lienholder 1 ID": "",
+                "Lienholder 1 name": "NISSAN MOTOR ACCEPTANCE CORP",
+                "Address": "",
+                "City": "SACRAMENTO",
+                "State": "CA",
+                "Zip Code": "",
+                "Insurance Company authorized in NC": "",
+                "Policy Number": "",
+                "From Whom Purchased Name and Address": "",
+                "New": "",
+                "Used": ""
+            }
+
+            # Path to your PDF form
+            pdf_path = 'MVR-1.pdf'
+            output_pdf_path = 'output_form_filled.pdf'
+            fill_pdf(pdf_path, output_pdf_path, pdf_data)
+            with open(output_pdf_path, 'rb') as f:
+                st.download_button('Download Filled Form', f, file_name=output_pdf_path, key=f"{prefix}_filled_pdf_download_button")
 
 finance, lease = st.tabs(["Finance", "Lease"])
 
