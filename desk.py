@@ -5,6 +5,7 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Par
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 from pdfrw import PdfReader, PdfWriter, PdfName, PdfString, PdfDict, PdfArray, PdfObject
+from func import calculate_monthly_payment, calculate_lease_payment, calculate_balance, calculate_taxes, generate_pdf
 
 st.set_page_config(page_title="Desking App", page_icon="📝")
 
