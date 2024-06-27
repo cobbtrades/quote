@@ -527,7 +527,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             template_pdf_path = 'MVR-1.pdf'
             output_pdf_path = 'MVR1.pdf'
             data = {
-                "List Plate Number and Expiration": f"{platenum} {plate_exp}",
+                "List Plate Number and Expiration": f"{platenum}   {plate_exp}",
                 "YEAR": year,
                 "MAKE": make,
                 "BODY STYLE": bodystyle,
