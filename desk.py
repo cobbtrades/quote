@@ -222,7 +222,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             st.session_state.show_modal = True
     
     if st.session_state.get("show_modal", False):
-        with st.modal("Enter Lienholder Details", key=f"{prefix}_lienholder_modal"):
+        with st.popover("Enter Lienholder Details", key=f"{prefix}_lienholder_modal"):
             lienholder_name = st.text_input(label="Lienholder Name", key=f"{prefix}_lienholder_name")
             lienholder_address = st.text_input(label="Lienholder Address", key=f"{prefix}_lienholder_address")
             lienholder_city = st.text_input(label="Lienholder City", key=f"{prefix}_lienholder_city")
