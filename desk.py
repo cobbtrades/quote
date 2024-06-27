@@ -570,7 +570,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             }
             fill_pdf(template_pdf_path, output_pdf_path, data)
             with open(output_pdf_path, 'rb') as f:
-                st.download_button('Download MVR-1', f, file_name=output_pdf_path)
+                c8.download_button('Download MVR-1', f, file_name=output_pdf_path)
     
     with lbc:
         submit_button = st.button(label="Generate Quote", key=f"{prefix}_submit_button")
