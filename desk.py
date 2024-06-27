@@ -220,55 +220,41 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
     with blankbc:
         mvr1_button = st.button(label="Generate MVR-1", key=f"{prefix}_mvr_button")
         if mvr1_button:
-            st.session_state.show_modal = True
-    
-    if st.session_state.get("show_modal", False):
-        with st.modal("Enter Lienholder Details", key=f"{prefix}_lienholder_modal"):
-            bodystyle = st.text_input(label="Body Style", key=f"{prefix}_bodystyle")
-            fueltype = st.text_input(label="Fuel Type", key=f"{prefix}fueltype")
-            lienholder_name = st.text_input(label="Lienholder Name", key=f"{prefix}_lienholder_name")
-            lienholder_address = st.text_input(label="Lienholder Address", key=f"{prefix}_lienholder_address")
-            lienholder_city = st.text_input(label="Lienholder City", key=f"{prefix}_lienholder_city")
-            lienholder_state = st.text_input(label="Lienholder State", key=f"{prefix}_lienholder_state")
-            lienholder_zip = st.text_input(label="Lienholder Zip Code", key=f"{prefix}_lienholder_zip")
-            submit_modal_button = st.button("Submit", key=f"{prefix}_submit_modal")
-            if submit_modal_button:
-                template_pdf_path = 'MVR-1.pdf'
-                output_pdf_path = 'MVR1.pdf'
-                data = {
-                    "List Plate Number and Expiration": "",
-                    "YEAR": year,
-                    "MAKE": make,
-                    "BODY STYLE": bodystyle,
-                    "SERIES MODEL": model,
-                    "VEHICLE IDENTIFICATION NUMBER": vin,
-                    "FUEL TYPE": fueltype,
-                    "ODOMETER READING": odometer,
-                    "Owner 1 ID": "",
-                    "Full Legal Name of Owner 1 First Middle Last Suffix or Company Name": customer,
-                    "Owner 2 ID": "",
-                    "Full Legal Name of Owner 2 First Middle Last Suffix or Company Name": "",
-                    "Residence Address Individual Business Address Firm City and State Zip Code": f"{address}, {city}, {state} {zipcode}",
-                    "Mail Address if different from above City and State Zip Code": "",
-                    "Vehicle Location Address if different from residence address above City and State Zip Code": "",
-                    "Tax County": "GASTON",
-                    "Date 1": "",
-                    "Lienholder 1 ID": "",
-                    "Lienholder 1 name": lienholder_name,
-                    "Address": lienholder_address,
-                    "City": lienholder_city,
-                    "State": lienholder_state,
-                    "Zip Code": lienholder_zip,
-                    "Insurance Company authorized in NC": "",
-                    "Policy Number": "",
-                    "From Whom Purchased Name and Address": "",
-                    "New": "",
-                    "Used": ""
-                }
-                fill_pdf(template_pdf_path, output_pdf_path, data)
-                with open(output_pdf_path, 'rb') as f:
-                    st.download_button('Download MVR-1', f, file_name=output_pdf_path)
-                st.session_state.show_modal = False
+            template_pdf_path = 'MVR-1.pdf'
+            output_pdf_path = 'MVR1.pdf'
+            data = {
+                "List Plate Number and Expiration": "",
+                "YEAR": year,
+                "MAKE": make,
+                "BODY STYLE": "TRUCK",
+                "SERIES MODEL": model,
+                "VEHICLE IDENTIFICATION NUMBER": vin,
+                "FUEL TYPE": "GAS",
+                "ODOMETER READING": odometer,
+                "Owner 1 ID": "",
+                "Full Legal Name of Owner 1 First Middle Last Suffix or Company Name": customer,
+                "Owner 2 ID": "",
+                "Full Legal Name of Owner 2 First Middle Last Suffix or Company Name": "",
+                "Residence Address Individual Business Address Firm City and State Zip Code": f"{address}, {city}, {state} {zipcode}",
+                "Mail Address if different from above City and State Zip Code": "",
+                "Vehicle Location Address if different from residence address above City and State Zip Code": "",
+                "Tax County": "GASTON",
+                "Date 1": "",
+                "Lienholder 1 ID": "",
+                "Lienholder 1 name": "NISSAN MOTOR ACCEPTANCE CORP",
+                "Address": "",
+                "City": "SACRAMENTO",
+                "State": "CA",
+                "Zip Code": "",
+                "Insurance Company authorized in NC": "",
+                "Policy Number": "",
+                "From Whom Purchased Name and Address": "",
+                "New": "",
+                "Used": ""
+            }
+            fill_pdf(template_pdf_path, output_pdf_path, data)
+            with open(output_pdf_path, 'rb') as f:
+                st.download_button('Download MVR-1', f, file_name=output_pdf_path)
     
     with lbc:
         submit_button = st.button(label="Generate Quote", key=f"{prefix}_submit_button")
