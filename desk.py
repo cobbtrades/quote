@@ -510,9 +510,9 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
     with st.popover("Enter Finance Details", use_container_width=True):
         c1, c2, c3, c4, c5 = st.columns([1,1,1,3,3])
         c1.markdown('<input class="label-input" type="text" value="Body Style" disabled>', unsafe_allow_html=True)
-        bodystyle = c2.text_input(label="Body Style", key=f"{prefix}_bodystyle")
+        bodystyle = c2.text_input(label="Body Style", key=f"{prefix}_bodystyle", label_visibility="collapsed")
         c1.markdown('<input class="label-input" type="text" value="Fuel Type" disabled>', unsafe_allow_html=True)
-        fuel_type = c2.text_input(label="Fuel Type", key=f"{prefix}_fuel_type")
+        fuel_type = c2.text_input(label="Fuel Type", key=f"{prefix}_fuel_type", label_visibility="collapsed")
         drivers_license = c3.text_input(label="Driver's License", key=f"{prefix}_drivers_license")
         county = c3.text_input(label="County", key=f"{prefix}_county")
         platenum = c3.text_input(label="License Plate Number", key=f"{prefix}_platenum")
