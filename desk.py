@@ -284,14 +284,14 @@ def generate_pdf(data, filename='quote.pdf'):
         logging.error(f"Failed to generate PDF: {e}")
         return None
 
-def set_appearance(annotation, value):
+def set_appearance(annotation, value, font_size=10):
     # Create a simple appearance stream
     appearance_stream = f"""
     q
     1 0 0 1 0 0 cm
     /Tx BMC
     BT
-    /F1 10 Tf
+    /F1 {font_size} Tf
     0 g
     2 2 Td
     ({value}) Tj
@@ -322,7 +322,7 @@ def set_appearance(annotation, value):
         PdfName('V'): PdfString(value)
     })
 
-def fill_pdf(input_pdf_path, output_pdf_path, data_dict):
+def fill_pdf(input_pdf_path, output_pdf_path, data_dict, font_size=10):
     template_pdf = PdfReader(input_pdf_path)
     for page in template_pdf.pages:
         annotations = page['/Annots']
@@ -336,9 +336,8 @@ def fill_pdf(input_pdf_path, output_pdf_path, data_dict):
                             PdfName('/V'): PdfString(data_dict[key]),
                             PdfName('/Ff'): 1,  # Make the field read-only
                         })
-                        set_appearance(annotation, data_dict[key])
+                        set_appearance(annotation, data_dict[key], font_size)
     PdfWriter().write(output_pdf_path, template_pdf)
-    print(f"Filled PDF saved to {output_pdf_path}")
 
 def render_tab(calc_payment_func, prefix, is_lease=False):
     fc, sc, tc = st.columns([3, 3, 2])
@@ -646,7 +645,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
 
             # Path to your PDF form
             pdf_path = 'MVR-1.pdf'
-            output_pdf_path = 'output_form_filled.pdf'
+            output_pdf_path = 'MVR1.pdf'
             fill_pdf(pdf_path, output_pdf_path, pdf_data)
             with open(output_pdf_path, 'rb') as f:
                 st.download_button('Download Filled Form', f, file_name=output_pdf_path, key=f"{prefix}_filled_pdf_download_button")
