@@ -544,6 +544,49 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         col6.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
 
     lbc, blankbc = st.columns([2, 10])
+    with blankbc:
+        # Generate MRV-1 button and logic
+            if st.button("Generate MRV-1", key=f"{prefix}_generate_mvr1"):
+                # Mapping Streamlit form data to the PDF fields
+                pdf_data = {
+                    "List Plate Number and Expiration": "",
+                    "YEAR": year,
+                    "MAKE": make,
+                    "BODY STYLE": "",
+                    "SERIES MODEL": model,
+                    "VEHICLE IDENTIFICATION NUMBER": vin,
+                    "FUEL TYPE": "",
+                    "ODOMETER READING": odometer,
+                    "Owner 1 ID": "",
+                    "Full Legal Name of Owner 1 First Middle Last Suffix or Company Name": customer,
+                    "Owner 2 ID": "",
+                    "Full Legal Name of Owner 2 First Middle Last Suffix or Company Name": "",
+                    "Residence Address Individual Business Address Firm City and State Zip Code": f'{address}, {city}, {state}, {zipcode}',
+                    "Mail Address if different from above City and State Zip Code": "",
+                    "Vehicle Location Address if different from residence address above City and State Zip Code": "",
+                    "Tax County": "",
+                    "Date 1": "",
+                    "Lienholder 1 ID": "",
+                    "Lienholder 1 name": "",
+                    "Address": "",
+                    "City": "",
+                    "State": "",
+                    "Zip Code": "",
+                    "Insurance Company authorized in NC": "",
+                    "Policy Number": "",
+                    "From Whom Purchased Name and Address": "",
+                    "New": newused,
+                    "Used": newused
+                }
+
+                # Fill the PDF form
+                pdf_template_path = 'MVR-1.pdf'
+                filled_pdf_path = 'output_form_filled.pdf'
+                fill_pdf(pdf_template_path, filled_pdf_path, pdf_data)
+                
+                # Provide download link for filled MRV-1 PDF
+                with open(filled_pdf_path, 'rb') as f:
+                    st.download_button('Download MVR-1', f, file_name=filled_pdf_path, key=f"{prefix}_download_mvr1_button")
     with lbc:
         submit_button = st.button(label="Generate Quote", key=f"{prefix}_submit_button")
         
@@ -606,49 +649,6 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             pdf_file = generate_pdf(data)
             with open(pdf_file, 'rb') as f:
                 st.download_button('Download Quote', f, file_name=pdf_file, key=f"{prefix}_download_button")
-
-            # Generate MRV-1 button and logic
-            if st.button("Generate MRV-1", key=f"{prefix}_generate_mrv1"):
-                # Mapping Streamlit form data to the PDF fields
-                pdf_data = {
-                    "List Plate Number and Expiration": "",
-                    "YEAR": year,
-                    "MAKE": make,
-                    "BODY STYLE": "",
-                    "SERIES MODEL": model,
-                    "VEHICLE IDENTIFICATION NUMBER": vin,
-                    "FUEL TYPE": "",
-                    "ODOMETER READING": odometer,
-                    "Owner 1 ID": "",
-                    "Full Legal Name of Owner 1 First Middle Last Suffix or Company Name": customer,
-                    "Owner 2 ID": "",
-                    "Full Legal Name of Owner 2 First Middle Last Suffix or Company Name": "",
-                    "Residence Address Individual Business Address Firm City and State Zip Code": f'{address}, {city}, {state}, {zipcode}',
-                    "Mail Address if different from above City and State Zip Code": "",
-                    "Vehicle Location Address if different from residence address above City and State Zip Code": "",
-                    "Tax County": "",
-                    "Date 1": "",
-                    "Lienholder 1 ID": "",
-                    "Lienholder 1 name": "",
-                    "Address": "",
-                    "City": "",
-                    "State": "",
-                    "Zip Code": "",
-                    "Insurance Company authorized in NC": "",
-                    "Policy Number": "",
-                    "From Whom Purchased Name and Address": "",
-                    "New": newused,
-                    "Used": newused
-                }
-
-                # Fill the PDF form
-                pdf_template_path = 'MVR-1.pdf'
-                filled_pdf_path = 'output_form_filled.pdf'
-                fill_pdf(pdf_template_path, filled_pdf_path, pdf_data)
-                
-                # Provide download link for filled MRV-1 PDF
-                with open(filled_pdf_path, 'rb') as f:
-                    st.download_button('Download MVR-1', f, file_name=filled_pdf_path, key=f"{prefix}_download_mvr1_button")
 
 finance, lease = st.tabs(["Finance", "Lease"])
 
