@@ -284,17 +284,29 @@ def generate_pdf(data, filename='quote.pdf'):
         logging.error(f"Failed to generate PDF: {e}")
         return None
 
-def set_appearance(annotation, value):
-    # Create a simple appearance stream
+def set_appearance(annotation, value, font_size):
+    # Split the value into lines
+    lines = value.split('\n')
+    
+    # Calculate the height of the text box based on the number of lines and font size
+    line_height = font_size + 2
+    box_height = line_height * len(lines)
+    
+    # Create the appearance stream for multiline text
     appearance_stream = f"""
     q
     1 0 0 1 0 0 cm
     /Tx BMC
     BT
-    /F1 8 Tf
+    /F1 {font_size} Tf
     0 g
-    2 2 Td
-    ({value}) Tj
+    2 {box_height - font_size} Td
+    """
+
+    for line in lines:
+        appearance_stream += f"({line}) Tj\nT* "
+    
+    appearance_stream += """
     ET
     EMC
     Q
@@ -582,7 +594,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 # Fill the PDF form
                 pdf_template_path = 'MVR-1.pdf'
                 filled_pdf_path = 'output_form_filled.pdf'
-                fill_pdf(pdf_template_path, filled_pdf_path, pdf_data)
+                fill_pdf(pdf_template_path, filled_pdf_path, pdf_data, font_size=10)
                 
                 # Provide download link for filled MRV-1 PDF
                 with open(filled_pdf_path, 'rb') as f:
