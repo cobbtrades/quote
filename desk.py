@@ -312,7 +312,7 @@ def set_appearance(annotation, value, font_size):
                 F1=PdfDict(
                     Type=PdfName('Font'),
                     Subtype=PdfName('Type1'),
-                    BaseFont=PdfName('Helvetica')
+                    BaseFont=PdfName('Arial')
                 )
             )
         ),
@@ -339,7 +339,6 @@ def fill_pdf(input_pdf_path, output_pdf_path, data_dict, font_sizes=None):
                 if annotation['/Subtype'] == '/Widget' and annotation['/T']:
                     key = annotation['/T'][1:-1]  # Remove the parentheses around the key
                     if key in data_dict:
-                        print(f"Updating field: {key} with value: {data_dict[key]}")
                         font_size = font_sizes.get(key, default_font_size)
                         annotation.update({
                             PdfName('/V'): PdfString(data_dict[key]),
