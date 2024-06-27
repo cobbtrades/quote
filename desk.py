@@ -285,6 +285,10 @@ def generate_pdf(data, filename='quote.pdf'):
         return None
 
 def set_appearance(annotation, value, font_size):
+    # Calculate the length of the text to determine the width of the bounding box
+    text_width = len(value) * (font_size * 0.6)  # Estimate width based on average character width
+    bbox_width = max(100, text_width + 4)  # Ensure a minimum width of 100
+
     # Create a simple appearance stream
     appearance_stream = f"""
     q
@@ -302,7 +306,7 @@ def set_appearance(annotation, value, font_size):
     appearance = PdfDict(
         Type=PdfName('XObject'),
         Subtype=PdfName('Form'),
-        BBox=PdfArray([0, 0, 100, 20]),
+        BBox=PdfArray([0, 0, bbox_width, font_size + 4]),  # Adjust the height based on the font size
         Resources=PdfDict(
             Font=PdfDict(
                 F1=PdfDict(
