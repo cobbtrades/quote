@@ -284,57 +284,6 @@ def generate_pdf(data, filename='quote.pdf'):
         logging.error(f"Failed to generate PDF: {e}")
         return None
 
-def set_appearance(annotation, value, font_size):
-    # Split the value into lines
-    lines = value.split('\n')
-    
-    # Calculate the height of the text box based on the number of lines and font size
-    line_height = font_size + 2
-    box_height = line_height * len(lines)
-    
-    # Create the appearance stream for multiline text
-    appearance_stream = f"""
-    q
-    1 0 0 1 0 0 cm
-    /Tx BMC
-    BT
-    /F1 {font_size} Tf
-    0 g
-    2 {box_height - font_size} Td
-    """
-
-    for line in lines:
-        appearance_stream += f"({line}) Tj\nT* "
-    
-    appearance_stream += """
-    ET
-    EMC
-    Q
-    """
-    
-    appearance = PdfDict(
-        Type=PdfName('XObject'),
-        Subtype=PdfName('Form'),
-        BBox=PdfArray([0, 0, 200, box_height]),
-        Resources=PdfDict(
-            Font=PdfDict(
-                F1=PdfDict(
-                    Type=PdfName('Font'),
-                    Subtype=PdfName('Type1'),
-                    BaseFont=PdfName('Helvetica')
-                )
-            )
-        ),
-        FormType=1,
-        Length=len(appearance_stream),
-        stream=appearance_stream
-    )
-
-    annotation.update({
-        PdfName('AP'): PdfDict(N=appearance),
-        PdfName('V'): PdfString(value)
-    })
-
 def fill_pdf(input_pdf_path, output_pdf_path, data_dict, font_size=10):
     template_pdf = PdfReader(input_pdf_path)
     for page in template_pdf.pages:
@@ -349,7 +298,6 @@ def fill_pdf(input_pdf_path, output_pdf_path, data_dict, font_size=10):
                             PdfName('/V'): PdfString(data_dict[key]),
                             PdfName('/Ff'): 1,  # Make the field read-only
                         })
-                        set_appearance(annotation, data_dict[key], font_size)
     PdfWriter().write(output_pdf_path, template_pdf)
 
 def render_tab(calc_payment_func, prefix, is_lease=False):
