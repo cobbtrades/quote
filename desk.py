@@ -15,7 +15,6 @@ st.subheader("")
 
 def render_tab(calc_payment_func, prefix, is_lease=False):
     fc, sc, tc = st.columns([3, 3, 2])
-    
     with fc:
         fc1, sc1 = st.columns([.6,4])
         fc1.markdown('<input class="label-input" type="text" value="Customer" disabled>', unsafe_allow_html=True)
@@ -224,8 +223,6 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
     
     if st.session_state.get("show_modal", False):
         with st.modal("Enter Lienholder Details", key=f"{prefix}_lienholder_modal"):
-            bodystyle = st.text_input(label="Body Style", key=f"{prefix}_bodystyle")
-            fueltype = st.text_input(label="Fuel Type", key=f"{prefix}fueltype")
             lienholder_name = st.text_input(label="Lienholder Name", key=f"{prefix}_lienholder_name")
             lienholder_address = st.text_input(label="Lienholder Address", key=f"{prefix}_lienholder_address")
             lienholder_city = st.text_input(label="Lienholder City", key=f"{prefix}_lienholder_city")
@@ -239,10 +236,10 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                     "List Plate Number and Expiration": "",
                     "YEAR": year,
                     "MAKE": make,
-                    "BODY STYLE": bodystyle,
+                    "BODY STYLE": "TRUCK",
                     "SERIES MODEL": model,
                     "VEHICLE IDENTIFICATION NUMBER": vin,
-                    "FUEL TYPE": fueltype,
+                    "FUEL TYPE": "GAS",
                     "ODOMETER READING": odometer,
                     "Owner 1 ID": "",
                     "Full Legal Name of Owner 1 First Middle Last Suffix or Company Name": customer,
