@@ -15,6 +15,10 @@ with open("styles.css") as f:
 st.subheader("")
 
 def set_appearance(annotation, value, max_font_size):
+    if '/Rect' not in annotation:
+        logging.error(f"Annotation {annotation} does not have a '/Rect' attribute.")
+        return
+
     lines = value.split('\n')
     max_length = max(len(line) for line in lines)
     field_width = annotation['/Rect'][2] - annotation['/Rect'][0]
