@@ -291,7 +291,7 @@ def set_appearance(annotation, value):
     1 0 0 1 0 0 cm
     /Tx BMC
     BT
-    /F1 12 Tf
+    /F1 8 Tf
     0 g
     2 2 Td
     ({value}) Tj
