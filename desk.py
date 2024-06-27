@@ -284,7 +284,45 @@ def generate_pdf(data, filename='quote.pdf'):
         logging.error(f"Failed to generate PDF: {e}")
         return None
 
-def fill_pdf(input_pdf_path, output_pdf_path, data_dict, font_size=10):
+def set_appearance(annotation, value):
+    appearance_stream = f"""
+    q
+    1 0 0 1 0 0 cm
+    /Tx BMC
+    BT
+    /F1 10 Tf
+    0 g
+    2 2 Td
+    ({value}) Tj
+    ET
+    EMC
+    Q
+    """
+    appearance = PdfDict(
+        Type=PdfName('XObject'),
+        Subtype=PdfName('Form'),
+        BBox=PdfArray([0, 0, 100, 20]),
+        Resources=PdfDict(
+            Font=PdfDict(
+                F1=PdfDict(
+                    Type=PdfName('Font'),
+                    Subtype=PdfName('Type1'),
+                    BaseFont=PdfName('Helvetica')
+                )
+            )
+        ),
+        FormType=1,
+        Length=len(appearance_stream),
+        stream=appearance_stream
+    )
+
+    annotation.update({
+        PdfName('AP'): PdfDict(N=appearance),
+        PdfName('V'): PdfString(value)
+    })
+
+# Define the PDF filling function
+def fill_pdf(input_pdf_path, output_pdf_path, data_dict):
     template_pdf = PdfReader(input_pdf_path)
     for page in template_pdf.pages:
         annotations = page['/Annots']
@@ -293,11 +331,11 @@ def fill_pdf(input_pdf_path, output_pdf_path, data_dict, font_size=10):
                 if annotation['/Subtype'] == '/Widget' and annotation['/T']:
                     key = annotation['/T'][1:-1]  # Remove the parentheses around the key
                     if key in data_dict:
-                        print(f"Updating field: {key} with value: {data_dict[key]}")
                         annotation.update({
                             PdfName('/V'): PdfString(data_dict[key]),
                             PdfName('/Ff'): 1,  # Make the field read-only
                         })
+                        set_appearance(annotation, data_dict[key])
     PdfWriter().write(output_pdf_path, template_pdf)
 
 def render_tab(calc_payment_func, prefix, is_lease=False):
@@ -543,7 +581,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 # Fill the PDF form
                 pdf_template_path = 'MVR-1.pdf'
                 filled_pdf_path = 'output_form_filled.pdf'
-                fill_pdf(pdf_template_path, filled_pdf_path, pdf_data, font_size=10)
+                fill_pdf(pdf_template_path, filled_pdf_path, pdf_data)
                 
                 # Provide download link for filled MRV-1 PDF
                 with open(filled_pdf_path, 'rb') as f:
