@@ -4,6 +4,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
+from pdfrw import PdfReader, PdfWriter, PdfName, PdfString, PdfDict, PdfArray, PdfObject
 
 st.set_page_config(page_title="Desking App", page_icon="📝")
 
