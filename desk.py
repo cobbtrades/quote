@@ -287,22 +287,24 @@ def generate_pdf(data, filename='quote.pdf'):
 def get_field_positions(template_pdf):
     field_positions = {}
     for page_number, page in enumerate(template_pdf.pages):
-        annotations = page['/Annots']
+        annotations = page.get('/Annots', [])
         if annotations:
             for annotation in annotations:
-                if annotation['/Subtype'] == '/Widget' and annotation['/T']:
+                if annotation.get('/Subtype') == '/Widget' and annotation.get('/T'):
                     key = annotation['/T'][1:-1]  # Remove parentheses around the key
-                    rect = annotation['/Rect']
-                    x1, y1, x2, y2 = rect
-                    width = x2 - x1
-                    height = y2 - y1
-                    field_positions[key] = {
-                        'page_number': page_number,
-                        'x': x1,
-                        'y': y1,
-                        'width': width,
-                        'height': height
-                    }
+                    rect = annotation.get('/Rect', [])
+                    if rect:
+                        # Ensure all rectangle coordinates are floats
+                        x1, y1, x2, y2 = map(float, rect)
+                        width = x2 - x1
+                        height = y2 - y1
+                        field_positions[key] = {
+                            'page_number': page_number,
+                            'x': x1,
+                            'y': y1,
+                            'width': width,
+                            'height': height
+                        }
     return field_positions
     
 def set_appearance(annotation, value, width, height, font_size):
