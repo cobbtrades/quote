@@ -4,7 +4,6 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
-from pdfrw import PdfReader, PdfWriter, PdfName, PdfString, PdfDict, PdfArray, PdfObject
 
 st.set_page_config(page_title="Desking App", page_icon="📝")
 
@@ -284,93 +283,6 @@ def generate_pdf(data, filename='quote.pdf'):
         logging.error(f"Failed to generate PDF: {e}")
         return None
 
-def get_field_positions(template_pdf):
-    field_positions = {}
-    for page_number, page in enumerate(template_pdf.pages):
-        annotations = page.get('/Annots', [])
-        if annotations:
-            for annotation in annotations:
-                if annotation.get('/Subtype') == '/Widget' and annotation.get('/T'):
-                    key = annotation['/T'][1:-1]  # Remove parentheses around the key
-                    rect = annotation.get('/Rect', [])
-                    if rect:
-                        # Ensure all rectangle coordinates are floats
-                        x1, y1, x2, y2 = map(float, rect)
-                        width = x2 - x1
-                        height = y2 - y1
-                        field_positions[key] = {
-                            'page_number': page_number,
-                            'x': x1,
-                            'y': y1,
-                            'width': width,
-                            'height': height
-                        }
-    return field_positions
-    
-def set_appearance(annotation, value, width, height, font_size):
-    appearance_stream = f"""
-    q
-    1 0 0 1 0 0 cm
-    /Tx BMC
-    BT
-    /F1 {font_size} Tf
-    0 g
-    2 2 Td
-    ({value}) Tj
-    ET
-    EMC
-    Q
-    """
-    appearance = PdfDict(
-        Type=PdfName('XObject'),
-        Subtype=PdfName('Form'),
-        BBox=PdfArray([0, 0, width, height]),
-        Resources=PdfDict(
-            Font=PdfDict(
-                F1=PdfDict(
-                    Type=PdfName('Font'),
-                    Subtype=PdfName('Type1'),
-                    BaseFont=PdfName('Helvetica')
-                )
-            )
-        ),
-        FormType=1,
-        Length=len(appearance_stream),
-        stream=appearance_stream
-    )
-
-    annotation.update({
-        PdfName('AP'): PdfDict(N=appearance),
-        PdfName('V'): PdfString(value)
-    })
-
-def fill_pdf(input_pdf_path, output_pdf_path, data_dict, font_sizes=None):
-    if font_sizes is None:
-        font_sizes = {}
-    default_font_size = 10  # Default font size if not specified in the font_sizes dictionary
-
-    template_pdf = PdfReader(input_pdf_path)
-    field_positions = get_field_positions(template_pdf)
-
-    for page_number, page in enumerate(template_pdf.pages):
-        annotations = page['/Annots']
-        if annotations:
-            for annotation in annotations:
-                if annotation['/Subtype'] == '/Widget' and annotation['/T']:
-                    key = annotation['/T'][1:-1]  # Remove the parentheses around the key
-                    if key in data_dict:
-                        print(f"Updating field: {key} with value: {data_dict[key]}")
-                        font_size = font_sizes.get(key, default_font_size)
-                        position = field_positions[key]
-                        width = position['width']
-                        height = position['height']
-                        annotation.update({
-                            PdfName('/V'): PdfString(data_dict[key]),
-                            PdfName('/Ff'): 1,  # Make the field read-only
-                        })
-                        set_appearance(annotation, data_dict[key], width, height, font_size)
-    PdfWriter().write(output_pdf_path, template_pdf)
-
 def render_tab(calc_payment_func, prefix, is_lease=False):
     fc, sc, tc = st.columns([3, 3, 2])
     
@@ -576,79 +488,6 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         col6.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
 
     lbc, blankbc = st.columns([2, 10])
-    with blankbc:
-        # Adding a button for filling the PDF form
-        fill_pdf_button = st.button(label="Generate MVR-1", key=f"{prefix}_fill_pdf_button")
-
-        if fill_pdf_button:
-            # Example data to fill in the form (replace with your actual data)
-            pdf_data = {
-                "List Plate Number and Expiration": "",
-                "YEAR": year,
-                "MAKE": make,
-                "BODY STYLE": "TRUCK",
-                "SERIES MODEL": model,
-                "VEHICLE IDENTIFICATION NUMBER": vin,
-                "FUEL TYPE": "GAS",
-                "ODOMETER READING": odometer,
-                "Owner 1 ID": "",
-                "Full Legal Name of Owner 1 First Middle Last Suffix or Company Name": customer,
-                "Owner 2 ID": "",
-                "Full Legal Name of Owner 2 First Middle Last Suffix or Company Name": "",
-                "Residence Address Individual Business Address Firm City and State Zip Code": f"{address}, {city}, {state} {zipcode}",
-                "Mail Address if different from above City and State Zip Code": "",
-                "Vehicle Location Address if different from residence address above City and State Zip Code": "",
-                "Tax County": "GASTON",
-                "Date 1": "",
-                "Lienholder 1 ID": "",
-                "Lienholder 1 name": "NISSAN MOTOR ACCEPTANCE CORP",
-                "Address": "",
-                "City": "SACRAMENTO",
-                "State": "CA",
-                "Zip Code": "",
-                "Insurance Company authorized in NC": "",
-                "Policy Number": "",
-                "From Whom Purchased Name and Address": "",
-                "New": "",
-                "Used": ""
-            }
-
-            # Path to your PDF form
-            pdf_path = 'MVR-1.pdf'
-            output_pdf_path = 'MVR1.pdf'
-            font_sizes = {
-                "List Plate Number and Expiration": 10,
-                "YEAR": 10,
-                "MAKE": 10,
-                "BODY STYLE": 10,
-                "SERIES MODEL": 10,
-                "VEHICLE IDENTIFICATION NUMBER": 8,
-                "FUEL TYPE": 10,
-                "ODOMETER READING": 10,
-                "Owner 1 ID": 10,
-                "Full Legal Name of Owner 1 First Middle Last Suffix or Company Name": 8,
-                "Owner 2 ID": 10,
-                "Full Legal Name of Owner 2 First Middle Last Suffix or Company Name": 10,
-                "Residence Address Individual Business Address Firm City and State Zip Code": 8,
-                "Mail Address if different from above City and State Zip Code": 10,
-                "Vehicle Location Address if different from residence address above City and State Zip Code": 10,
-                "Tax County": 10,
-                "Date 1": 10,
-                "Lienholder 1 ID": 10,
-                "Lienholder 1 name": 6,
-                "Address": 10,
-                "City": 10,
-                "State": 10,
-                "Zip Code": 10,
-                "Insurance Company authorized in NC": 10,
-                "Policy Number": 10,
-                "From Whom Purchased Name and Address": 10,
-                "New": 10,
-                "Used": 10
-            }
-            fill_pdf(pdf_path, output_pdf_path, pdf_data, font_sizes)
-            with open(output_pdf_path, 'rb') as f:
-                st.download_button('Download MVR1', f, file_name=output_pdf_path, key=f"{prefix}_filled_pdf_download_button")
     with lbc:
         submit_button = st.button(label="Generate Quote", key=f"{prefix}_submit_button")
         
