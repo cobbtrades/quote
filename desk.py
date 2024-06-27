@@ -507,9 +507,36 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         col6.markdown(f"<p style='color:{color}; font-size:24px; text-align:center'>Front Gross ${gross_profit:.2f}</p>", unsafe_allow_html=True)
 
     lbc, blankbc = st.columns([2, 10])
-    with blankbc:
-        mvr1_button = st.button(label="Generate F&I Docs", key=f"{prefix}_mvr_button")
-        if mvr1_button:
+    with st.popover("Enter Finance Details", use_container_width=True):
+        c1, c2, c3, c4, c5, c6, c7, c8 = st.columns([1,1,1,1,1,3,1,3])
+        c1.markdown('<input class="label-input" type="text" value="Body Style" disabled>', unsafe_allow_html=True)
+        bodystyle = c2.text_input(label="Body Style", key=f"{prefix}_bodystyle", label_visibility="collapsed")
+        c1.markdown('<input class="label-input" type="text" value="Fuel Type" disabled>', unsafe_allow_html=True)
+        fuel_type = c2.text_input(label="Fuel Type", key=f"{prefix}_fuel_type", label_visibility="collapsed")
+        c3.markdown('<input class="label-input" type="text" value="Driver\'s License" disabled>', unsafe_allow_html=True)
+        drivers_license = c4.text_input(label="Driver's License", key=f"{prefix}_drivers_license", label_visibility="collapsed")
+        c3.markdown('<input class="label-input" type="text" value="County" disabled>', unsafe_allow_html=True)
+        county = c4.text_input(label="County", key=f"{prefix}_county", label_visibility="collapsed")
+        c3.markdown('<input class="label-input" type="text" value="Plate Number" disabled>', unsafe_allow_html=True)
+        platenum = c4.text_input(label="License Plate Number", key=f"{prefix}_platenum", label_visibility="collapsed")
+        c3.markdown('<input class="label-input" type="text" value="Plate Expire" disabled>', unsafe_allow_html=True)
+        plate_exp = c4.text_input(label="Plate Expiration", key=f"{prefix}_plate_exp", label_visibility="collapsed")
+        c5.markdown('<input class="label-input" type="text" value="Lienholder Name" disabled>', unsafe_allow_html=True)
+        lienholder_name = c6.text_input(label="Lienholder Name", key=f"{prefix}_lienholder_name", label_visibility="collapsed")
+        c5.markdown('<input class="label-input" type="text" value="Lienholder Address" disabled>', unsafe_allow_html=True)
+        lienholder_address = c6.text_input(label="Lienholder Address", key=f"{prefix}_lienholder_address", label_visibility="collapsed")
+        c5.markdown('<input class="label-input" type="text" value="Lienholder City" disabled>', unsafe_allow_html=True)
+        lienholder_city = c6.text_input(label="Lienholder City", key=f"{prefix}_lienholder_city", label_visibility="collapsed")
+        c5.markdown('<input class="label-input" type="text" value="Lienholder State" disabled>', unsafe_allow_html=True)
+        lienholder_state = c6.text_input(label="Lienholder State", key=f"{prefix}_lienholder_state", label_visibility="collapsed", max_chars=2)
+        c5.markdown('<input class="label-input" type="text" value="Lienholder Zip" disabled>', unsafe_allow_html=True)
+        lienholder_zip = c6.text_input(label="Lienholder Zip Code", key=f"{prefix}_lienholder_zip", label_visibility="collapsed", max_chars=5)
+        c7.markdown('<input class="label-input" type="text" value="Ins Company" disabled>', unsafe_allow_html=True)
+        ins_company = c8.text_input(label="Insurance Company", key=f"{prefix}_ins_company", label_visibility="collapsed")
+        c7.markdown('<input class="label-input" type="text" value="Policy #" disabled>', unsafe_allow_html=True)
+        policy = c8.text_input(label="Policy #", key=f"{prefix}_policy", label_visibility="collapsed")
+        submit_modal_button = c8.button("Submit", key=f"{prefix}_submit_modal")
+        if submit_modal_button:
             template_pdf_path = 'FIDocs.pdf'
             output_pdf_path = 'FI_Docs.pdf'
             data = {
