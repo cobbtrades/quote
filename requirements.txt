@@ -3,3 +3,4 @@ reportlab
 pandas
 PyPDF2
 pymupdf
+pdfrw
