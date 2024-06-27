@@ -302,7 +302,7 @@ def set_appearance(annotation, value, font_size):
     0 g
     2 {box_height - font_size} Td
     """
-    
+
     for line in lines:
         appearance_stream += f"({line}) Tj\nT* "
     
@@ -329,7 +329,7 @@ def set_appearance(annotation, value, font_size):
         Length=len(appearance_stream),
         stream=appearance_stream
     )
-    
+
     annotation.update({
         PdfName('AP'): PdfDict(N=appearance),
         PdfName('V'): PdfString(value)
@@ -338,11 +338,11 @@ def set_appearance(annotation, value, font_size):
 def fill_pdf(input_pdf_path, output_pdf_path, data_dict, font_size=10):
     template_pdf = PdfReader(input_pdf_path)
     for page in template_pdf.pages:
-        annotations = page.get('/Annots', [])
+        annotations = page['/Annots']
         if annotations:
             for annotation in annotations:
-                if annotation.get('/Subtype') == '/Widget' and annotation.get('/T'):
-                    key = annotation.get('/T')[1:-1]  # Remove the parentheses around the key
+                if annotation['/Subtype'] == '/Widget' and annotation['/T']:
+                    key = annotation['/T'][1:-1]  # Remove the parentheses around the key
                     if key in data_dict:
                         print(f"Updating field: {key} with value: {data_dict[key]}")
                         annotation.update({
@@ -350,10 +350,7 @@ def fill_pdf(input_pdf_path, output_pdf_path, data_dict, font_size=10):
                             PdfName('/Ff'): 1,  # Make the field read-only
                         })
                         set_appearance(annotation, data_dict[key], font_size)
-    writer = PdfWriter()
-    writer.addpages(template_pdf.pages)
-    with open(output_pdf_path, 'wb') as f_out:
-        writer.write(f_out)
+    PdfWriter().write(output_pdf_path, template_pdf)
 
 def render_tab(calc_payment_func, prefix, is_lease=False):
     fc, sc, tc = st.columns([3, 3, 2])
