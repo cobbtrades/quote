@@ -344,7 +344,6 @@ def fill_pdf(input_pdf_path, output_pdf_path, data_dict, font_size=10):
                 if annotation['/Subtype'] == '/Widget' and annotation['/T']:
                     key = annotation['/T'][1:-1]  # Remove the parentheses around the key
                     if key in data_dict:
-                        print(f"Updating field: {key} with value: {data_dict[key]}")
                         annotation.update({
                             PdfName('/V'): PdfString(data_dict[key]),
                             PdfName('/Ff'): 1,  # Make the field read-only
