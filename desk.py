@@ -247,8 +247,10 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         policy = c8.text_input(label="Policy #", key=f"{prefix}_policy", label_visibility="collapsed")
         submit_modal_button = c8.button("Submit", key=f"{prefix}_submit_modal")
         if submit_modal_button:
-            template_pdf_path = 'MVR-1.pdf'
-            output_pdf_path = 'MVR1.pdf'
+            #template_pdf_path = 'MVR-1.pdf'
+            #output_pdf_path = 'MVR1.pdf'
+            template_pdf_path = 'FIDocs.pdf'
+            output_pdf_path = 'FD.pdf'
             data = {
                 "List Plate Number and Expiration": f"{platenum}   {plate_exp}",
                 "YEAR": year,
