@@ -648,7 +648,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 
                 # Provide download link for filled MRV-1 PDF
                 with open(filled_pdf_path, 'rb') as f:
-                    st.download_button('Download MRV-1', f, file_name=filled_pdf_path, key=f"{prefix}_download_mrv1_button")
+                    st.download_button('Download MVR-1', f, file_name=filled_pdf_path, key=f"{prefix}_download_mvr1_button")
 
 finance, lease = st.tabs(["Finance", "Lease"])
 
