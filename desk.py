@@ -311,10 +311,11 @@ def set_appearance(annotation, value, font_size):
     EMC
     Q
     """
+    
     appearance = PdfDict(
         Type=PdfName('XObject'),
         Subtype=PdfName('Form'),
-        BBox=PdfArray([0, 0, 100, 20]),
+        BBox=PdfArray([0, 0, 200, box_height]),
         Resources=PdfDict(
             Font=PdfDict(
                 F1=PdfDict(
@@ -334,21 +335,21 @@ def set_appearance(annotation, value, font_size):
         PdfName('V'): PdfString(value)
     })
 
-def fill_pdf(input_pdf_path, output_pdf_path, data_dict):
+def fill_pdf(input_pdf_path, output_pdf_path, data_dict, font_size=10):
     template_pdf = PdfReader(input_pdf_path)
     for page in template_pdf.pages:
         annotations = page['/Annots']
         if annotations:
             for annotation in annotations:
                 if annotation['/Subtype'] == '/Widget' and annotation['/T']:
-                    key = annotation['/T'][1:-1]
+                    key = annotation['/T'][1:-1]  # Remove the parentheses around the key
                     if key in data_dict:
                         print(f"Updating field: {key} with value: {data_dict[key]}")
                         annotation.update({
                             PdfName('/V'): PdfString(data_dict[key]),
-                            PdfName('/Ff'): 1,
+                            PdfName('/Ff'): 1,  # Make the field read-only
                         })
-                        set_appearance(annotation, data_dict[key])
+                        set_appearance(annotation, data_dict[key], font_size)
     PdfWriter().write(output_pdf_path, template_pdf)
 
 def render_tab(calc_payment_func, prefix, is_lease=False):
