@@ -284,7 +284,7 @@ def generate_pdf(data, filename='quote.pdf'):
         logging.error(f"Failed to generate PDF: {e}")
         return None
 
-def set_appearance(annotation, value, font_size=10):
+def set_appearance(annotation, value, font_size):
     # Create a simple appearance stream
     appearance_stream = f"""
     q
@@ -322,7 +322,10 @@ def set_appearance(annotation, value, font_size=10):
         PdfName('V'): PdfString(value)
     })
 
-def fill_pdf(input_pdf_path, output_pdf_path, data_dict, font_size=10):
+def fill_pdf(input_pdf_path, output_pdf_path, data_dict, font_sizes=None):
+    if font_sizes is None:
+        font_sizes = {}
+    default_font_size = 10  # Default font size if not specified in the font_sizes dictionary
     template_pdf = PdfReader(input_pdf_path)
     for page in template_pdf.pages:
         annotations = page['/Annots']
@@ -332,6 +335,7 @@ def fill_pdf(input_pdf_path, output_pdf_path, data_dict, font_size=10):
                     key = annotation['/T'][1:-1]  # Remove the parentheses around the key
                     if key in data_dict:
                         print(f"Updating field: {key} with value: {data_dict[key]}")
+                        font_size = font_sizes.get(key, default_font_size)
                         annotation.update({
                             PdfName('/V'): PdfString(data_dict[key]),
                             PdfName('/Ff'): 1,  # Make the field read-only
@@ -584,7 +588,37 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             # Path to your PDF form
             pdf_path = 'MVR-1.pdf'
             output_pdf_path = 'MVR1.pdf'
-            fill_pdf(pdf_path, output_pdf_path, pdf_data)
+            font_sizes = {
+                "List Plate Number and Expiration": 10,
+                "YEAR": 10,
+                "MAKE": 10,
+                "BODY STYLE": 10,
+                "SERIES MODEL": 10,
+                "VEHICLE IDENTIFICATION NUMBER": 10,
+                "FUEL TYPE": 10,
+                "ODOMETER READING": 10,
+                "Owner 1 ID": 10,
+                "Full Legal Name of Owner 1 First Middle Last Suffix or Company Name": 10,
+                "Owner 2 ID": 10,
+                "Full Legal Name of Owner 2 First Middle Last Suffix or Company Name": 10,
+                "Residence Address Individual Business Address Firm City and State Zip Code": 10,
+                "Mail Address if different from above City and State Zip Code": 10,
+                "Vehicle Location Address if different from residence address above City and State Zip Code": 10,
+                "Tax County": 10,
+                "Date 1": 10,
+                "Lienholder 1 ID": 10,
+                "Lienholder 1 name": 10,
+                "Address": 10,
+                "City": 10,
+                "State": 10,
+                "Zip Code": 10,
+                "Insurance Company authorized in NC": 10,
+                "Policy Number": 10,
+                "From Whom Purchased Name and Address": 10,
+                "New": 10,
+                "Used": 10
+            }
+            fill_pdf(pdf_path, output_pdf_path, pdf_data, font_sizes)
             with open(output_pdf_path, 'rb') as f:
                 st.download_button('Download MVR1', f, file_name=output_pdf_path, key=f"{prefix}_filled_pdf_download_button")
     with lbc:
