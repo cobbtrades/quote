@@ -1,7 +1,8 @@
-import pdfrw, logging
+from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
+import logging, pdfrw
 
 def calculate_monthly_payment(principal, down_payment, annual_rate, term_months):
     if principal == 0:
@@ -53,14 +54,32 @@ def calculate_taxes(state, market_value, discount, doc_fee, trade_value):
         return 500.00
     else:
         return 0.00
-
+    
+def fill_pdf(template_pdf_path, output_pdf_path, data):
+    template_pdf = pdfrw.PdfReader(template_pdf_path)
+    for page in template_pdf.pages:
+        annotations = page['/Annots']
+        if annotations:
+            for annotation in annotations:
+                if annotation['/Subtype'] == '/Widget':
+                    field = annotation.get('/T')
+                    if field:
+                        field_name = field[1:-1]
+                        if field_name in data:
+                            annotation.update(
+                                pdfrw.PdfDict(
+                                    V=pdfrw.PdfString.encode(data[field_name]),
+                                    AP=''
+                                )
+                            )
+                            annotation.update(pdfrw.PdfDict(AS=pdfrw.PdfName('Yes')))
+    pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
+    
 def generate_pdf(data, filename='quote.pdf'):
     try:
         doc = SimpleDocTemplate(filename, pagesize=letter, topMargin=50, leftMargin=36, rightMargin=36)
         elements = []
         styles = getSampleStyleSheet()
-
-        # Header
         header_data_left = [["MODERN AUTOMOTIVE"]]
         header_table_left = Table(header_data_left, colWidths=[200])
         header_table_left.setStyle(TableStyle([
@@ -69,7 +88,6 @@ def generate_pdf(data, filename='quote.pdf'):
             ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
             ('FONTSIZE', (0, 0), (-1, -1), 14),
         ]))
-
         header_data_right = [
             ["Date:", data.get('date', '')],
             ["Sales Person:", data.get('salesperson', '')],
@@ -90,8 +108,6 @@ def generate_pdf(data, filename='quote.pdf'):
         ]))
         elements.append(combined_header_table)
         elements.append(Spacer(1, 8))
-
-        # Customer and vehicle details
         details_data = [
             ["Customer", data.get('buyer', ''), "", ""],
             ["", data.get('address', ''), "", ""],
@@ -108,15 +124,13 @@ def generate_pdf(data, filename='quote.pdf'):
         ]))
         elements.append(details_table)
         elements.append(Spacer(1, 40))
-
-        # Vehicle selection and trade-in details
         selection_data = [
             ["VEHICLE", "", "", "", "", ""],
             ["YEAR", "MAKE", "MODEL", "STOCK NO.", "VIN", "MILES"],
             [
                 data.get('year', ''),
                 data.get('make', ''),
-                f"{data.get('model', '')} {data.get('trim', '')}".strip(),  # Concatenating model and trim
+                f"{data.get('model', '')} {data.get('trim', '')}".strip(),
                 data.get('stock_no', ''),
                 data.get('vin', ''),
                 data.get('miles', '')
@@ -128,7 +142,7 @@ def generate_pdf(data, filename='quote.pdf'):
             selection_data.append([
                 data.get('trade_year', ''),
                 data.get('trade_make', ''),
-                f"{data.get('trade_model', '')} {data.get('trade_trim', '')}".strip(),  # Concatenating trade model and trade trim
+                f"{data.get('trade_model', '')} {data.get('trade_trim', '')}".strip(),
                 "",
                 data.get('trade_vin', ''),
                 data.get('trade_miles', '')
@@ -139,7 +153,7 @@ def generate_pdf(data, filename='quote.pdf'):
             selection_data.append([
                 data.get('trade_year_2', ''),
                 data.get('trade_make_2', ''),
-                f"{data.get('trade_model_2', '')} {data.get('trade_trim_2', '')}".strip(),  # Concatenating trade model 2 and trade trim 2
+                f"{data.get('trade_model_2', '')} {data.get('trade_trim_2', '')}".strip(),
                 "",
                 data.get('trade_vin_2', ''),
                 data.get('trade_miles_2', '')
@@ -152,7 +166,6 @@ def generate_pdf(data, filename='quote.pdf'):
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
             ('ALIGN', (0, 0), (-1, -1), 'CENTER')
         ]))
-
         if data.get('trade_vin'):
             selection_table.setStyle(TableStyle([
                 ('BACKGROUND', (0, 3), (-1, 3), colors.black),
@@ -165,23 +178,17 @@ def generate_pdf(data, filename='quote.pdf'):
                 ('TEXTCOLOR', (0, 6), (-1, 6), colors.white),
                 ('FONTNAME', (0, 6), (-1, 6), 'Helvetica-Bold')
             ]))
-
         elements.append(selection_table)
         elements.append(Spacer(1, 20))
-
-        # Payment grid data (without creating a table yet)
         grid_data = [["Term"] + [f"${dp:.2f}" for dp in data['quotes'][list(data['quotes'].keys())[0]].keys()]]
         for term, payments in data['quotes'].items():
             row = [term]
             for dp, payment in payments.items():
                 row.append(f"${payment:.2f}")
             grid_data.append(row)
-
-        # Detailed breakdown table
         market_value = data.get('sale_price', 0)
         savings = data.get('rebate', 0) + data.get('discount', 0)
         sales_price = market_value - savings
-
         breakdown_data = [
             ["Market Value", f"${market_value:.2f}"] if market_value != 0 else None,
             ["Savings", f"${savings:.2f}"] if savings != 0 else None,
@@ -194,7 +201,6 @@ def generate_pdf(data, filename='quote.pdf'):
             ["Balance", f"${data.get('balance', 0):.2f}"] if data.get('balance', 0) != 0 else None,
         ]
         breakdown_data = [row for row in breakdown_data if row is not None]
-
         breakdown_table = Table(breakdown_data, colWidths=[100, 80])
         breakdown_table.setStyle(TableStyle([
             ('ALIGN', (0, 0), (0, -1), 'LEFT'),
@@ -204,15 +210,11 @@ def generate_pdf(data, filename='quote.pdf'):
             ('BACKGROUND', (0, 1), (-1, -1), colors.white),
             ('VALIGN', (0, 0), (-1, -1), 'TOP')
         ]))
-        
         for row_idx in range(len(breakdown_data)):
             breakdown_table.setStyle(TableStyle([
                 ('LINEBELOW', (1, row_idx), (1, row_idx), 1, colors.black)
             ]))
-
         elements.append(Spacer(1, 30))
-
-        # Create the payment grid table and combine it with the breakdown table
         grid_table = Table(grid_data, colWidths=[75] + [75]*len(data['quotes'][list(data['quotes'].keys())[0]].keys()))
         grid_table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.black),
@@ -226,19 +228,15 @@ def generate_pdf(data, filename='quote.pdf'):
             ('BACKGROUND', (0, 1), (-1, -1), colors.white),
             ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ]))
-
         combined_data = [
             [grid_table, spacer, breakdown_table]
         ]
-
         combined_table = Table(combined_data, colWidths=[300, 20, 220], rowHeights=None, hAlign='LEFT')
         combined_table.setStyle(TableStyle([
             ('VALIGN', (0, 0), (-1, -1), 'TOP')
         ]))
-
         elements.append(combined_table)
         elements.append(Spacer(1, 20))
-
         disclaimer_line = Table([["* A.P.R Subject to equity and credit requirements."]], colWidths=[470])
         disclaimer_line.setStyle(TableStyle([
             ('SPAN', (0, 0), (-1, -1)),
@@ -248,8 +246,6 @@ def generate_pdf(data, filename='quote.pdf'):
         ]))
         elements.append(disclaimer_line)
         elements.append(Spacer(1, 20))
-
-        # Add signature lines
         signature_data = [
             ["Customer Approval: ", "_________________________ ", "Management Approval: ", "_________________________"]
         ]
@@ -259,37 +255,13 @@ def generate_pdf(data, filename='quote.pdf'):
             ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
         ]))
         elements.append(signature_table)
-
-        # Add paragraph
         paragraph_text = "By signing this authorization form, you certify that the above personal information is correct and accurate, and authorize the release of credit and employment information. By signing above, I provide to the dealership and its affiliates consent to communicate with me about my vehicle or any future vehicles using electronic, verbal and written communications including but not limited to email, text messaging, SMS, phone calls and direct mail. Terms and Conditions subject to credit approval. For Information Only. This is not an offer or contract for sale."
         paragraph_style = styles["Normal"]
         paragraph_style.fontSize = 6
         paragraph = Paragraph(paragraph_text, paragraph_style)
-        
         elements.append(paragraph)
-        
         doc.build(elements)
         return filename
     except Exception as e:
         logging.error(f"Failed to generate PDF: {e}")
         return None
-
-def fill_pdf(template_pdf_path, output_pdf_path, data):
-    template_pdf = pdfrw.PdfReader(template_pdf_path)
-    for page in template_pdf.pages:
-        annotations = page['/Annots']
-        if annotations:
-            for annotation in annotations:
-                if annotation['/Subtype'] == '/Widget':
-                    field = annotation.get('/T')
-                    if field:
-                        field_name = field[1:-1]
-                        if field_name in data:
-                            annotation.update(
-                                pdfrw.PdfDict(
-                                    V=pdfrw.PdfString.encode(data[field_name]),
-                                    AP=''
-                                )
-                            )
-                            annotation.update(pdfrw.PdfDict(AS=pdfrw.PdfName('Yes')))
-    pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
