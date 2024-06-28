@@ -116,7 +116,7 @@ def generate_pdf(data, filename='quote.pdf'):
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ]))
         elements.append(details_table)
-        elements.append(Spacer(1, 40))
+        elements.append(Spacer(1, 20))
 
         # Vehicle selection and trade-in details
         selection_data = [
