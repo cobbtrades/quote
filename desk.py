@@ -15,7 +15,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
     with fc:
         fc1, sc1 = st.columns([.6,4])
         fc1.markdown('<input class="label-input" type="text" value="Customer" disabled>', unsafe_allow_html=True)
-        customer = sc1.text_input(label="Customer", key=f"{prefix}_cust", label_visibility='collapsed', help="Customer")
+        customer = sc1.text_input(label="Customer Full Name", key=f"{prefix}_cust", label_visibility='collapsed', help="Customer")
         fc1.markdown('<input class="label-input" type="text" value="Address" disabled>', unsafe_allow_html=True)
         address = sc1.text_input(label="Address", key=f"{prefix}_addr", label_visibility="collapsed", help="Address")
         fc2, sc2, tc2, fr2, ft2, st2 = st.columns([.6, 2.5, .5, .5, .5, 1])
