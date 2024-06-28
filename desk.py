@@ -369,7 +369,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "mvr6tDealer_Date": "",
                 "mvr6tDealer_County": "",
                 "mvr6tDealerState": "NC",
-                "mvr63Buyer": customer,
+                "mvr63POABuyer": customer,
                 "mvr63POAVehYear": year,
                 "mvr63POAVehMake": make,
                 "mvr63VehBodyStyle": bodystyle,
