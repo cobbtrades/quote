@@ -50,9 +50,9 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         odometer = st5.text_input(label="Odometer", key=f"{prefix}_odometer", label_visibility="collapsed", help="Odometer")
         fc6, sc6, tc6, fr6 = st.columns(4)
         fc6.markdown('<input class="label-input" type="text" value="Cost" disabled>', unsafe_allow_html=True)
-        veh_cost = sc6.number_input(label="Cost", key=f"{prefix}_veh_cost", value=0, label_visibility='collapsed', help="Cost")
+        veh_cost = sc6.number_input(label="Cost", key=f"{prefix}_veh_cost", value=0.00, label_visibility='collapsed', help="Cost")
         tc6.markdown('<input class="label-input" type="text" value="Book Value" disabled>', unsafe_allow_html=True)
-        book_value = fr6.number_input(label="Book Value", key=f"{prefix}_book_value", value=0, label_visibility='collapsed', help="Book Value")
+        book_value = fr6.number_input(label="Book Value", key=f"{prefix}_book_value", value=0.00, label_visibility='collapsed', help="Book Value")
     with tc:
         fc7, sc7 = st.columns([1.5,4])
         fc7.markdown('<input class="label-input" type="text" value="Dealer" disabled>', unsafe_allow_html=True)
@@ -82,22 +82,22 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             fc2.markdown('<input class="label-input" type="text" value="Miles" disabled>', unsafe_allow_html=True)
             trade_miles = sc2.text_input(f"Trade-in {i+1} Miles", key=f"{prefix}_trade_miles_{i+1}", label_visibility="collapsed")
             tc2.markdown('<input class="label-input" type="text" value="Trade Value" disabled>', unsafe_allow_html=True)
-            trade_values[i] = fr2.number_input(f"Trade-in {i+1} Value", key=f"{prefix}_trade_value_{i+1}", value=0, label_visibility="collapsed")
+            trade_values[i] = fr2.number_input(f"Trade-in {i+1} Value", key=f"{prefix}_trade_value_{i+1}", value=0.00, label_visibility="collapsed")
             ft2.markdown('<input class="label-input" type="text" value="Payoff" disabled>', unsafe_allow_html=True)
-            trade_payoffs[i] = st2.number_input(f"Trade-in {i+1} Payoff", key=f"{prefix}_trade_payoff_{i+1}", value=0, label_visibility="collapsed")
+            trade_payoffs[i] = st2.number_input(f"Trade-in {i+1} Payoff", key=f"{prefix}_trade_payoff_{i+1}", value=0.00, label_visibility="collapsed")
             sv2.markdown('<input class="label-input" type="text" value="Trade ACV" disabled>', unsafe_allow_html=True)
-            trade_acvs[i] = ec2.number_input(f"Trade-in {i+1} ACV", key=f"{prefix}_trade_acv_{i+1}", value=0, label_visibility="collapsed")
+            trade_acvs[i] = ec2.number_input(f"Trade-in {i+1} ACV", key=f"{prefix}_trade_acv_{i+1}", value=0.00, label_visibility="collapsed")
             st.divider()
     
     left_col, right_col = st.columns(2)
     with right_col:
         labels_col, inputs_col = st.columns([1, 4])
         labels_col.markdown('<input class="label-input" type="text" value="Market Value" disabled>', unsafe_allow_html=True)
-        market_value = inputs_col.number_input(label="Market Value", key=f"{prefix}_market_value", value=0, label_visibility='collapsed', help="Market Value")
+        market_value = inputs_col.number_input(label="Market Value", key=f"{prefix}_market_value", value=0.00, label_visibility='collapsed', help="Market Value")
         labels_col.markdown('<input class="label-input" type="text" value="Discount" disabled>', unsafe_allow_html=True)
-        discount = inputs_col.number_input(label="Discount", key=f"{prefix}_discount", value=0, label_visibility='collapsed', help="Discount")
+        discount = inputs_col.number_input(label="Discount", key=f"{prefix}_discount", value=0.00, label_visibility='collapsed', help="Discount")
         labels_col.markdown('<input class="label-input" type="text" value="Rebate" disabled>', unsafe_allow_html=True)
-        rebate = inputs_col.number_input(label="Rebate", key=f"{prefix}_rebate", value=0, label_visibility='collapsed', help="Rebate")
+        rebate = inputs_col.number_input(label="Rebate", key=f"{prefix}_rebate", value=0.00, label_visibility='collapsed', help="Rebate")
         labels_col.markdown('<input class="label-input" type="text" value="Trade Value" disabled>', unsafe_allow_html=True)
         trade_value = sum(trade_values)
         inputs_col.number_input(label="Trade Value", key=f"{prefix}_trade_value", value=trade_value, label_visibility='collapsed', help="Trade Value", disabled=True)
@@ -215,9 +215,9 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         submit_modal_button = c8.button("Submit", key=f"{prefix}_submit_modal")
         if submit_modal_button:
             template_pdf_path = 'docs/FIDocs.pdf'
-            output_pdf_path = f'{customer}FinanceDocs.pdf'
+            output_pdf_path = f'{customer}FIDocs.pdf'
             data = {
-                "bos_date": datetime.today().strftime('%B %d, %Y').upper(),
+                "bos_date": datetime.today().strftime('%m/%d/%Y'),
                 "bos_salesperson": consultant,
                 "bos_salesperson_no": "",
                 "bos_salesperson2": "",
@@ -257,22 +257,22 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "bos_miles3": st.session_state.get(f"{prefix}_trade_miles_2", ""),
                 "bos_vin3": st.session_state.get(f"{prefix}_trade_vin_2", ""),
                 "bos_stock3": "",
-                "bos_vehicle_price": round(market_value - discount, 2),
+                "bos_vehicle_price": "{:.2f}".format(market_value - discount),
                 "bos_accessories": "",
-                "bos_trade_value": round(trade_value, 2),
-                "bos_total": round(market_value - discount - trade_value, 2),
-                "bos_docfee": round(doc_fee, 2),
-                "bos_taxes": round(taxes, 2),
-                "bos_tagfees": round(non_tax_fees - 11, 2),
-                "bos_titlefee": 11.00,
-                "bos_payoff": round(trade_payoff, 2),
+                "bos_trade_value": "{:.2f}".format(trade_value),
+                "bos_total": "{:.2f}".format(market_value - discount - trade_value),
+                "bos_docfee": "{:.2f}".format(doc_fee),
+                "bos_taxes": "{:.2f}".format(taxes),
+                "bos_tagfees": "{:.2f}".format(non_tax_fees - 11),
+                "bos_titlefee": "{:.2f}".format(11.00),
+                "bos_payoff": "{:.2f}".format(trade_payoff),
                 "bos_gap": "",
                 "bos_vsc": "",
                 "bos_vsctax": "",
-                "bos_subtotal": round((market_value - discount - trade_value) + doc_fee + taxes + non_tax_fees + trade_payoff, 2),
+                "bos_subtotal": "{:.2f}".format((market_value - discount - trade_value) + doc_fee + taxes + non_tax_fees + trade_payoff),
                 "bos_downpayment": "",
-                "bos_rebate": round(rebate, 2),
-                "bos_balance": round((market_value - discount - trade_value) + doc_fee + taxes + non_tax_fees + trade_payoff - rebate, 2),
+                "bos_rebate": "{:.2f}".format(rebate),
+                "bos_balance": "{:.2f}".format((market_value - discount - trade_value) + doc_fee + taxes + non_tax_fees + trade_payoff - rebate),
                 "Check Box3": "",
                 "Check Box4": "",
                 "Check Box5": "",
@@ -283,7 +283,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "Check Box8": "",
                 "Check Box9": "",
                 "Check Box10": "",
-                "List Plate Number and Expiration": f"{platenum}      {plate_exp}",
+                "List Plate Number and Expiration": f"{platenum}           {plate_exp}",
                 "YEAR": year,
                 "MAKE": make,
                 "BODY STYLE": bodystyle,
@@ -297,7 +297,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "Full Legal Name of Owner 2 First Middle Last Suffix or Company Name": "",
                 "Check Box1": "",
                 "Check Box2": "",
-                "Residence Address Individual Business Address Firm City and State Zip Code": f'{address}        {city}, {state}         {zipcode}',
+                "Residence Address Individual Business Address Firm City and State Zip Code": f'{address}         {city}, {state}         {zipcode}',
                 "Mail Address if different from above City and State Zip Code": "",
                 "Vehicle Location Address if different from residence address above City and State Zip Code": "",
                 "Tax County": county,
@@ -326,8 +326,8 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "From Whom Purchased Name and Address": "",
                 "NC Dealer No": "",
                 "Equipment": "",
-                "New": "",
-                "Used": "",
+                "mvr1cbNew": "",
+                "mvr1cbUsed": "",
                 "I We would like the personal information contained in this application to be available for disclosure": "",
                 "Date": "",
                 "County": "",
@@ -368,23 +368,17 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "mvr6tPrinted Firm Name": "",
                 "mvr6tDealer_Date": "",
                 "mvr6tDealer_County": "",
-                "mvr6tDealerState": "",
+                "mvr6tDealerState": "NC",
                 "mvr63Buyer": customer,
-                "mvr63Year": year,
-                "mvr63Make": make,
-                "mvr63BodyStyle": bodystyle,
-                "mvr63Model": model,
-                "mvr63VIN": vin,
-                "mvr63Text": "",
-                "mvr63POA": "",
-                "mvr63Day": "",
-                "mvr63Month": "",
-                "mvr63Date": "",
-                "mvr63County": "",
-                "mvr63State": "",
-                "mvr63Principals": "",
-                "mvr63Printed": "",
-                "mvr63CommExp": "",
+                "mvr63POAVehYear": year,
+                "mvr63POAVehMake": make,
+                "mvr63VehBodyStyle": bodystyle,
+                "mvr63VehModel": model,
+                "mvr63VehVIN": vin,
+                "mvr63POADealer": dealer,
+                "mvr63POADay": datetime.today().strftime('%d'),
+                "mvr63POAMonth": datetime.today().strftime("%B"),
+                "mvr63WitYear": datetime.today().strftime("%Y"),
                 "mvr180Year": year,
                 "mvr180Make": make,
                 "mvr180BodyStyle": bodystyle,
@@ -393,6 +387,8 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "mvr180Odometer": odometer,
                 "mvr180CertifyMiles": "",
                 "mvr180Discrepancy": "",
+                "mvr180SellerName": dealer,
+                "mvr180SellerName2": dealer,
                 "mvr180SellerAddress": "",
                 "mvr180SellerCity": "",
                 "mvr180SellerState": "",
@@ -408,8 +404,11 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "mvr181Make": make,
                 "mvr181BodyStyle": bodystyle,
                 "mvr181VIN": vin,
-                "mvr181DamageParts": "",
-                "mvr181DamageParts2": "",
+                "mvr181cbCollide": "Y",
+                "mvr181cbSalvage": "Y",
+                "mvr181cbFlood": "Y",
+                "mvr181cbTheft": "Y",
+                "mvr181cbRecon": "Y",
                 "mvr181Date": "",
                 "mvr181SellerAddress": "",
             }
@@ -474,8 +473,11 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 'balance': balance,
                 'quotes': quotes,
             }
-            
-            pdf_file = generate_pdf(data, filename=f'{customer}.pdf')
+            if not customer:
+                filename = 'quote.pdf'
+            else:
+                filename = f'{customer}.pdf'
+            pdf_file = generate_pdf(data, filename=filename)
             with open(pdf_file, 'rb') as f:
                 st.download_button('Download Quote', f, file_name=pdf_file, key=f"{prefix}_download_button")
 
