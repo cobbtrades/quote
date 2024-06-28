@@ -48,12 +48,15 @@ def calculate_taxes(state, market_value, discount, doc_fee, trade_value):
     doc_fee = doc_fee or 0
     trade_value = trade_value or 0
     taxable_amount = market_value - discount - trade_value + doc_fee
-    if state == "NC" or state == "nc":
-        return taxable_amount * 0.03
-    elif state == "SC" or state == 'sc':
-        return 500.00
+    if taxable_amount < 0:
+        taxable_amount = 0
+    if state.lower() == "nc":
+        tax = taxable_amount * 0.03
+    elif state.lower() == "sc":
+        tax = 500.00
     else:
-        return 0.00
+        tax = 0.00
+    return max(tax, 0)
     
 def fill_pdf(template_pdf_path, output_pdf_path, data):
     template_pdf = pdfrw.PdfReader(template_pdf_path)
