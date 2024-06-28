@@ -1,6 +1,7 @@
 import streamlit as st
 from datetime import datetime
 from utils import calculate_monthly_payment, calculate_lease_payment, calculate_balance, calculate_taxes, generate_pdf, fill_pdf
+from utils import dealer_names
 
 
 st.set_page_config(page_title="Desking App", page_icon="📝")
@@ -10,12 +11,14 @@ with open("styles.css") as f:
 
 st.subheader("")
 
+dealer_names_list = list(dealer_names.keys())
+
 def render_tab(calc_payment_func, prefix, is_lease=False):
     fc, sc, tc = st.columns([3, 3, 2])
     with fc:
         fc1, sc1 = st.columns([.6,4])
         fc1.markdown('<input class="label-input" type="text" value="Customer" disabled>', unsafe_allow_html=True)
-        customer = sc1.text_input(label="Customer Full Name", key=f"{prefix}_cust", label_visibility='collapsed', help="Customer")
+        customer = sc1.text_input(label="Customer", key=f"{prefix}_cust", label_visibility='collapsed', help="Customer")
         fc1.markdown('<input class="label-input" type="text" value="Address" disabled>', unsafe_allow_html=True)
         address = sc1.text_input(label="Address", key=f"{prefix}_addr", label_visibility="collapsed", help="Address")
         fc2, sc2, tc2, fr2, ft2, st2 = st.columns([.6, 2.5, .5, .5, .5, 1])
@@ -56,7 +59,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
     with tc:
         fc7, sc7 = st.columns([1.5,4])
         fc7.markdown('<input class="label-input" type="text" value="Dealer" disabled>', unsafe_allow_html=True)
-        dealer = sc7.text_input(label="Dealership", key=f"{prefix}_dealer", label_visibility="collapsed", help="Dealership")
+        dealer = sc7.selectbox("Select a Dealer", dealer_names_list, key=f"{prefix}_dealer", label_visibility="collapsed")
         fc7.markdown('<input class="label-input" type="text" value="Sales Person" disabled>', unsafe_allow_html=True)
         consultant = sc7.text_input(label="Sales Person", key=f"{prefix}_consultant", label_visibility="collapsed", help="Sales Person")
         fc7.markdown('<input class="label-input" type="text" value="Sales Manager" disabled>', unsafe_allow_html=True)
@@ -389,10 +392,10 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "mvr180Discrepancy": "",
                 "mvr180SellerName": dealer,
                 "mvr180SellerName2": dealer,
-                "mvr180SellerAddress": "",
-                "mvr180SellerCity": "",
-                "mvr180SellerState": "",
-                "mvr180SellerZip": "",
+                "mvr180SellerAddress": dealer_names[dealer].split(',')[0].strip(),
+                "mvr180SellerCity": dealer_names[dealer].split(',')[1].strip(),
+                "mvr180SellerState": dealer_names[dealer].split(',')[2].strip().split(' ')[0],
+                "mvr180SellerZip": dealer_names[dealer].split(',')[2].strip().split(' ')[1],
                 "mvr180SellerDateCert": "",
                 "mvr180BuyersName": customer,
                 "mvr180BuyersAddress": address,
