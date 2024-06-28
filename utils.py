@@ -69,13 +69,47 @@ def fill_pdf(template_pdf_path, output_pdf_path, data):
                     if field:
                         field_name = field[1:-1]
                         if field_name in data:
-                            annotation.update(
-                                pdfrw.PdfDict(
-                                    V=pdfrw.PdfString.encode(data[field_name]),
-                                    AP=''
+                            if annotation.get('/FT') == '/Btn':  # Check if the field is a button (checkbox)
+                                if data[field_name]:  # If the value is not empty or None, check the box
+                                    annotation.update(
+                                        pdfrw.PdfDict(
+                                            V=pdfrw.PdfName('Yes'),
+                                            AS=pdfrw.PdfName('Yes')
+                                        )
+                                    )
+                                else:  # If the value is empty or None, uncheck the box
+                                    annotation.update(
+                                        pdfrw.PdfDict(
+                                            V=pdfrw.PdfName('Off'),
+                                            AS=pdfrw.PdfName('Off')
+                                        )
+                                    )
+                            else:  # For non-checkbox fields
+                                # Remove the appearance stream dictionary to avoid covering text
+                                if '/AP' in annotation:
+                                    del annotation['/AP']
+                                # Set the default appearance (DA) to ensure a transparent background
+                                if '/DA' not in annotation:
+                                    annotation.update(
+                                        pdfrw.PdfDict(
+                                            DA='0 g /Helvetica 0 Tf'
+                                        )
+                                    )
+                                else:
+                                    # Ensure the default appearance is correctly set for transparency
+                                    da = annotation['/DA']
+                                    da = da.replace('/Tx BMC', '').replace('/Tx EMC', '')
+                                    annotation.update(
+                                        pdfrw.PdfDict(
+                                            DA=da
+                                        )
+                                    )
+                                # Update the field value
+                                annotation.update(
+                                    pdfrw.PdfDict(
+                                        V=pdfrw.PdfString.encode(str(data[field_name]))
+                                    )
                                 )
-                            )
-                            annotation.update(pdfrw.PdfDict(AS=pdfrw.PdfName('Yes')))
     pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
     
 def generate_pdf(data, filename='quote.pdf'):
@@ -126,7 +160,7 @@ def generate_pdf(data, filename='quote.pdf'):
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ]))
         elements.append(details_table)
-        elements.append(Spacer(1, 40))
+        elements.append(Spacer(1, 20))
         selection_data = [
             ["VEHICLE", "", "", "", "", ""],
             ["YEAR", "MAKE", "MODEL", "STOCK NO.", "VIN", "MILES"],
