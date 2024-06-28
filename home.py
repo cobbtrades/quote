@@ -546,8 +546,11 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 'balance': balance,
                 'quotes': quotes,
             }
-            
-            pdf_file = generate_pdf(data, filename=f'{customer}.pdf')
+            if not customer:
+                filename = 'quote.pdf'
+            else:
+                filename = f'{customer}.pdf'
+            pdf_file = generate_pdf(data, filename=filename)
             with open(pdf_file, 'rb') as f:
                 st.download_button('Download Quote', f, file_name=pdf_file, key=f"{prefix}_download_button")
 
