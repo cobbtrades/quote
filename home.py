@@ -446,7 +446,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         rates = []
         default_terms = [36, 60, 72]  # Changed to typical lease terms
         for i in range(3):
-            term = col1.number_input(f"Term {i+1}", min_value=1, value=default_terms[i], key=f'{prefix}_term_{i+1}')
+            term = col1.number_input("Term", min_value=12, value=default_terms[i], key=f'{prefix}_term_{i+1}')
             if is_lease:
                 rate = col2.number_input(f"Money Factor {i+1}", min_value=0.00000, max_value=1.00000, value=0.00275, format="%.5f", key=f'{prefix}_rate_{i+1}')
             else:
