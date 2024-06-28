@@ -450,7 +450,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             if is_lease:
                 rate = col2.number_input(f"Money Factor {i+1}", min_value=0.00000, max_value=1.00000, value=0.00275, format="%.5f", key=f'{prefix}_rate_{i+1}')
             else:
-                rate = col2.number_input(f"Rate {i+1} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'{prefix}_rate_{i+1}')
+                rate = col2.number_input(f"Rate (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'{prefix}_rate_{i+1}')
             terms.append(term)
             rates.append(rate)
     
