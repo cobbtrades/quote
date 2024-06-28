@@ -60,6 +60,7 @@ def calculate_taxes(state, market_value, discount, doc_fee, trade_value):
     
 def fill_pdf(template_pdf_path, output_pdf_path, data):
     template_pdf = pdfrw.PdfReader(template_pdf_path)
+    
     for page in template_pdf.pages:
         annotations = page['/Annots']
         if annotations:
@@ -89,27 +90,19 @@ def fill_pdf(template_pdf_path, output_pdf_path, data):
                                 if '/AP' in annotation:
                                     del annotation['/AP']
                                 # Set the default appearance (DA) to ensure a transparent background
-                                if '/DA' not in annotation:
-                                    annotation.update(
-                                        pdfrw.PdfDict(
-                                            DA='0 g /Helvetica 0 Tf'
-                                        )
+                                annotation.update(
+                                    pdfrw.PdfDict(
+                                        DA='0 g /Helvetica 0 Tf'
                                     )
-                                else:
-                                    # Ensure the default appearance is correctly set for transparency
-                                    da = annotation['/DA']
-                                    da = da.replace('/Tx BMC', '').replace('/Tx EMC', '')
-                                    annotation.update(
-                                        pdfrw.PdfDict(
-                                            DA=da
-                                        )
-                                    )
+                                )
                                 # Update the field value
                                 annotation.update(
                                     pdfrw.PdfDict(
                                         V=pdfrw.PdfString.encode(str(data[field_name]))
                                     )
                                 )
+    
+    # Save the modified PDF
     pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
     
 def generate_pdf(data, filename='quote.pdf'):
