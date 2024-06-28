@@ -100,18 +100,18 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         rebate = inputs_col.number_input(label="Rebate", key=f"{prefix}_rebate", value=0, label_visibility='collapsed', help="Rebate")
         labels_col.markdown('<input class="label-input" type="text" value="Trade Value" disabled>', unsafe_allow_html=True)
         trade_value = sum(trade_values)
-        inputs_col.text_input(label="Trade Value", key=f"{prefix}_trade_value", value=f"{trade_value:.2f}", label_visibility='collapsed', help="Trade Value", disabled=True)
+        inputs_col.number_input(label="Trade Value", key=f"{prefix}_trade_value", value=trade_value, label_visibility='collapsed', help="Trade Value", disabled=True)
         labels_col.markdown('<input class="label-input" type="text" value="Trade ACV" disabled>', unsafe_allow_html=True)
         trade_acv = sum(trade_acvs)
-        inputs_col.text_input(label="Trade ACV", key=f"{prefix}_trade_acv", value=f"{trade_acv:.2f}", label_visibility='collapsed', help="Trade ACV", disabled=True)
+        inputs_col.number_input(label="Trade ACV", key=f"{prefix}_trade_acv", value=trade_acv, label_visibility='collapsed', help="Trade ACV", disabled=True)
         labels_col.markdown('<input class="label-input" type="text" value="Trade Payoff" disabled>', unsafe_allow_html=True)
         trade_payoff = sum(trade_payoffs)
-        inputs_col.text_input(label="Trade Payoff", key=f"{prefix}_trade_payoff", value=f"{trade_payoff:.2f}", label_visibility='collapsed', help="Trade Payoff", disabled=True)
+        inputs_col.number_input(label="Trade Payoff", key=f"{prefix}_trade_payoff", value=trade_payoff, label_visibility='collapsed', help="Trade Payoff", disabled=True)
         labels_col.markdown('<input class="label-input" type="text" value="Doc Fee" disabled>', unsafe_allow_html=True)
-        doc_fee = inputs_col.number_input(label="Doc Fee", key=f"{prefix}_doc_fee", value=799, label_visibility='collapsed', help="Doc Fee")
+        doc_fee = inputs_col.number_input(label="Doc Fee", key=f"{prefix}_doc_fee", value=799.00, label_visibility='collapsed', help="Doc Fee")
         taxes = calculate_taxes(state, market_value, discount, doc_fee, trade_value)
         labels_col.markdown('<input class="label-input" type="text" value="Taxes" disabled>', unsafe_allow_html=True)
-        inputs_col.text_input(label="Taxes", key=f"{prefix}_taxes", value=f"{taxes:.2f}", label_visibility='collapsed', help="Taxes", disabled=True)
+        inputs_col.number_input(label="Taxes", key=f"{prefix}_taxes", value=taxes, label_visibility='collapsed', help="Taxes", disabled=True)
         labels_col.markdown('<input class="label-input" type="text" value="Non-Tax Fees" disabled>', unsafe_allow_html=True)
         non_tax_fees = inputs_col.number_input(label="Non-Tax Fees", key=f"{prefix}_non_tax_fees", value=106.75, label_visibility='collapsed', help="Non-Tax Fees")
         balance = calculate_balance(market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees)
@@ -147,11 +147,11 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         rates = []
         default_terms = [36, 60, 72]
         for i in range(3):
-            term = col1.number_input(f"Term {i+1}", min_value=1, value=default_terms[i], key=f'{prefix}_term_{i+1}')
+            term = col1.number_input("Term", min_value=1, value=default_terms[i], key=f'{prefix}_term_{i+1}')
             if is_lease:
                 rate = col2.number_input(f"Money Factor {i+1}", min_value=0.00000, max_value=1.00000, value=0.00275, format="%.5f", key=f'{prefix}_rate_{i+1}')
             else:
-                rate = col2.number_input(f"Rate {i+1} (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'{prefix}_rate_{i+1}')
+                rate = col2.number_input("Rate (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'{prefix}_rate_{i+1}')
             terms.append(term)
             rates.append(rate)
         for i in range(3):
@@ -214,12 +214,8 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         policy = c8.text_input(label="Policy #", key=f"{prefix}_policy", label_visibility="collapsed")
         submit_modal_button = c8.button("Submit", key=f"{prefix}_submit_modal")
         if submit_modal_button:
-            template_pdf_path = 'FIDocs.pdf'
+            template_pdf_path = 'docs/FIDocs.pdf'
             output_pdf_path = f'{customer}FinanceDocs.pdf'
-            market_value_int = int(market_value)
-            discount_int = int(discount)
-            trade_value_int = int(trade_value)
-            non_tax_fees_int = int(non_tax_fees)
             data = {
                 "bos_date": datetime.today().strftime('%B %d, %Y').upper(),
                 "bos_salesperson": consultant,
@@ -249,34 +245,34 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "bos_miles1": odometer,
                 "bos_sls_mgr": manager,
                 "bos_bus_mgr": "",
-                "bos_year2": "",
-                "bos_make2": "",
-                "bos_model2": "",
-                "bos_miles2": "",
-                "bos_vin2": "",
+                "bos_year2": st.session_state.get(f"{prefix}_trade_year_1", ""),
+                "bos_make2": st.session_state.get(f"{prefix}_trade_make_1", ""),
+                "bos_model2": st.session_state.get(f"{prefix}_trade_model_1", ""),
+                "bos_miles2": st.session_state.get(f"{prefix}_trade_miles_1", ""),
+                "bos_vin2": st.session_state.get(f"{prefix}_trade_vin_1", ""),
                 "bos_stock2": "",
-                "bos_year3": "",
-                "bos_make3": "",
-                "bos_model3": "",
-                "bos_miles3": "",
-                "bos_vin3": "",
+                "bos_year3": st.session_state.get(f"{prefix}_trade_year_2", ""),
+                "bos_make3": st.session_state.get(f"{prefix}_trade_make_2", ""),
+                "bos_model3": st.session_state.get(f"{prefix}_trade_model_2", ""),
+                "bos_miles3": st.session_state.get(f"{prefix}_trade_miles_2", ""),
+                "bos_vin3": st.session_state.get(f"{prefix}_trade_vin_2", ""),
                 "bos_stock3": "",
-                "bos_vehicle_price": str(market_value_int - discount_int),
+                "bos_vehicle_price": round(market_value - discount, 2),
                 "bos_accessories": "",
-                "bos_trade_value": trade_value,
-                "bos_total": str(market_value_int - discount_int - trade_value_int),
-                "bos_docfee": doc_fee,
-                "bos_taxes": taxes,
-                "bos_tagfees": str(non_tax_fees_int - 11),
-                "bos_titlefee": 11,
-                "bos_payoff": trade_payoff,
+                "bos_trade_value": round(trade_value, 2),
+                "bos_total": round(market_value - discount - trade_value, 2),
+                "bos_docfee": round(doc_fee, 2),
+                "bos_taxes": round(taxes, 2),
+                "bos_tagfees": round(non_tax_fees - 11, 2),
+                "bos_titlefee": 11.00,
+                "bos_payoff": round(trade_payoff, 2),
                 "bos_gap": "",
                 "bos_vsc": "",
                 "bos_vsctax": "",
-                "bos_subtotal": str((market_value_int - discount_int - trade_value_int) + int(doc_fee) + int(taxes) + int(non_tax_fees) + int(trade_payoff)),
+                "bos_subtotal": round((market_value - discount - trade_value) + doc_fee + taxes + non_tax_fees + trade_payoff, 2),
                 "bos_downpayment": "",
-                "bos_rebate": rebate,
-                "bos_balance": str((int(market_value) - int(discount) - int(trade_value)) + int(doc_fee) + int(taxes) + int(non_tax_fees) + int(trade_payoff) - int(rebate)),
+                "bos_rebate": round(rebate, 2),
+                "bos_balance": round((market_value - discount - trade_value) + doc_fee + taxes + non_tax_fees + trade_payoff - rebate, 2),
                 "Check Box3": "",
                 "Check Box4": "",
                 "Check Box5": "",
@@ -374,6 +370,8 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "mvr6tDealer_County": "",
                 "mvr6tDealerState": "",
                 "mvr63Buyer": customer,
+                "mvr63Year": year,
+                "mvr63Make": make,
                 "mvr63BodyStyle": bodystyle,
                 "mvr63Model": model,
                 "mvr63VIN": vin,
@@ -419,7 +417,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             fill_pdf(template_pdf_path, output_pdf_path, data)
             with open(output_pdf_path, 'rb') as f:
                 st.download_button('Download F&I Docs', f, file_name=output_pdf_path)
-    
+
     with lbc:
         submit_button = st.button(label="Generate Quote", key=f"{prefix}_submit_button")
         if submit_button:
@@ -435,7 +433,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                     term_payments[down_payments[j]] = round(float(monthly_payment), 2)
                 quotes[terms[i]] = term_payments
             data = {
-                'date': datetime.today().strftime('%B %d, %Y').upper(),
+                'date': datetime.today().strftime('%m/%d/%Y'),
                 'dealer': dealer,
                 'salesperson': consultant,
                 'manager': manager,
@@ -477,7 +475,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 'quotes': quotes,
             }
             
-            pdf_file = generate_pdf(data)
+            pdf_file = generate_pdf(data, filename=f'{customer}.pdf')
             with open(pdf_file, 'rb') as f:
                 st.download_button('Download Quote', f, file_name=pdf_file, key=f"{prefix}_download_button")
 
