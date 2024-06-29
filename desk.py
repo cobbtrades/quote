@@ -413,7 +413,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "mvr181cbTheft": "Y",
                 "mvr181cbRecon": "Y",
                 "mvr181Date": "",
-                "mvr181SellerAddress" = f"{dealer_names[dealer].split(',')[0].strip()}, {dealer_names[dealer].split(',')[1].strip()}, {dealer_names[dealer].split(',')[2].strip()}"
+                "mvr181SellerAddress": f"{dealer_names[dealer].split(',')[0].strip()}, {dealer_names[dealer].split(',')[1].strip()}, {dealer_names[dealer].split(',')[2].strip()}"
             }
 
             fill_pdf(template_pdf_path, output_pdf_path, data)
