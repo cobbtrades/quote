@@ -217,7 +217,10 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         policy = c8.text_input(label="Policy #", key=f"{prefix}_policy", label_visibility="collapsed")
         submit_modal_button = c8.button("Submit", key=f"{prefix}_submit_modal")
         if submit_modal_button:
-            template_pdf_path = 'docs/FIDocs.pdf'
+            if trade_value > 0:
+                template_pdf_path = 'FIDocs1T.pdf'
+            else:
+                template_pdf_path = 'docs/FIDocs.pdf'
             output_pdf_path = f'{customer}FIDocs.pdf'
             data = {
                 "bos_date": datetime.today().strftime('%m/%d/%Y'),
@@ -413,7 +416,49 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "mvr181cbTheft": "Y",
                 "mvr181cbRecon": "Y",
                 "mvr181Date": "",
-                "mvr181SellerAddress": f"{dealer_names[dealer].split(',')[0].strip()}, {dealer_names[dealer].split(',')[1].strip()}, {dealer_names[dealer].split(',')[2].strip()}"
+                "mvr181SellerAddress": f"{dealer_names[dealer].split(',')[0].strip()}, {dealer_names[dealer].split(',')[1].strip()}, {dealer_names[dealer].split(',')[2].strip()}",
+                "BUYERMVR63": customer,
+                "YEARMVR63": st.session_state["finance_trade_year_1"],
+                "MAKEMVR63": st.session_state["finance_trade_make_1"],
+                "BODYSTYLEMVR63": "",
+                "MODELMVR63": st.session_state["finance_trade_model_1"],
+                "VINMVR63": st.session_state["finance_trade_vin_1"],
+                "POANAMEMVR63": "",
+                "DAYMVR63": datetime.today().strftime('%d'),
+                "MONTHMVR63": datetime.today().strftime("%B"),
+                "WITYEARMVR63": datetime.today().strftime("%Y"),
+                "YEARMVR180": st.session_state["finance_trade_year_1"],
+                "MAKEMVR180": st.session_state["finance_trade_make_1"],
+                "BODYSTYLEMVR180": "",
+                "MODELMVR180": st.session_state["finance_trade_model_1"],
+                "VINMVR180": st.session_state["finance_trade_vin_1"],
+                "ODOMETERMVR180": st.session_state["finance_trade_miles_1"],
+                "ODOCERTCBMVR180": "",
+                "ODOWARNCBMVR180": "",
+                "SELLERNAMEMVR180": customer,
+                "SELLERNAME2MVR180": customer,
+                "SELLERADDRESSMVR180": address,
+                "SELLERCITYMVR180": city,
+                "SELLERSTATEMVR180": state,
+                "SELLERZIPMVR180": zipcode,
+                "SELLERDATEMVR180": "",
+                "BUYERNAMEMVR180": dealer,
+                "BUYERADDRESSMVR180": dealer_names[dealer].split(',')[0].strip(),
+                "BUYERCITYMVR180": dealer_names[dealer].split(',')[1].strip(),
+                "BUYERSTATEMVR180": dealer_names[dealer].split(',')[2].strip().split(' ')[0],
+                "BUYERZIPMVR180": dealer_names[dealer].split(',')[2].strip().split(' ')[1],
+                "BUYERDATEMVR180": "",
+                "YEARMVR181": st.session_state["finance_trade_year_1"],
+                "MAKEMVR181": st.session_state["finance_trade_make_1"],
+                "BODYSTYLEMVR181": "",
+                "VINMVR181": st.session_state["finance_trade_vin_1"],
+                "DAMAGECBNOMVR181": "Y",
+                "SALVAGECBNOMVR181": "Y",
+                "FLOODCBNOMVR181": "Y",
+                "THEFTCBNOMVR181": "Y",
+                "RECONCBNOMVR181": "Y",
+                "DATEMVR181": "",
+                "SELLERADDRESSMVR181": f"{address}, {city}, {state} {zipcode}",
             }
 
             fill_pdf(template_pdf_path, output_pdf_path, data)
