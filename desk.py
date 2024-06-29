@@ -273,7 +273,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "bos_vsc": "",
                 "bos_vsctax": "",
                 "bos_subtotal": "{:.2f}".format((market_value - discount - trade_value) + doc_fee + taxes + non_tax_fees + trade_payoff),
-                "bos_downpayment": value1,
+                "bos_downpayment": "{:.2f}".format(value1),
                 "bos_rebate": "{:.2f}".format(rebate),
                 "bos_balance": "{:.2f}".format((market_value - discount - trade_value) + doc_fee + taxes + non_tax_fees + trade_payoff - rebate - value1),
                 "Check Box3": "",
