@@ -55,8 +55,8 @@ def calculate_taxes(state, market_value, discount, doc_fee, trade_value):
     elif state.lower() == "sc":
         tax = 500.00
     else:
-        tax = 0.00
-    return max(tax, 0)
+        tax = None  # Return None to indicate manual tax input is needed
+    return tax
 
 def fill_pdf(template_pdf_path, output_pdf_path, data):
     template_pdf = pdfrw.PdfReader(template_pdf_path)
