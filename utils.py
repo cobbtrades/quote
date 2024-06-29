@@ -57,7 +57,7 @@ def calculate_taxes(state, market_value, discount, doc_fee, trade_value):
     else:
         tax = 0.00
     return max(tax, 0)
-    
+
 def fill_pdf(template_pdf_path, output_pdf_path, data):
     template_pdf = pdfrw.PdfReader(template_pdf_path)
     
@@ -104,6 +104,25 @@ def fill_pdf(template_pdf_path, output_pdf_path, data):
     
     # Save the modified PDF
     pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
+
+def fill_fi_pdf(in_path, data, out_path):
+    pdf = pdfrw.PdfReader(in_path)
+    for page in pdf.pages:
+        annotations = page['/Annots']
+        if annotations is None:
+            continue
+
+        for annotation in annotations:
+            if annotation['/Subtype'] == '/Widget':
+                if '/T' in annotation and annotation['/T']:
+                    key = annotation['/T'].to_unicode()
+                    if key in data:
+                        pdfstr = pdfrw.objects.pdfstring.PdfString.encode(data[key])
+                        annotation.update(pdfrw.PdfDict(V=pdfstr))
+
+        pdf.Root.AcroForm.update(
+            pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true')))
+        pdfrw.PdfWriter().write(out_path, pdf)
     
 def generate_pdf(data, filename='quote.pdf'):
     try:
@@ -297,6 +316,7 @@ def generate_pdf(data, filename='quote.pdf'):
         return None
     
 dealer_names = {
+    "MODERN NISSAN OF CONCORD, LLC": "967 CONCORD PKWY S, CONCORD, NC 28027",
     "MODERN CHEVROLET WINSTON": "5955 UNIVERSITY PKWY, WINSTON-SALEM, NC 27105",
     "MODERN CHEVROLET BURLINGTON": "2616 ALAMANCE RD, BURLINGTON, NC 27215",
     "MODERN CADILLAC BURLINGTON": "2616 ALAMANCE RD, BURLINGTON, NC 27215",
@@ -306,7 +326,6 @@ dealer_names = {
     "MODERN NISSAN WINSTON-SALEM": "5795 UNIVERSITY PKWY, WINSTON-SALEM, NC 27105",
     "MODERN NISSAN HICKORY": "840 HWY 70 SE, HICKORY, NC 28602",
     "MODERN NISSAN LAKE NORMAN": "18615 STATESVILLE RD, CORNELIUS, NC 28031",
-    "MODERN NISSAN OF CONCORD, LLC": "967 CONCORD PKWY S, CONCORD, NC 28027",
     "MODERN INFINITI WINSTON-SALEM": "1500 PETERS CREEK PKWY, WINSTON-SALEM, NC 27103",
     "MODERN INFINITI GREENSBORO": "3605 W WENDOVER AVE, GREENSBORO, NC 27407",
     "MODERN MAZDA OF BURLINGTON": "2608 ALAMANCE RD, BURLINGTON, NC 27215",
