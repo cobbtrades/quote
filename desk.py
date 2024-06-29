@@ -231,7 +231,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "box_address": address,
                 "bos_city": city,
                 "bos_state": state,
-                "bos_county": "",
+                "bos_county": county,
                 "bos_zip": zipcode,
                 "bos_res_phone": phone_num,
                 "bos_cell": "",
@@ -413,7 +413,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "mvr181cbTheft": "Y",
                 "mvr181cbRecon": "Y",
                 "mvr181Date": "",
-                "mvr181SellerAddress": "",
+                "mvr181SellerAddress" = f"{dealer_names[dealer].split(',')[0].strip()}, {dealer_names[dealer].split(',')[1].strip()}, {dealer_names[dealer].split(',')[2].strip()}"
             }
 
             fill_pdf(template_pdf_path, output_pdf_path, data)
