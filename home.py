@@ -114,7 +114,10 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         doc_fee = inputs_col.number_input(label="Doc Fee", key=f"{prefix}_doc_fee", value=799.00, label_visibility='collapsed', help="Doc Fee")
         taxes = calculate_taxes(state, market_value, discount, doc_fee, trade_value)
         labels_col.markdown('<input class="label-input" type="text" value="Taxes" disabled>', unsafe_allow_html=True)
-        inputs_col.number_input(label="Taxes", key=f"{prefix}_taxes", value=taxes, label_visibility='collapsed', help="Taxes", disabled=True)
+        if taxes is None:  # State is not NC or SC
+            taxes = inputs_col.number_input(label="Taxes", key=f"{prefix}_taxes", value=0.00, label_visibility='collapsed', help="Taxes")
+        else:
+            inputs_col.number_input(label="Taxes", key=f"{prefix}_taxes", value=taxes, label_visibility='collapsed', help="Taxes", disabled=True)
         labels_col.markdown('<input class="label-input" type="text" value="Non-Tax Fees" disabled>', unsafe_allow_html=True)
         non_tax_fees = inputs_col.number_input(label="Non-Tax Fees", key=f"{prefix}_non_tax_fees", value=106.75, label_visibility='collapsed', help="Non-Tax Fees")
         balance = calculate_balance(market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees)
