@@ -275,7 +275,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "bos_subtotal": "{:.2f}".format((market_value - discount - trade_value) + doc_fee + taxes + non_tax_fees + trade_payoff),
                 "bos_downpayment": value1,
                 "bos_rebate": "{:.2f}".format(rebate),
-                "bos_balance": "{:.2f}".format((market_value - discount - trade_value) + doc_fee + taxes + non_tax_fees + trade_payoff - rebate - downpayments[0]),
+                "bos_balance": "{:.2f}".format((market_value - discount - trade_value) + doc_fee + taxes + non_tax_fees + trade_payoff - rebate - value1),
                 "Check Box3": "",
                 "Check Box4": "",
                 "Check Box5": "",
