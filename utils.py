@@ -52,13 +52,11 @@ def calculate_taxes(state, market_value, discount, doc_fee, trade_value):
         taxable_amount = 0
     if state.lower() == "nc":
         tax = taxable_amount * 0.03
-    elif state.lower() == "va":
-        tax = taxable_amount * 0.0415
     elif state.lower() == "sc":
         tax = 500.00
     else:
-        tax = None  # Return None to indicate manual tax input is needed
-    return tax
+        tax = 0.00
+    return max(tax, 0)
 
 def fill_pdf(template_pdf_path, output_pdf_path, data):
     template_pdf = pdfrw.PdfReader(template_pdf_path)
@@ -107,7 +105,7 @@ def fill_pdf(template_pdf_path, output_pdf_path, data):
     # Save the modified PDF
     pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
 
-def fill_fi_pdf(in_path, data, out_path):
+def fill_fi_pdf(in_path, out_path, data):
     pdf = pdfrw.PdfReader(in_path)
     for page in pdf.pages:
         annotations = page['/Annots']
@@ -115,16 +113,30 @@ def fill_fi_pdf(in_path, data, out_path):
             continue
 
         for annotation in annotations:
-            if annotation['/Subtype'] == '/Widget':
-                if '/T' in annotation and annotation['/T']:
-                    key = annotation['/T'].to_unicode()
-                    if key in data:
-                        pdfstr = pdfrw.objects.pdfstring.PdfString.encode(data[key])
+            if annotation['/Subtype'] == '/Widget' and '/T' in annotation and annotation['/T']:
+                key = annotation['/T'].to_unicode()
+                if key in data:
+                    value = data[key]
+                    if isinstance(value, bool):  # Handle checkboxes
+                        if value:
+                            annotation.update(pdfrw.PdfDict(V=pdfrw.PdfName('Yes'), AS=pdfrw.PdfName('Yes')))
+                        else:
+                            annotation.update(pdfrw.PdfDict(V=pdfrw.PdfName('Off'), AS=pdfrw.PdfName('Off')))
+                    else:  # Handle text fields
+                        pdfstr = pdfrw.objects.pdfstring.PdfString.encode(value)
                         annotation.update(pdfrw.PdfDict(V=pdfstr))
 
-        pdf.Root.AcroForm.update(
-            pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true')))
-        pdfrw.PdfWriter().write(out_path, pdf)
+    pdf.Root.AcroForm.update(
+        pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true')))
+    pdfrw.PdfWriter().write(out_path, pdf)
+
+def modify_stocknum(stocknum):
+    if stocknum[-1].isdigit():
+        return stocknum + 'A'
+    else:
+        last_char = stocknum[-1]
+        new_last_char = chr(ord(last_char) + 1)
+        return stocknum[:-1] + new_last_char
     
 def generate_pdf(data, filename='quote.pdf'):
     try:
