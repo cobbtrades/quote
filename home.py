@@ -232,7 +232,12 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 template_pdf_path = 'docs/FIDocs1T.pdf'
             else:
                 template_pdf_path = 'docs/FIDocs.pdf'
-            output_pdf_path = f'{customer}FIDocs.pdf'
+            words = customer.split()
+            if len(words) >= 2:
+                formatted_customer = ''.join(words[:2]).lower()
+            else:
+                formatted_customer = customer.replace(" ", "").lower()
+            output_pdf_path = f'{formatted_customer}FIDocs.pdf'
             bos_stock2 = ""
             if trade_value > 0:
                 bos_stock2 = modify_stocknum(stocknum)
