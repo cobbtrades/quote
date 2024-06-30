@@ -1,6 +1,7 @@
 import streamlit as st
 from datetime import datetime
-from utils import calculate_monthly_payment, calculate_lease_payment, calculate_balance, calculate_taxes, generate_pdf, fill_pdf
+from utils import calculate_monthly_payment, calculate_lease_payment, calculate_balance
+from utils import calculate_taxes, generate_pdf, fill_fi_pdf, modify_stocknum
 from utils import dealer_names
 
 
@@ -18,52 +19,59 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
     with fc:
         fc1, sc1 = st.columns([.6,4])
         fc1.markdown('<input class="label-input" type="text" value="Customer" disabled>', unsafe_allow_html=True)
-        customer = sc1.text_input(label="Customer", key=f"{prefix}_cust", label_visibility='collapsed', help="Customer")
+        customer = sc1.text_input(label="Customer", key=f"{prefix}_cust", label_visibility='collapsed')
         fc1.markdown('<input class="label-input" type="text" value="Address" disabled>', unsafe_allow_html=True)
-        address = sc1.text_input(label="Address", key=f"{prefix}_addr", label_visibility="collapsed", help="Address")
+        address = sc1.text_input(label="Address", key=f"{prefix}_addr", label_visibility="collapsed")
         fc2, sc2, tc2, fr2, ft2, st2 = st.columns([.6, 2.5, .5, .5, .5, 1])
         fc2.markdown('<input class="label-input" type="text" value="City" disabled>', unsafe_allow_html=True)
-        city = sc2.text_input(label="City", key=f"{prefix}_city", label_visibility="collapsed", help="City")
+        city = sc2.text_input(label="City", key=f"{prefix}_city", label_visibility="collapsed")
         tc2.markdown('<input class="label-input" type="text" value="State" disabled>', unsafe_allow_html=True)
-        state = fr2.text_input(label="State", key=f"{prefix}_state", max_chars=2, label_visibility="collapsed", help="State")
+        state = fr2.text_input(label="State", key=f"{prefix}_state", max_chars=2, label_visibility="collapsed")
         ft2.markdown('<input class="label-input" type="text" value="Zip" disabled>', unsafe_allow_html=True)
-        zipcode = st2.text_input(label="Zip", key=f"{prefix}_zip", max_chars=5, label_visibility="collapsed", help="Zip")
+        zipcode = st2.text_input(label="Zip", key=f"{prefix}_zip", max_chars=5, label_visibility="collapsed")
         fc2.markdown('<input class="label-input" type="text" value="Email" disabled>', unsafe_allow_html=True)
-        email_address = sc2.text_input(label="Email", key=f"{prefix}_emailaddress", label_visibility="collapsed", help="Email")
+        email_address = sc2.text_input(label="Email", key=f"{prefix}_emailaddress", label_visibility="collapsed")
         ft2.markdown('<input class="label-input" type="text" value="Phone" disabled>', unsafe_allow_html=True)
-        phone_num = st2.text_input(label="Phone", key=f"{prefix}_phonenumber", max_chars=12, label_visibility="collapsed", help="Phone")
+        phone_num = st2.text_input(label="Phone", key=f"{prefix}_phonenumber", max_chars=12, label_visibility="collapsed")
     with sc:
         fc3, sc3, tc3, fr3 = st.columns([1, 2, 1, 4])
         fc3.markdown('<input class="label-input" type="text" value="Stock #" disabled>', unsafe_allow_html=True)
-        stocknum = sc3.text_input(label="Stock #", key=f"{prefix}_stock", label_visibility="collapsed", help="Stock #")
+        stocknum = sc3.text_input(label="Stock #", key=f"{prefix}_stock", label_visibility="collapsed")
         tc3.markdown('<input class="label-input" type="text" value="VIN" disabled>', unsafe_allow_html=True)
-        vin = fr3.text_input(label="VIN", key=f"{prefix}_vin", max_chars=17, label_visibility="collapsed", help="VIN")
+        vin = fr3.text_input(label="VIN", key=f"{prefix}_vin", max_chars=17, label_visibility="collapsed")
         fc4, sc4, tc4, fr4, ft4 = st.columns([1, 1, 1, 1, 2])
-        newused = fc4.selectbox(label="N/U", options=["New", "Used", "CPO"], key=f"{prefix}_newused", label_visibility="collapsed", help="N/U")
+        newused = fc4.selectbox(label="N/U", options=["New", "Used", "CPO"], key=f"{prefix}_newused", label_visibility="collapsed")
+        is_new = newused == "New"
+        bos_cb_new = is_new
+        mvr1cbNew = is_new
+        mvr6tNewcb = is_new
+        bos_cb_used = not is_new
+        mvr1cbUsed = not is_new
+        mvr6tUsedcb = not is_new
         sc4.markdown('<input class="label-input" type="text" value="Year" disabled>', unsafe_allow_html=True)
-        year = tc4.text_input(label="Year", key=f"{prefix}_year", max_chars=4, label_visibility="collapsed", help="Year")
+        year = tc4.text_input(label="Year", key=f"{prefix}_year", max_chars=4, label_visibility="collapsed")
         fr4.markdown('<input class="label-input" type="text" value="Make" disabled>', unsafe_allow_html=True)
-        make = ft4.text_input(label="Make", key=f"{prefix}_make", label_visibility="collapsed", help="Make")
+        make = ft4.text_input(label="Make", key=f"{prefix}_make", label_visibility="collapsed")
         fc5, sc5, tc5, fr5, ft5, st5 = st.columns([1, 2, 1, 1.5, 1, 1.5])
         fc5.markdown('<input class="label-input" type="text" value="Model" disabled>', unsafe_allow_html=True)
-        model = sc5.text_input(label="Model", key=f"{prefix}_model", label_visibility="collapsed", help="Model")
+        model = sc5.text_input(label="Model", key=f"{prefix}_model", label_visibility="collapsed")
         tc5.markdown('<input class="label-input" type="text" value="Trim" disabled>', unsafe_allow_html=True)
-        trim = fr5.text_input(label="Trim", key=f"{prefix}_trim", max_chars=4, label_visibility="collapsed", help="Trim")
+        trim = fr5.text_input(label="Trim", key=f"{prefix}_trim", max_chars=4, label_visibility="collapsed")
         ft5.markdown('<input class="label-input" type="text" value="Odometer" disabled>', unsafe_allow_html=True)
-        odometer = st5.text_input(label="Odometer", key=f"{prefix}_odometer", label_visibility="collapsed", help="Odometer")
+        odometer = st5.text_input(label="Odometer", key=f"{prefix}_odometer", label_visibility="collapsed")
         fc6, sc6, tc6, fr6 = st.columns(4)
         fc6.markdown('<input class="label-input" type="text" value="Cost" disabled>', unsafe_allow_html=True)
-        veh_cost = sc6.number_input(label="Cost", key=f"{prefix}_veh_cost", value=0.00, label_visibility='collapsed', help="Cost")
+        veh_cost = sc6.number_input(label="Cost", key=f"{prefix}_veh_cost", value=0.00, label_visibility='collapsed')
         tc6.markdown('<input class="label-input" type="text" value="Book Value" disabled>', unsafe_allow_html=True)
-        book_value = fr6.number_input(label="Book Value", key=f"{prefix}_book_value", value=0.00, label_visibility='collapsed', help="Book Value")
+        book_value = fr6.number_input(label="Book Value", key=f"{prefix}_book_value", value=0.00, label_visibility='collapsed')
     with tc:
         fc7, sc7 = st.columns([1.5,4])
         fc7.markdown('<input class="label-input" type="text" value="Select Dealer" disabled>', unsafe_allow_html=True)
         dealer = sc7.selectbox("Select a Dealer", dealer_names_list, key=f"{prefix}_dealer", label_visibility="collapsed")
         fc7.markdown('<input class="label-input" type="text" value="Sales Person" disabled>', unsafe_allow_html=True)
-        consultant = sc7.text_input(label="Sales Person", key=f"{prefix}_consultant", label_visibility="collapsed", help="Sales Person")
+        consultant = sc7.text_input(label="Sales Person", key=f"{prefix}_consultant", label_visibility="collapsed")
         fc7.markdown('<input class="label-input" type="text" value="Sales Manager" disabled>', unsafe_allow_html=True)
-        manager = sc7.text_input(label="Sales Manager", key=f"{prefix}_manager", label_visibility="collapsed", help="Sales Manager")
+        manager = sc7.text_input(label="Sales Manager", key=f"{prefix}_manager", label_visibility="collapsed")
     trade_values = [0] * 2
     trade_payoffs = [0] * 2
     trade_acvs = [0] * 2
@@ -96,33 +104,33 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
     with right_col:
         labels_col, inputs_col = st.columns([1, 4])
         labels_col.markdown('<input class="label-input" type="text" value="Market Value" disabled>', unsafe_allow_html=True)
-        market_value = inputs_col.number_input(label="Market Value", key=f"{prefix}_market_value", value=0.00, label_visibility='collapsed', help="Market Value")
+        market_value = inputs_col.number_input(label="Market Value", key=f"{prefix}_market_value", value=0.00, label_visibility='collapsed')
         labels_col.markdown('<input class="label-input" type="text" value="Discount" disabled>', unsafe_allow_html=True)
-        discount = inputs_col.number_input(label="Discount", key=f"{prefix}_discount", value=0.00, label_visibility='collapsed', help="Discount")
+        discount = inputs_col.number_input(label="Discount", key=f"{prefix}_discount", value=0.00, label_visibility='collapsed')
         labels_col.markdown('<input class="label-input" type="text" value="Rebate" disabled>', unsafe_allow_html=True)
-        rebate = inputs_col.number_input(label="Rebate", key=f"{prefix}_rebate", value=0.00, label_visibility='collapsed', help="Rebate")
+        rebate = inputs_col.number_input(label="Rebate", key=f"{prefix}_rebate", value=0.00, label_visibility='collapsed')
         labels_col.markdown('<input class="label-input" type="text" value="Trade Value" disabled>', unsafe_allow_html=True)
         trade_value = sum(trade_values)
-        inputs_col.number_input(label="Trade Value", key=f"{prefix}_trade_value", value=trade_value, label_visibility='collapsed', help="Trade Value", disabled=True)
+        inputs_col.number_input(label="Trade Value", key=f"{prefix}_trade_value", value=trade_value, label_visibility='collapsed', disabled=True)
         labels_col.markdown('<input class="label-input" type="text" value="Trade ACV" disabled>', unsafe_allow_html=True)
         trade_acv = sum(trade_acvs)
-        inputs_col.number_input(label="Trade ACV", key=f"{prefix}_trade_acv", value=trade_acv, label_visibility='collapsed', help="Trade ACV", disabled=True)
+        inputs_col.number_input(label="Trade ACV", key=f"{prefix}_trade_acv", value=trade_acv, label_visibility='collapsed', disabled=True)
         labels_col.markdown('<input class="label-input" type="text" value="Trade Payoff" disabled>', unsafe_allow_html=True)
         trade_payoff = sum(trade_payoffs)
-        inputs_col.number_input(label="Trade Payoff", key=f"{prefix}_trade_payoff", value=trade_payoff, label_visibility='collapsed', help="Trade Payoff", disabled=True)
+        inputs_col.number_input(label="Trade Payoff", key=f"{prefix}_trade_payoff", value=trade_payoff, label_visibility='collapsed', disabled=True)
         labels_col.markdown('<input class="label-input" type="text" value="Doc Fee" disabled>', unsafe_allow_html=True)
-        doc_fee = inputs_col.number_input(label="Doc Fee", key=f"{prefix}_doc_fee", value=799.00, label_visibility='collapsed', help="Doc Fee")
+        doc_fee = inputs_col.number_input(label="Doc Fee", key=f"{prefix}_doc_fee", value=799.00, label_visibility='collapsed')
         taxes = calculate_taxes(state, market_value, discount, doc_fee, trade_value)
         labels_col.markdown('<input class="label-input" type="text" value="Taxes" disabled>', unsafe_allow_html=True)
-        if taxes is None:  # State is not NC or SC
-            taxes = inputs_col.number_input(label="Taxes", key=f"{prefix}_taxes", value=0.00, label_visibility='collapsed', help="Taxes")
+        if taxes is None:
+            taxes = inputs_col.number_input(label="Taxes", key=f"{prefix}_taxes", value=0.00, label_visibility='collapsed')
         else:
-            inputs_col.number_input(label="Taxes", key=f"{prefix}_taxes", value=taxes, label_visibility='collapsed', help="Taxes", disabled=True)
+            inputs_col.number_input(label="Taxes", key=f"{prefix}_taxes", value=taxes, label_visibility='collapsed', disabled=True)
         labels_col.markdown('<input class="label-input" type="text" value="Non-Tax Fees" disabled>', unsafe_allow_html=True)
-        non_tax_fees = inputs_col.number_input(label="Non-Tax Fees", key=f"{prefix}_non_tax_fees", value=106.75, label_visibility='collapsed', help="Non-Tax Fees")
+        non_tax_fees = inputs_col.number_input(label="Non-Tax Fees", key=f"{prefix}_non_tax_fees", value=106.75, label_visibility='collapsed')
         balance = calculate_balance(market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees)
         labels_col.markdown('<input class="label-input" type="text" value="Balance" disabled>', unsafe_allow_html=True)
-        inputs_col.text_input(label="Balance", key=f"{prefix}_balance", value=f"{balance:.2f}", label_visibility='collapsed', help="Balance", disabled=True)
+        inputs_col.text_input(label="Balance", key=f"{prefix}_balance", value=f"{balance:.2f}", label_visibility='collapsed', disabled=True)
     with left_col:
         col1, col2, col3, col4, col5, col6 = st.columns([.5,1.5,1,1.5,1.5,1.5])
         col1.text("")
@@ -221,10 +229,13 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         submit_modal_button = c8.button("Submit", key=f"{prefix}_submit_modal")
         if submit_modal_button:
             if trade_value > 0:
-                template_pdf_path = 'FIDocs1T.pdf'
+                template_pdf_path = 'docs/FIDocs1T.pdf'
             else:
                 template_pdf_path = 'docs/FIDocs.pdf'
             output_pdf_path = f'{customer}FIDocs.pdf'
+            bos_stock2 = ""
+            if trade_value > 0:
+                bos_stock2 = modify_stocknum(stocknum)
             data = {
                 "bos_date": datetime.today().strftime('%m/%d/%Y'),
                 "bos_salesperson": consultant,
@@ -242,8 +253,8 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "bos_res_phone": phone_num,
                 "bos_cell": "",
                 "bos_email": email_address,
-                "bos_cb_new": "",
-                "bos_cb_used": "",
+                "bos_cb_new": bos_cb_new,
+                "bos_cb_used": bos_cb_used,
                 "bos_year": year,
                 "bos_make": make,
                 "bos_model": model,
@@ -259,7 +270,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "bos_model2": st.session_state.get(f"{prefix}_trade_model_1", ""),
                 "bos_miles2": st.session_state.get(f"{prefix}_trade_miles_1", ""),
                 "bos_vin2": st.session_state.get(f"{prefix}_trade_vin_1", ""),
-                "bos_stock2": "",
+                "bos_stock2": bos_stock2,
                 "bos_year3": st.session_state.get(f"{prefix}_trade_year_2", ""),
                 "bos_make3": st.session_state.get(f"{prefix}_trade_make_2", ""),
                 "bos_model3": st.session_state.get(f"{prefix}_trade_model_2", ""),
@@ -335,8 +346,8 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "From Whom Purchased Name and Address": "",
                 "NC Dealer No": "",
                 "Equipment": "",
-                "mvr1cbNew": "",
-                "mvr1cbUsed": "",
+                "mvr1cbNew": mvr1cbNew,
+                "mvr1cbUsed": mvr1cbUsed,
                 "I We would like the personal information contained in this application to be available for disclosure": "",
                 "Date": "",
                 "County": "",
@@ -369,8 +380,8 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "mvr6tDMVcb": "",
                 "mvr6tOwnerState": "",
                 "mvr6tLienZip": lienholder_zip,
-                "mvr6tNewcb": "",
-                "mvr6tUsedcb": "",
+                "mvr6tNewcb": mvr6tNewcb,
+                "mvr6tUsedcb": mvr6tUsedcb,
                 "mvr6tPurchase Date": "",
                 "mvr6tPrevious NC Title Number": "",
                 "mvr6tDealer": "",
@@ -396,7 +407,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "mvr180Odometer": odometer,
                 "mvr180CertifyMiles": "",
                 "mvr180Discrepancy": "",
-                "mvr180SellerName": dealer,
+                "mvr180SellName": dealer,
                 "mvr180SellerName2": dealer,
                 "mvr180SellerAddress": dealer_names[dealer].split(',')[0].strip(),
                 "mvr180SellerCity": dealer_names[dealer].split(',')[1].strip(),
@@ -413,11 +424,11 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "mvr181Make": make,
                 "mvr181BodyStyle": bodystyle,
                 "mvr181VIN": vin,
-                "mvr181cbCollide": "Y",
-                "mvr181cbSalvage": "Y",
-                "mvr181cbFlood": "Y",
-                "mvr181cbTheft": "Y",
-                "mvr181cbRecon": "Y",
+                "mvr181cbCollide": True,
+                "mvr181cbSalvage": True,
+                "mvr181cbFlood": True,
+                "mvr181cbTheft": True,
+                "mvr181cbRecon": True,
                 "mvr181Date": "",
                 "mvr181SellerAddress": f"{dealer_names[dealer].split(',')[0].strip()}, {dealer_names[dealer].split(',')[1].strip()}, {dealer_names[dealer].split(',')[2].strip()}",
                 "BUYERMVR63": customer,
@@ -455,16 +466,39 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "MAKEMVR181": st.session_state["finance_trade_make_1"],
                 "BODYSTYLEMVR181": "",
                 "VINMVR181": st.session_state["finance_trade_vin_1"],
-                "DAMAGECBNOMVR181": "Y",
-                "SALVAGECBNOMVR181": "Y",
-                "FLOODCBNOMVR181": "Y",
-                "THEFTCBNOMVR181": "Y",
-                "RECONCBNOMVR181": "Y",
+                "DAMAGECBNOMVR181": True,
+                "SALVAGECBNOMVR181": True,
+                "FLOODCBNOMVR181": True,
+                "THEFTCBNOMVR181": True,
+                "RECONCBNOMVR181": True,
                 "DATEMVR181": "",
                 "SELLERADDRESSMVR181": f"{address}, {city}, {state} {zipcode}",
+                "YEARMVR6TT": "",
+                "MAKEMVR6TT": "",
+                "BODYSTYLEMVR6TT": "",
+                "MODELMVR6TT": "",
+                "VINMVR6TT": "",
+                "FUELMVR6TT": "",
+                "OWNERIDMVR6TT": "",
+                "OWNERMVR6TT": "",
+                "OWNERADDRESSMVR6TT": "",
+                "CITYSTATEMVR6TT": "",
+                "ZIPMVR6TT": "",
+                "COUNTYMVR6T": "",
+                "LIENDATEMVR6TT": "",
+                "LIENACCOUNTNOMVR6TT": "",
+                "LIENHOLDERMVR6TT": "",
+                "LIENHOLDERIDMVR6TT": "",
+                "LIENADDRESSMVR6TT": "",
+                "LIENCITYMVR6TT": "",
+                "LIENSTATEMVR6TT": "",
+                "LIENZIPMVR6TT": "",
+                "BUYERDATEMVR6TT": "",
+                "CAPACITYMVR6TT": "",
+                "PRINCIPALSMVR6TT": ""
             }
 
-            fill_pdf(template_pdf_path, output_pdf_path, data)
+            fill_fi_pdf(template_pdf_path, output_pdf_path, data)
             with open(output_pdf_path, 'rb') as f:
                 st.download_button('Download F&I Docs', f, file_name=output_pdf_path)
 
