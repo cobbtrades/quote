@@ -54,6 +54,8 @@ def calculate_taxes(state, market_value, discount, doc_fee, trade_value):
         tax = taxable_amount * 0.03
     elif state.lower() == "sc":
         tax = 500.00
+    elif state.lower() == "va":
+        tax = taxable_amount * 0.0415
     else:
         tax = 0.00
     return max(tax, 0)
