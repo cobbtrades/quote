@@ -6,7 +6,6 @@ from utils import dealer_names
 
 
 st.set_page_config(page_title="Desking App", page_icon="📝")
-
 with open("styles.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
@@ -502,7 +501,6 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "CAPACITYMVR6TT": "",
                 "PRINCIPALSMVR6TT": ""
             }
-
             fill_fi_pdf(template_pdf_path, output_pdf_path, data)
             with open(output_pdf_path, 'rb') as f:
                 st.download_button('Download F&I Docs', f, file_name=output_pdf_path)
