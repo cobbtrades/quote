@@ -488,7 +488,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "OWNERADDRESSMVR6TT": address,
                 "CITYSTATEMVR6TT": city,
                 "ZIPMVR6TT": zipcode,
-                "COUNTYMVR6T": county,
+                "COUNTYMVR6TT": county,
                 "LIENDATEMVR6TT": "",
                 "LIENACCOUNTNOMVR6TT": "",
                 "LIENHOLDERMVR6TT": lienholder_name,
