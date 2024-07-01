@@ -6,7 +6,6 @@ from utils import dealer_names
 
 
 st.set_page_config(page_title="Desking App", page_icon="📝")
-
 with open("styles.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
