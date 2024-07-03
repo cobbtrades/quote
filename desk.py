@@ -513,7 +513,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "WOPHONE": "",
                 "WOVIN": vin,
                 "WOEMAIL": email_address,
-                "WOSALESPERSON": salesperson,
+                "WOSALESPERSON": consultant,
                 "WODELDATE": datetime.today().strftime('%m/%d/%Y'),
                 "CPDATE": datetime.today().strftime('%m/%d/%Y')
             }
