@@ -519,12 +519,8 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "CPBUYER": customer,
                 "CPSALESPERSON": consultant,
                 "CPINS": ins_company,
-                "CPYEAR": st.session_state["finance_trade_year_1"],
-                "CPMAKE": st.session_state["finance_trade_make_1"],
-                "CPMODEL": st.session_state["finance_trade_model_1"],
                 "CPMANAGER": manager,
                 "CPPOLICY": policy,
-                "CPPAYOFFAMT": st.session_state["finance_trade_payoff_1"]
             }
 
             fill_fi_pdf(template_pdf_path, output_pdf_path, data)
