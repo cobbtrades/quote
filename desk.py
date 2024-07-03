@@ -499,7 +499,23 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "LIENZIPMVR6TT": lienholder_zip,
                 "BUYERDATEMVR6TT": "",
                 "CAPACITYMVR6TT": "",
-                "PRINCIPALSMVR6TT": ""
+                "PRINCIPALSMVR6TT": "",
+                "WONAME": customer,
+                "WOSTKNO": stocknum,
+                "WONEWUSED": "",
+                "WOADDRESS": address,
+                "WOSTATE": state,
+                "WOYEAR": year,
+                "WOMAKE": make,
+                "WOCITY": city,
+                "WOZIP": zipcode,
+                "WOMODEL": model,
+                "WOPHONE": "",
+                "WOVIN": vin,
+                "WOEMAIL": email,
+                "WOSALESPERSON": salesperson,
+                "WODELDATE": datetime.today().strftime('%m/%d/%Y'),
+                "CPDATE": datetime.today().strftime('%m/%d/%Y')
             }
 
             fill_fi_pdf(template_pdf_path, output_pdf_path, data)
