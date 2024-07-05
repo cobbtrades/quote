@@ -133,7 +133,9 @@ def fill_fi_pdf(in_path, out_path, data):
     pdfrw.PdfWriter().write(out_path, pdf)
 
 def modify_stocknum(stocknum):
-    if stocknum[-1].isdigit():
+    if stocknum is None:
+        return ''
+    elif stocknum[-1].isdigit():
         return stocknum + 'A'
     else:
         last_char = stocknum[-1]
