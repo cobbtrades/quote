@@ -60,53 +60,6 @@ def calculate_taxes(state, market_value, discount, doc_fee, trade_value):
         tax = 0.00
     return max(tax, 0)
 
-def fill_pdf(template_pdf_path, output_pdf_path, data):
-    template_pdf = pdfrw.PdfReader(template_pdf_path)
-    
-    for page in template_pdf.pages:
-        annotations = page['/Annots']
-        if annotations:
-            for annotation in annotations:
-                if annotation['/Subtype'] == '/Widget':
-                    field = annotation.get('/T')
-                    if field:
-                        field_name = field[1:-1]
-                        if field_name in data:
-                            if annotation.get('/FT') == '/Btn':  # Check if the field is a button (checkbox)
-                                if data[field_name]:  # If the value is not empty or None, check the box
-                                    annotation.update(
-                                        pdfrw.PdfDict(
-                                            V=pdfrw.PdfName('Yes'),
-                                            AS=pdfrw.PdfName('Yes')
-                                        )
-                                    )
-                                else:  # If the value is empty or None, uncheck the box
-                                    annotation.update(
-                                        pdfrw.PdfDict(
-                                            V=pdfrw.PdfName('Off'),
-                                            AS=pdfrw.PdfName('Off')
-                                        )
-                                    )
-                            else:  # For non-checkbox fields
-                                # Remove the appearance stream dictionary to avoid covering text
-                                if '/AP' in annotation:
-                                    del annotation['/AP']
-                                # Set the default appearance (DA) to ensure a transparent background
-                                annotation.update(
-                                    pdfrw.PdfDict(
-                                        DA='0 g /Helvetica 0 Tf'
-                                    )
-                                )
-                                # Update the field value
-                                annotation.update(
-                                    pdfrw.PdfDict(
-                                        V=pdfrw.PdfString.encode(str(data[field_name]))
-                                    )
-                                )
-    
-    # Save the modified PDF
-    pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
-
 def fill_fi_pdf(in_path, out_path, data):
     pdf = pdfrw.PdfReader(in_path)
     for page in pdf.pages:
@@ -125,6 +78,8 @@ def fill_fi_pdf(in_path, out_path, data):
                         else:
                             annotation.update(pdfrw.PdfDict(V=pdfrw.PdfName('Off'), AS=pdfrw.PdfName('Off')))
                     else:  # Handle text fields
+                        if isinstance(value, (float, int)):  # Convert numbers to strings
+                            value = str(value)
                         pdfstr = pdfrw.objects.pdfstring.PdfString.encode(value)
                         annotation.update(pdfrw.PdfDict(V=pdfstr))
 
@@ -348,4 +303,13 @@ dealer_names = {
     "MODERN HYUNDAI OF CONCORD": "965 CONCORD PKWY S, CONCORD, NC 28027",
     "MODERN GENESIS OF CONCORD": "965 CONCORD PKWY S, CONCORD, NC 28027",
     "MODERN SUBARU OF BOONE": "185 MODERN DR, BOONE, NC 28607",
+}
+
+banks = {
+    "NISSAN MOTOR ACCEPTANCE CORP": {"address": "PO BOX 254648", "city": "SACRAMENTO", "state": "CA", "zip": "95865"},
+    "CAPITAL ONE AUTO FINANCE": {"address": "PO BOX 660068", "city": "SACRAMENTO", "state": "CA", "zip": "95866"},
+    "ALLY FINANCIAL": {"address": "PO BOX 8132", "city": "COCKEYSVILLE", "state": "MD", "zip": "21030"},
+    "TRULIANT FEDERAL CREDIT UNION": {"address": "PO BOX 26253", "city": "WINSTON SALEM", "state": "NC", "zip": "27114"},
+    "BANK OF AMERICA": {"address": "PO BOX 2759", "city": "JACKSONVILLE", "state": "FL", "zip": "32203"},
+    "": {"address": "", "city": "", "state": "", "zip": ""},
 }
