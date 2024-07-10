@@ -311,5 +311,13 @@ banks = {
     "ALLY FINANCIAL": {"address": "PO BOX 8132", "city": "COCKEYSVILLE", "state": "MD", "zip": "21030"},
     "TRULIANT FEDERAL CREDIT UNION": {"address": "PO BOX 26253", "city": "WINSTON SALEM", "state": "NC", "zip": "27114"},
     "BANK OF AMERICA": {"address": "PO BOX 2759", "city": "JACKSONVILLE", "state": "FL", "zip": "32203"},
+    "NAVY FEDERAL CREDIT UNION": {"address": "PO BOX 25109", "city": "LEHIGH VALLEY", "state": "PA", "zip": "18002"},
+    "ALLEGACY FEDERAL CREDIT UNION": {"address": "PO BOX 26043", "city": "WINSTON-SALEM", "state": "NC", "zip": "27114"},
+    "CINCH AUTO FINANCE": {"address": "PO BOX 472", "city": "WILMINGTON", "state": "OH", "zip": "45177"},
+    "GLOBAL LENDING SERVICES": {"address": "PO BOX 970", "city": "WILMINGTON", "state": "OH", "zip": "45177"},
+    "PNC BANK, NATIONAL ASSN": {"address": "PO BOX 313", "city": "WILMINGTON", "state": "OH", "zip": "45177"},
+    "SANTANDER CONSUMER USA": {"address": "PO BOX 961288", "city": "FT WORTH", "state": "TX", "zip": "76161"},
+    "WELLS FARGO AUTO": {"address": "PO BOX 997517", "city": "SACRAMENTO", "state": "CA", "zip": "95899"},
+    "REGIONAL ACCEPTANCE CORPORATION": {"address": "PO BOX 277760", "city": "SACRAMENTO", "state": "CA", "zip": "95827"},
     "": {"address": "", "city": "", "state": "", "zip": ""},
 }
