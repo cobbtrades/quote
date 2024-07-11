@@ -361,7 +361,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "Policy Number": policy,
                 "Purchase Date": datetime.today().strftime('%m/%d/%Y'),
                 "From Whom Purchased Name and Address": f"{dealer}\n{dealer_names[dealer].split(',')[0].strip()}\n{dealer_names[dealer].split(',')[1].strip()} {dealer_names[dealer].split(',')[2].strip()}",
-                "NC Dealer No": "78170",
+                "NC Dealer No": "",
                 "No_2": True,
                 "Equipment": "",
                 "mvr1_cb_New": bos_cb_new,
