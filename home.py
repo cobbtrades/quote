@@ -155,9 +155,9 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             for i in range(3):
                 residual_value = col3.number_input(label=f"Residual Percent {i+1}", key=f"{prefix}_residual_percent_{i+1}", value=0.70)
                 residual_values.append(residual_value)
-        value1 = col4.number_input(label="Down Payment", key=f"{prefix}_value1", value=1000)
-        value2 = col5.number_input(label="Down Payment", key=f"{prefix}_value2", value=2000)
-        value3 = col6.number_input(label="Down Payment", key=f"{prefix}_value3", value=3000)
+        value1 = col4.number_input(label="Down Payment", key=f"{prefix}_value1", value=1000.00)
+        value2 = col5.number_input(label="Down Payment", key=f"{prefix}_value2", value=2000.00)
+        value3 = col6.number_input(label="Down Payment", key=f"{prefix}_value3", value=3000.00)
         down_payments = [value1, value2, value3]
         terms = []
         rates = []
