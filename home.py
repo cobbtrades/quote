@@ -562,7 +562,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "LAWYEAR": year,
                 "LAWMAKEMODEL": f"{make} {model}",
                 "LAWVIN": vin,
-                "LAWRATE": rate[0],
+                "LAWRATE": '',
                 "LAWFINANCECHARGE": '',
                 "LAWAMTFINANCED": '',
                 "LAWTOTALPAY": '',
