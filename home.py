@@ -567,7 +567,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "guidedealer": dealer,
                 "guideaddress": f"{dealer_names[dealer].split(',')[0].strip()}, {dealer_names[dealer].split(',')[1].strip()}, {dealer_names[dealer].split(',')[2].strip()}",
                 "guidedate": datetime.today().strftime('%m/%d/%Y'),
-                "LAWBUYER": f'{customer}\n{address}\n{city}, {state} {zipcode},
+                "LAWBUYER": f'{customer}\n{address}\n{city}, {state} {zipcode}',
                 "LAWBUYCELL": phone_num,
                 "LAWBUYEMAIL": email_address,
                 "SellerCreditor Name and Address": f"{dealer}\n{dealer_names[dealer].split(',')[0].strip()}\n{dealer_names[dealer].split(',')[1].strip()} {dealer_names[dealer].split(',')[2].strip()}",
