@@ -253,6 +253,20 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             bos_stock2 = ""
             if trade_value > 0:
                 bos_stock2 = modify_stocknum(stocknum)
+            quotes = {}
+            for i in range(3):
+                term_payments = {}
+                for j in range(3):
+                    if is_lease:
+                        residual_value = market_value * residual_values[i]
+                        monthly_payment = calculate_lease_payment(market_value, doc_fee, non_tax_fees, 0, down_payments[j], 0, rates[i], terms[i], residual_values[i], trade_value, trade_payoff, discount)
+                    else:
+                        monthly_payment = calc_payment_func(balance, down_payments[j], rates[i], terms[i])
+                    term_payments[down_payments[j]] = round(float(monthly_payment), 2)
+                quotes[terms[i]] = term_payments
+            final_monthly_payment = calc_payment_func(balance, down_payments[0], rates[0], terms[0])
+            final_total_amount_paid = monthly_payment * terms[0]
+            lawfinancecharge = total_amount_paid - (balance - down_payments[0])
             data = {
                 "bos_date": datetime.today().strftime('%m/%d/%Y'),
                 "bos_salesperson": consultant,
@@ -553,8 +567,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "guidedealer": dealer,
                 "guideaddress": f"{dealer_names[dealer].split(',')[0].strip()}, {dealer_names[dealer].split(',')[1].strip()}, {dealer_names[dealer].split(',')[2].strip()}",
                 "guidedate": datetime.today().strftime('%m/%d/%Y'),
-                "LAWBUYER": customer,
-                "LAWBUYADDRESS": f'{address}, {city}, {state} {zipcode}',
+                "LAWBUYER": f'{customer}\n{address}\n{city}, {state} {zipcode},
                 "LAWBUYCELL": phone_num,
                 "LAWBUYEMAIL": email_address,
                 "SellerCreditor Name and Address": f"{dealer}\n{dealer_names[dealer].split(',')[0].strip()}\n{dealer_names[dealer].split(',')[1].strip()} {dealer_names[dealer].split(',')[2].strip()}",
@@ -563,7 +576,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "LAWMAKEMODEL": f"{make} {model}",
                 "LAWVIN": vin,
                 "LAWRATE": f"{rates[0]:.2f}",
-                "LAWFINANCECHARGE": '',
+                "LAWFINANCECHARGE": "{:.2f}".format(lawfinancecharge),
                 "LAWAMTFINANCED": '',
                 "LAWTOTALPAY": '',
                 "LAWDOWNPAY": "{:.2f}".format(value1),
