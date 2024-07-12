@@ -566,7 +566,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "LAWFINANCECHARGE": '',
                 "LAWAMTFINANCED": '',
                 "LAWTOTALPAY": '',
-                "LAWDOWNPAY": '',
+                "LAWDOWNPAY": "{:.2f}".format(value1),
                 "LAWTOTALCOST": '',
                 "LAWNUMPAYMENTS": '',
                 "LAWMONTHLYPAY": '',
