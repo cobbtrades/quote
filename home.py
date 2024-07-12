@@ -576,7 +576,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "LAWMAKEMODEL": f"{make} {model}",
                 "LAWVIN": vin,
                 "LAWRATE": f"{rates[0]:.2f}",
-                "LAWFINANCECHARGE": "{:.2f}".format(lawfinancecharge),
+                "LAWFINANCECHARGE": '',
                 "LAWAMTFINANCED": '',
                 "LAWTOTALPAY": '',
                 "LAWDOWNPAY": "{:.2f}".format(value1),
