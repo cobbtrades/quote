@@ -558,7 +558,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "LAWBUYCELL": phone_num,
                 "LAWBUYEMAIL": email_address,
                 "SellerCreditor Name and Address": f"{dealer}\n{dealer_names[dealer].split(',')[0].strip()}\n{dealer_names[dealer].split(',')[1].strip()} {dealer_names[dealer].split(',')[2].strip()}",
-                "LAWNEWUSED": "NEW" if is_new else "USED",
+                "LAWNEWSUSED": "NEW" if is_new else "USED",
                 "LAWYEAR": year,
                 "LAWMAKEMODEL": f"{make} {model}",
                 "LAWVIN": vin,
