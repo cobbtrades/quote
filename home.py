@@ -574,12 +574,12 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "LAWBEGINPAY": '',
                 "LAWSALESTAX": "{:.2f}".format(taxes),
                 "LAWCASHPRICE": '',
-                "LAWTRADEYEAR": '',
-                "LAWTRADEMAKE": '',
-                "LAWTRADEMODEL": '',
+                "LAWTRADEYEAR": st.session_state["finance_trade_year_1"],
+                "LAWTRADEMAKE": st.session_state["finance_trade_make_1"],
+                "LAWTRADEMODEL": st.session_state["finance_trade_model_1"],
                 "LAWGROSSTRADE": '',
                 "Less Pay Off Made By Seller to": '',
-                "LAWCASHDOWNPAY": '',
+                "LAWCASHDOWNPAY": "{:.2f}".format(value1),
             }
 
             fill_fi_pdf(template_pdf_path, output_pdf_path, data)
