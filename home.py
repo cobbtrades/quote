@@ -266,7 +266,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 quotes[terms[i]] = term_payments
             final_monthly_payment = calc_payment_func(balance, down_payments[0], rates[0], terms[0])
             final_total_amount_paid = monthly_payment * terms[0]
-            lawfinancecharge = total_amount_paid - (balance - down_payments[0])
+            #lawfinancecharge = total_amount_paid - (balance - down_payments[0])
             data = {
                 "bos_date": datetime.today().strftime('%m/%d/%Y'),
                 "bos_salesperson": consultant,
