@@ -28,7 +28,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         customer = text_input_with_label(fc1, sc1, "Customer", key=f"{prefix}_cust")
         address = text_input_with_label(fc1, sc1, "Address", key=f"{prefix}_addr")
         fc2, sc2, tc2, fr2, ft2, st2 = st.columns([.6, 2.5, .5, .5, .5, 1])
-        city = text_input_with_label(sc2, tc2, "City", key=f"{prefix}_city")
+        city = text_input_with_label(fc2, sc2, "City", key=f"{prefix}_city")
         state = text_input_with_label(tc2, fr2, "State", key=f"{prefix}_state", max_chars=2)
         ft2.markdown('<input class="label-input" type="text" value="Zip" disabled>', unsafe_allow_html=True)
         zipcode = st2.text_input(label="Zip", key=f"{prefix}_zip", max_chars=5, label_visibility="collapsed")
