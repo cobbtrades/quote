@@ -192,8 +192,6 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         lienholder_zip = text_input_with_label(c5, c6, "Lienholder Zip Code", key=f"{prefix}_lienholder_zip", value=lien_zip_code, max_chars=5)
         ins_company = text_input_with_label(c7, c8, "Insurance Company", key=f"{prefix}_ins_company")
         policy = text_input_with_label(c7, c8, "Policy #", key=f"{prefix}_policy")
-        c5.markdown('<input class="label-input" type="text" value="Lienholder Name" disabled>', unsafe_allow_html=True)
-        lienholder_name = c6.selectbox("Select Lienholder", bank_list, key=f"{prefix}_bank", label_visibility="collapsed")
         submit_modal_button = c8.button("Submit", key=f"{prefix}_submit_modal")
         if submit_modal_button:
             if trade_value > 0:
