@@ -35,33 +35,24 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         phone_num = text_input_with_label(ft2, st2, "Phone", key=f"{prefix}_phonenumber", max_chars=12)
     with sc:
         fc3, sc3, tc3, fr3 = st.columns([1, 2, 1, 4])
-        fc3.markdown('<input class="label-input" type="text" value="Stock #" disabled>', unsafe_allow_html=True)
-        stocknum = sc3.text_input(label="Stock #", key=f"{prefix}_stock", label_visibility="collapsed")
-        tc3.markdown('<input class="label-input" type="text" value="VIN" disabled>', unsafe_allow_html=True)
-        vin = fr3.text_input(label="VIN", key=f"{prefix}_vin", max_chars=17, label_visibility="collapsed")
+        stocknum = text_input_with_label(fc3, sc3, "Stock #", key=f"{prefix}_stock")
+        vin = text_input_with_label(tc3, fr3, "VIN", key=f"{prefix}_vin", max_chars=17)
         fc4, sc4, tc4, fr4, ft4 = st.columns([1, 1, 1, 1, 2])
-        newused = fc4.selectbox(label="N/U", options=["New", "Used", "CPO"], key=f"{prefix}_newused", label_visibility="collapsed")
+        newused = fc4.selectbox("N/U", ["New", "Used", "CPO"], key=f"{prefix}_newused", label_visibility="collapsed")
+        year = text_input_with_label(sc4, tc4, "Year", key=f"{prefix}_year", max_chars=4)
+        make = text_input_with_label(fr4, ft4, "Make", key=f"{prefix}_make")
+        model = text_input_with_label(fc5, sc5, "Model", key=f"{prefix}_model")
+        trim = text_input_with_label(tc5, fr5, "Trim", key=f"{prefix}_trim", max_chars=4)
+        odometer = text_input_with_label(ft5, st5, "Odometer", key=f"{prefix}_odometer")
+        veh_cost = number_input_with_label(fc6, sc6, "Cost", key=f"{prefix}_veh_cost", value=0.00)
+        book_value = number_input_with_label(tc6, fr6, "Book Value", key=f"{prefix}_book_value", value=0.00)
+
+       
         is_new = newused == "New"
         bos_cb_new = is_new
         mvr6tNewcb = is_new
         bos_cb_used = not is_new
         mvr6tUsedcb = not is_new
-        sc4.markdown('<input class="label-input" type="text" value="Year" disabled>', unsafe_allow_html=True)
-        year = tc4.text_input(label="Year", key=f"{prefix}_year", max_chars=4, label_visibility="collapsed")
-        fr4.markdown('<input class="label-input" type="text" value="Make" disabled>', unsafe_allow_html=True)
-        make = ft4.text_input(label="Make", key=f"{prefix}_make", label_visibility="collapsed")
-        fc5, sc5, tc5, fr5, ft5, st5 = st.columns([1, 2, 1, 1.5, 1, 1.5])
-        fc5.markdown('<input class="label-input" type="text" value="Model" disabled>', unsafe_allow_html=True)
-        model = sc5.text_input(label="Model", key=f"{prefix}_model", label_visibility="collapsed")
-        tc5.markdown('<input class="label-input" type="text" value="Trim" disabled>', unsafe_allow_html=True)
-        trim = fr5.text_input(label="Trim", key=f"{prefix}_trim", max_chars=4, label_visibility="collapsed")
-        ft5.markdown('<input class="label-input" type="text" value="Odometer" disabled>', unsafe_allow_html=True)
-        odometer = st5.text_input(label="Odometer", key=f"{prefix}_odometer", label_visibility="collapsed")
-        fc6, sc6, tc6, fr6 = st.columns(4)
-        fc6.markdown('<input class="label-input" type="text" value="Cost" disabled>', unsafe_allow_html=True)
-        veh_cost = sc6.number_input(label="Cost", key=f"{prefix}_veh_cost", value=0.00, label_visibility='collapsed')
-        tc6.markdown('<input class="label-input" type="text" value="Book Value" disabled>', unsafe_allow_html=True)
-        book_value = fr6.number_input(label="Book Value", key=f"{prefix}_book_value", value=0.00, label_visibility='collapsed')
     with tc:
         fc7, sc7 = st.columns([1.5,4])
         fc7.markdown('<input class="label-input" type="text" value="Select Dealer" disabled>', unsafe_allow_html=True)
@@ -70,9 +61,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         consultant = sc7.text_input(label="Sales Person", key=f"{prefix}_consultant", label_visibility="collapsed")
         fc7.markdown('<input class="label-input" type="text" value="Sales Manager" disabled>', unsafe_allow_html=True)
         manager = sc7.text_input(label="Sales Manager", key=f"{prefix}_manager", label_visibility="collapsed")
-    trade_values = [0] * 2
-    trade_payoffs = [0] * 2
-    trade_acvs = [0] * 2
+    trade_values, trade_payoffs, trade_acvs = [0] * 2, [0] * 2, [0] * 2
     with st.popover("Enter Trade-in Details", use_container_width=True):
         for i in range(2):
             tt1, fc1, sc1, tc1, fr1, ft1, st1, sv1, ec1 = st.columns([1, 1, 2, 1, 2, 1, 2, 1, 4])
