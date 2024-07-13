@@ -184,6 +184,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         county = text_input_with_label(c3, c4, "County", key=f"{prefix}_county")
         platenum = text_input_with_label(c3, c4, "License Plate Number", key=f"{prefix}_platenum")
         plate_exp = text_input_with_label(c3, c4, "Plate Expiration", key=f"{prefix}_plate_exp")
+        c5.markdown('<input class="label-input" type="text" value="Lienholder Name" disabled>', unsafe_allow_html=True)
         lienholder_name = c6.selectbox("Select Lienholder", bank_list, key=f"{prefix}_bank", label_visibility="collapsed")       
         lien_address, lien_city, lien_state, lien_zip_code = update_lienholder_details(lienholder_name)
         lienholder_address = text_input_with_label(c5, c6, "Lienholder Address", key=f"{prefix}_lienholder_address", value=lien_address)
