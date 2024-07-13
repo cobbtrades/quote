@@ -596,6 +596,11 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "ins_ack_customer": customer,
                 "ins_ack_date": datetime.today().strftime('%m/%d/%Y'),
                 "ins_ack_address": f"{address}, {city}, {state} {zipcode}",
+                "ins_ack_home": phone_num,
+                "ins_ack_license": drivers_license,
+                "ins_ack_state": state,
+                "ins_ack_exp": '',
+                "ins_ack_vehicle": f"{year}  {make}   {model}    {vin}",
             }
 
             fill_fi_pdf(template_pdf_path, output_pdf_path, data)
