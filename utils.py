@@ -306,6 +306,7 @@ dealer_names = {
 }
 
 banks = {
+    "": {"address": "", "city": "", "state": "", "zip": ""},
     "NISSAN MOTOR ACCEPTANCE CORP": {"address": "PO BOX 254648", "city": "SACRAMENTO", "state": "CA", "zip": "95865"},
     "CAPITAL ONE AUTO FINANCE": {"address": "PO BOX 660068", "city": "SACRAMENTO", "state": "CA", "zip": "95866"},
     "ALLY FINANCIAL": {"address": "PO BOX 8132", "city": "COCKEYSVILLE", "state": "MD", "zip": "21030"},
@@ -319,5 +320,4 @@ banks = {
     "SANTANDER CONSUMER USA": {"address": "PO BOX 961288", "city": "FT WORTH", "state": "TX", "zip": "76161"},
     "WELLS FARGO AUTO": {"address": "PO BOX 997517", "city": "SACRAMENTO", "state": "CA", "zip": "95899"},
     "REGIONAL ACCEPTANCE CORPORATION": {"address": "PO BOX 277760", "city": "SACRAMENTO", "state": "CA", "zip": "95827"},
-    "": {"address": "", "city": "", "state": "", "zip": ""},
 }
