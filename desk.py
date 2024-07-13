@@ -23,7 +23,6 @@ def text_input_with_label(col, next_col, label, key, **kwargs):
 def number_input_with_label(col, next_col, label, key, **kwargs):
     col.markdown(f'<input class="label-input" type="text" value="{label}" disabled>', unsafe_allow_html=True)
     return next_col.number_input(label=label, key=key, label_visibility="collapsed", **kwargs)
-
 def render_tab(calc_payment_func, prefix, is_lease=False):
     fc, sc, tc = st.columns([3, 3, 2])
     with fc:
@@ -48,6 +47,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         model = text_input_with_label(fc5, sc5, "Model", key=f"{prefix}_model")
         trim = text_input_with_label(tc5, fr5, "Trim", key=f"{prefix}_trim", max_chars=4)
         odometer = text_input_with_label(ft5, st5, "Odometer", key=f"{prefix}_odometer")
+        fc6, sc6, tc6, fr6 = st.columns(4)
         veh_cost = number_input_with_label(fc6, sc6, "Cost", key=f"{prefix}_veh_cost", value=0.00)
         book_value = number_input_with_label(tc6, fr6, "Book Value", key=f"{prefix}_book_value", value=0.00)
 
