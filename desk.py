@@ -65,28 +65,15 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
     trade_values, trade_payoffs, trade_acvs = [0] * 2, [0] * 2, [0] * 2
     with st.popover("Enter Trade-in Details", use_container_width=True):
         for i in range(2):
-            tt1, fc1, sc1, tc1, fr1, ft1, st1, sv1, ec1 = st.columns([1, 1, 2, 1, 2, 1, 2, 1, 4])
-            col_data = f"Trade-in {i+1}"
-            tt1.markdown(f'<input class="label-input" type="text" value="{col_data}" disabled>', unsafe_allow_html=True)
-            fc1.markdown('<input class="label-input" type="text" value="Year" disabled>', unsafe_allow_html=True)
-            trade_year = sc1.text_input(f"Trade-in {i+1} Year", key=f"{prefix}_trade_year_{i+1}", label_visibility="collapsed", max_chars=4)
-            tc1.markdown('<input class="label-input" type="text" value="Make" disabled>', unsafe_allow_html=True)
-            trade_make = fr1.text_input(f"Trade-in {i+1} Make", key=f"{prefix}_trade_make_{i+1}", label_visibility="collapsed")
-            ft1.markdown('<input class="label-input" type="text" value="Model" disabled>', unsafe_allow_html=True)
-            trade_model = st1.text_input(f"Trade-in {i+1} Model", key=f"{prefix}_trade_model_{i+1}", label_visibility="collapsed")
-            sv1.markdown('<input class="label-input" type="text" value="VIN" disabled>', unsafe_allow_html=True)
-            trade_vin = ec1.text_input(f"Trade-in {i+1} VIN", key=f"{prefix}_trade_vin_{i+1}", label_visibility="collapsed", max_chars=17)
-    
-            tt2, fc2, sc2, tc2, fr2, ft2, st2, sv2, ec2 = st.columns([1, 1, 2, 1, 2, 1, 2, 1, 4])
-            fc2.markdown('<input class="label-input" type="text" value="Miles" disabled>', unsafe_allow_html=True)
-            trade_miles = sc2.text_input(f"Trade-in {i+1} Miles", key=f"{prefix}_trade_miles_{i+1}", label_visibility="collapsed")
-            tc2.markdown('<input class="label-input" type="text" value="Trade Value" disabled>', unsafe_allow_html=True)
-            trade_values[i] = fr2.number_input(f"Trade-in {i+1} Value", key=f"{prefix}_trade_value_{i+1}", value=0.00, label_visibility="collapsed")
-            ft2.markdown('<input class="label-input" type="text" value="Payoff" disabled>', unsafe_allow_html=True)
-            trade_payoffs[i] = st2.number_input(f"Trade-in {i+1} Payoff", key=f"{prefix}_trade_payoff_{i+1}", value=0.00, label_visibility="collapsed")
-            sv2.markdown('<input class="label-input" type="text" value="Trade ACV" disabled>', unsafe_allow_html=True)
-            trade_acvs[i] = ec2.number_input(f"Trade-in {i+1} ACV", key=f"{prefix}_trade_acv_{i+1}", value=0.00, label_visibility="collapsed")
-            st.divider()
+            col1, col2, col3, col4 = st.columns([1, 2, 1, 4])
+            trade_year = text_input_with_label(col1, col2, "Year", key=f"{prefix}_trade_year_{i+1}", max_chars=4)
+            trade_make = text_input_with_label(col1, col2, "Make", key=f"{prefix}_trade_make_{i+1}")
+            trade_model = text_input_with_label(col1, col2, "Model", key=f"{prefix}_trade_model_{i+1}")
+            trade_vin = text_input_with_label(col1, col2, "VIN", key=f"{prefix}_trade_vin_{i+1}", max_chars=17)
+            trade_miles = text_input_with_label(col1, col2, "Miles", key=f"{prefix}_trade_miles_{i+1}")
+            trade_values[i] = number_input_with_label(col1, col2, "Trade Value", key=f"{prefix}_trade_value_{i+1}", value=0.00)
+            trade_payoffs[i] = number_input_with_label(col1, col2, "Payoff", key=f"{prefix}_trade_payoff_{i+1}", value=0.00)
+            trade_acvs[i] = number_input_with_label(col1, col2, "Trade ACV", key=f"{prefix}_trade_acv_{i+1}", value=0.00)
     
     left_col, right_col = st.columns(2)
     with right_col:
