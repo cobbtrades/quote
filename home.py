@@ -593,6 +593,9 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "LAWGROSSTRADE": '',
                 "Less Pay Off Made By Seller to": '',
                 "LAWCASHDOWNPAY": "{:.2f}".format(value1),
+                "ins_ack_customer": customer,
+                "ins_ack_date": datetime.today().strftime('%m/%d/%Y'),
+                "ins_ack_address": f"{address}, {city}, {state} {zipcode}",
             }
 
             fill_fi_pdf(template_pdf_path, output_pdf_path, data)
