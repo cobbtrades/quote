@@ -41,6 +41,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         newused = fc4.selectbox("N/U", ["New", "Used", "CPO"], key=f"{prefix}_newused", label_visibility="collapsed")
         year = text_input_with_label(sc4, tc4, "Year", key=f"{prefix}_year", max_chars=4)
         make = text_input_with_label(fr4, ft4, "Make", key=f"{prefix}_make")
+        fc5, sc5, tc5, fr5, ft5, st5 = st.columns([1, 2, 1, 1.5, 1, 1.5])
         model = text_input_with_label(fc5, sc5, "Model", key=f"{prefix}_model")
         trim = text_input_with_label(tc5, fr5, "Trim", key=f"{prefix}_trim", max_chars=4)
         odometer = text_input_with_label(ft5, st5, "Odometer", key=f"{prefix}_odometer")
