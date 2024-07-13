@@ -17,16 +17,16 @@ def update_lienholder_details(lienholder_name):
     if lienholder_name in banks:
         return banks[lienholder_name]["address"], banks[lienholder_name]["city"], banks[lienholder_name]["state"], banks[lienholder_name]["zip"]
     return "", "", "", ""
-def text_input_with_label(col, label, key, **kwargs):
+def text_input_with_label(col, next_col, label, key, **kwargs):
     col.markdown(f'<input class="label-input" type="text" value="{label}" disabled>', unsafe_allow_html=True)
-    return col.text_input(label=label, key=key, label_visibility="collapsed", **kwargs)
+    return next_col.text_input(label=label, key=key, label_visibility="collapsed", **kwargs)
 
 def render_tab(calc_payment_func, prefix, is_lease=False):
     fc, sc, tc = st.columns([3, 3, 2])
     with fc:
         fc1, sc1 = st.columns([.6,4])
-        customer = text_input_with_label(fc1, "Customer", key=f"{prefix}_cust")
-        address = text_input_with_label(fc1, "Address", key=f"{prefix}_addr")
+        customer = text_input_with_label(fc1, sc1, "Customer", key=f"{prefix}_cust")
+        address = text_input_with_label(fc1, sc1, "Address", key=f"{prefix}_addr")
         fc2, sc2, tc2, fr2, ft2, st2 = st.columns([.6, 2.5, .5, .5, .5, 1])
         fc2.markdown('<input class="label-input" type="text" value="City" disabled>', unsafe_allow_html=True)
         city = sc2.text_input(label="City", key=f"{prefix}_city", label_visibility="collapsed")
