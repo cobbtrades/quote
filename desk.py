@@ -80,35 +80,21 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             st.divider()
     left_col, right_col = st.columns(2)
     with right_col:
-        labels_col, inputs_col = st.columns([1, 4])
-        labels_col.markdown('<input class="label-input" type="text" value="Market Value" disabled>', unsafe_allow_html=True)
-        market_value = inputs_col.number_input(label="Market Value", key=f"{prefix}_market_value", value=0.00, label_visibility='collapsed')
-        labels_col.markdown('<input class="label-input" type="text" value="Discount" disabled>', unsafe_allow_html=True)
-        discount = inputs_col.number_input(label="Discount", key=f"{prefix}_discount", value=0.00, label_visibility='collapsed')
-        labels_col.markdown('<input class="label-input" type="text" value="Rebate" disabled>', unsafe_allow_html=True)
-        rebate = inputs_col.number_input(label="Rebate", key=f"{prefix}_rebate", value=0.00, label_visibility='collapsed')
-        labels_col.markdown('<input class="label-input" type="text" value="Trade Value" disabled>', unsafe_allow_html=True)
+        market_value = number_input_with_label(right_col, right_col, "Market Value", key=f"{prefix}_market_value", value=0.00)
+        discount = number_input_with_label(right_col, right_col, "Discount", key=f"{prefix}_discount", value=0.00)
+        rebate = number_input_with_label(right_col, right_col, "Rebate", key=f"{prefix}_rebate", value=0.00)
         trade_value = sum(trade_values)
-        inputs_col.number_input(label="Trade Value", key=f"{prefix}_trade_value", value=trade_value, label_visibility='collapsed', disabled=True)
-        labels_col.markdown('<input class="label-input" type="text" value="Trade ACV" disabled>', unsafe_allow_html=True)
+        st.number_input(label="Trade Value", key=f"{prefix}_trade_value", value=trade_value, label_visibility='collapsed', disabled=True)
         trade_acv = sum(trade_acvs)
-        inputs_col.number_input(label="Trade ACV", key=f"{prefix}_trade_acv", value=trade_acv, label_visibility='collapsed', disabled=True)
-        labels_col.markdown('<input class="label-input" type="text" value="Trade Payoff" disabled>', unsafe_allow_html=True)
+        st.number_input(label="Trade ACV", key=f"{prefix}_trade_acv", value=trade_acv, label_visibility='collapsed', disabled=True)
         trade_payoff = sum(trade_payoffs)
-        inputs_col.number_input(label="Trade Payoff", key=f"{prefix}_trade_payoff", value=trade_payoff, label_visibility='collapsed', disabled=True)
-        labels_col.markdown('<input class="label-input" type="text" value="Doc Fee" disabled>', unsafe_allow_html=True)
-        doc_fee = inputs_col.number_input(label="Doc Fee", key=f"{prefix}_doc_fee", value=799.00, label_visibility='collapsed')
+        st.number_input(label="Trade Payoff", key=f"{prefix}_trade_payoff", value=trade_payoff, label_visibility='collapsed', disabled=True)
+        doc_fee = number_input_with_label(right_col, right_col, "Doc Fee", key=f"{prefix}_doc_fee", value=799.00)
         taxes = calculate_taxes(state, market_value, discount, doc_fee, trade_value)
-        labels_col.markdown('<input class="label-input" type="text" value="Taxes" disabled>', unsafe_allow_html=True)
-        if taxes is None:
-            taxes = inputs_col.number_input(label="Taxes", key=f"{prefix}_taxes", value=0.00, label_visibility='collapsed')
-        else:
-            inputs_col.number_input(label="Taxes", key=f"{prefix}_taxes", value=taxes, label_visibility='collapsed', disabled=True)
-        labels_col.markdown('<input class="label-input" type="text" value="Non-Tax Fees" disabled>', unsafe_allow_html=True)
-        non_tax_fees = inputs_col.number_input(label="Non-Tax Fees", key=f"{prefix}_non_tax_fees", value=125.00, label_visibility='collapsed')
+        st.number_input(label="Taxes", key=f"{prefix}_taxes", value=taxes or 0.00, label_visibility='collapsed', disabled=True)
+        non_tax_fees = number_input_with_label(right_col, right_col, "Non-Tax Fees", key=f"{prefix}_non_tax_fees", value=125.00)
         balance = calculate_balance(market_value, discount, rebate, trade_value, trade_payoff, taxes, doc_fee, non_tax_fees)
-        labels_col.markdown('<input class="label-input" type="text" value="Balance" disabled>', unsafe_allow_html=True)
-        inputs_col.text_input(label="Balance", key=f"{prefix}_balance", value=f"{balance:.2f}", label_visibility='collapsed', disabled=True)
+        st.text_input(label="Balance", key=f"{prefix}_balance", value=f"{balance:.2f}", label_visibility='collapsed', disabled=True)
     with left_col:
         col1, col2, col3, col4, col5, col6 = st.columns([.5,1.5,1,1.5,1.5,1.5])
         col1.text("")
@@ -129,21 +115,19 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         residual_values = []
         if is_lease:
             for i in range(3):
-                residual_value = col3.number_input(label=f"Residual Percent {i+1}", key=f"{prefix}_residual_percent_{i+1}", value=0.70)
+                residual_value = number_input_with_label(left_col, left_col, f"Residual Percent {i+1}", key=f"{prefix}_residual_percent_{i+1}", value=0.70)
                 residual_values.append(residual_value)
-        value1 = col4.number_input(label="Down Payment", key=f"{prefix}_value1", value=1000.00)
-        value2 = col5.number_input(label="Down Payment", key=f"{prefix}_value2", value=2000.00)
-        value3 = col6.number_input(label="Down Payment", key=f"{prefix}_value3", value=3000.00)
-        down_payments = [value1, value2, value3]
+        down_payments = [
+            number_input_with_label(left_col, left_col, "Down Payment", key=f"{prefix}_value1", value=1000.00),
+            number_input_with_label(left_col, left_col, "Down Payment", key=f"{prefix}_value2", value=2000.00),
+            number_input_with_label(left_col, left_col, "Down Payment", key=f"{prefix}_value3", value=3000.00)
+        ]
         terms = []
         rates = []
         default_terms = [36, 60, 72]
         for i in range(3):
-            term = col1.number_input("Term", min_value=1, value=default_terms[i], key=f'{prefix}_term_{i+1}')
-            if is_lease:
-                rate = col2.number_input(f"Money Factor {i+1}", min_value=0.00000, max_value=1.00000, value=0.00275, format="%.5f", key=f'{prefix}_rate_{i+1}')
-            else:
-                rate = col2.number_input("Rate (%)", min_value=0.0, max_value=100.0, value=14.0, format="%.2f", key=f'{prefix}_rate_{i+1}')
+            term = number_input_with_label(left_col, left_col, "Term", key=f"{prefix}_term_{i+1}", value=default_terms[i], min_value=1)
+            rate = number_input_with_label(left_col, left_col, "Rate (%)" if not is_lease else f"Money Factor {i+1}", key=f"{prefix}_rate_{i+1}", value=14.0 if not is_lease else 0.00275, min_value=0.0, max_value=100.0)
             terms.append(term)
             rates.append(rate)
         for i in range(3):
