@@ -1,16 +1,15 @@
 import streamlit as st
 from datetime import datetime
-from utils import calculate_monthly_payment, calculate_lease_payment, calculate_balance
-from utils import calculate_taxes, generate_pdf, fill_fi_pdf, modify_stocknum
-from utils import dealer_names, banks
-
+from utils import (
+    calculate_monthly_payment, calculate_lease_payment, calculate_balance,
+    calculate_taxes, generate_pdf, fill_fi_pdf, modify_stocknum,
+    dealer_names, banks
+)
 
 st.set_page_config(page_title="Desking App", page_icon="📝")
 with open("styles.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
 st.subheader("")
-
 dealer_names_list = list(dealer_names.keys())
 bank_list = list(banks.keys())
 def update_lienholder_details(lienholder_name):
@@ -59,12 +58,11 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         mvr6tUsedcb = not is_new
     with tc:
         fc7, sc7 = st.columns([1.5,4])
-        fc7.markdown('<input class="label-input" type="text" value="Select Dealer" disabled>', unsafe_allow_html=True)
-        dealer = sc7.selectbox("Select a Dealer", dealer_names_list, key=f"{prefix}_dealer", label_visibility="collapsed")
-        fc7.markdown('<input class="label-input" type="text" value="Sales Person" disabled>', unsafe_allow_html=True)
-        consultant = sc7.text_input(label="Sales Person", key=f"{prefix}_consultant", label_visibility="collapsed")
-        fc7.markdown('<input class="label-input" type="text" value="Sales Manager" disabled>', unsafe_allow_html=True)
-        manager = sc7.text_input(label="Sales Manager", key=f"{prefix}_manager", label_visibility="collapsed")
+        dealer = sc7.selectbox("Select Dealer", dealer_names_list, key=f"{prefix}_dealer", label_visibility="collapsed")
+        consultant = text_input_with_label(fc7, sc7, "Sales Person", key=f"{prefix}_consultant")
+        manager = text_input_with_label(fc7, sc7, "Sales Manager", key=f"{prefix}_manager")
+        
+        #fc7.markdown('<input class="label-input" type="text" value="Select Dealer" disabled>', unsafe_allow_html=True)
     trade_values, trade_payoffs, trade_acvs = [0] * 2, [0] * 2, [0] * 2
     with st.popover("Enter Trade-in Details", use_container_width=True):
         for i in range(2):
