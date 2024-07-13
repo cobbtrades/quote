@@ -58,11 +58,10 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         mvr6tUsedcb = not is_new
     with tc:
         fc7, sc7 = st.columns([1.5,4])
+        fc7.markdown('<input class="label-input" type="text" value="Select Dealer" disabled>', unsafe_allow_html=True)
         dealer = sc7.selectbox("Select Dealer", dealer_names_list, key=f"{prefix}_dealer", label_visibility="collapsed")
         consultant = text_input_with_label(fc7, sc7, "Sales Person", key=f"{prefix}_consultant")
         manager = text_input_with_label(fc7, sc7, "Sales Manager", key=f"{prefix}_manager")
-        
-        #fc7.markdown('<input class="label-input" type="text" value="Select Dealer" disabled>', unsafe_allow_html=True)
     trade_values, trade_payoffs, trade_acvs = [0] * 2, [0] * 2, [0] * 2
     with st.popover("Enter Trade-in Details", use_container_width=True):
         for i in range(2):
