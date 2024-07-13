@@ -66,7 +66,8 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
     with st.popover("Enter Trade-in Details", use_container_width=True):
         for i in range(2):
             tt1, fc1, sc1, tc1, fr1, ft1, st1, sv1, ec1 = st.columns([1, 1, 2, 1, 2, 1, 2, 1, 4])
-            tt1.markdown(f'<input class="label-input" type="text" value=f"Trade-in {i+1}" disabled>', unsafe_allow_html=True)
+            col_data = f"Trade-in {i+1}"
+            tt1.markdown(f'<input class="label-input" type="text" value="{col_data}" disabled>', unsafe_allow_html=True)
             trade_year = text_input_with_label(fc1, sc1, "Year", key=f"{prefix}_trade_year_{i+1}", max_chars=4)
             trade_make = text_input_with_label(tc1, fr1, "Make", key=f"{prefix}_trade_make_{i+1}")
             trade_model = text_input_with_label(ft1, st1, "Model", key=f"{prefix}_trade_model_{i+1}")
