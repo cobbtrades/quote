@@ -26,6 +26,7 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
     with fc:
         fc1, sc1 = st.columns([.6,4])
         customer = text_input_with_label(fc1, "Customer", key=f"{prefix}_cust")
+        address = text_input_with_label(fc1, "Address", key=f"{prefix}_addr")
         fc1.markdown('<input class="label-input" type="text" value="Address" disabled>', unsafe_allow_html=True)
         address = sc1.text_input(label="Address", key=f"{prefix}_addr", label_visibility="collapsed")
         fc2, sc2, tc2, fr2, ft2, st2 = st.columns([.6, 2.5, .5, .5, .5, 1])
