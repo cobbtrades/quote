@@ -2,7 +2,7 @@ import streamlit as st
 from datetime import datetime
 from utils import calculate_monthly_payment, calculate_lease_payment, calculate_balance
 from utils import calculate_taxes, generate_pdf, fill_fi_pdf, modify_stocknum
-from utils import dealer_names
+from utils import dealer_names, banks
 
 
 st.set_page_config(page_title="Desking App", page_icon="📝")
@@ -12,6 +12,11 @@ with open("styles.css") as f:
 st.subheader("")
 
 dealer_names_list = list(dealer_names.keys())
+bank_list = list(banks.keys())
+def update_lienholder_details(lienholder_name):
+    if lienholder_name in banks:
+        return banks[lienholder_name]["address"], banks[lienholder_name]["city"], banks[lienholder_name]["state"], banks[lienholder_name]["zip"]
+    return "", "", "", ""
 
 def render_tab(calc_payment_func, prefix, is_lease=False):
     fc, sc, tc = st.columns([3, 3, 2])
@@ -42,10 +47,8 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         newused = fc4.selectbox(label="N/U", options=["New", "Used", "CPO"], key=f"{prefix}_newused", label_visibility="collapsed")
         is_new = newused == "New"
         bos_cb_new = is_new
-        mvr1cbNew = is_new
         mvr6tNewcb = is_new
         bos_cb_used = not is_new
-        mvr1cbUsed = not is_new
         mvr6tUsedcb = not is_new
         sc4.markdown('<input class="label-input" type="text" value="Year" disabled>', unsafe_allow_html=True)
         year = tc4.text_input(label="Year", key=f"{prefix}_year", max_chars=4, label_visibility="collapsed")
@@ -152,9 +155,9 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             for i in range(3):
                 residual_value = col3.number_input(label=f"Residual Percent {i+1}", key=f"{prefix}_residual_percent_{i+1}", value=0.70)
                 residual_values.append(residual_value)
-        value1 = col4.number_input(label="Down Payment", key=f"{prefix}_value1", value=1000)
-        value2 = col5.number_input(label="Down Payment", key=f"{prefix}_value2", value=2000)
-        value3 = col6.number_input(label="Down Payment", key=f"{prefix}_value3", value=3000)
+        value1 = col4.number_input(label="Down Payment", key=f"{prefix}_value1", value=1000.00)
+        value2 = col5.number_input(label="Down Payment", key=f"{prefix}_value2", value=2000.00)
+        value3 = col6.number_input(label="Down Payment", key=f"{prefix}_value3", value=3000.00)
         down_payments = [value1, value2, value3]
         terms = []
         rates = []
@@ -212,15 +215,19 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         c3.markdown('<input class="label-input" type="text" value="Plate Expire" disabled>', unsafe_allow_html=True)
         plate_exp = c4.text_input(label="Plate Expiration", key=f"{prefix}_plate_exp", label_visibility="collapsed")
         c5.markdown('<input class="label-input" type="text" value="Lienholder Name" disabled>', unsafe_allow_html=True)
-        lienholder_name = c6.text_input(label="Lienholder Name", key=f"{prefix}_lienholder_name", label_visibility="collapsed")
+        lienholder_name = c6.selectbox("Select Lienholder", bank_list, key=f"{prefix}_bank", label_visibility="collapsed")
+
+        # Update lienholder details
+        lien_address, lien_city, lien_state, lien_zip_code = update_lienholder_details(lienholder_name)
+
         c5.markdown('<input class="label-input" type="text" value="Lienholder Address" disabled>', unsafe_allow_html=True)
-        lienholder_address = c6.text_input(label="Lienholder Address", key=f"{prefix}_lienholder_address", label_visibility="collapsed")
+        lienholder_address = c6.text_input(label="Lienholder Address", value=lien_address, key=f"{prefix}_lienholder_address", label_visibility="collapsed")
         c5.markdown('<input class="label-input" type="text" value="Lienholder City" disabled>', unsafe_allow_html=True)
-        lienholder_city = c6.text_input(label="Lienholder City", key=f"{prefix}_lienholder_city", label_visibility="collapsed")
+        lienholder_city = c6.text_input(label="Lienholder City", value=lien_city, key=f"{prefix}_lienholder_city", label_visibility="collapsed")
         c5.markdown('<input class="label-input" type="text" value="Lienholder State" disabled>', unsafe_allow_html=True)
-        lienholder_state = c6.text_input(label="Lienholder State", key=f"{prefix}_lienholder_state", label_visibility="collapsed", max_chars=2)
+        lienholder_state = c6.text_input(label="Lienholder State", value=lien_state, key=f"{prefix}_lienholder_state", label_visibility="collapsed", max_chars=2)
         c5.markdown('<input class="label-input" type="text" value="Lienholder Zip" disabled>', unsafe_allow_html=True)
-        lienholder_zip = c6.text_input(label="Lienholder Zip Code", key=f"{prefix}_lienholder_zip", label_visibility="collapsed", max_chars=5)
+        lienholder_zip = c6.text_input(label="Lienholder Zip Code", value=lien_zip_code, key=f"{prefix}_lienholder_zip", label_visibility="collapsed", max_chars=5)
         c7.markdown('<input class="label-input" type="text" value="Ins Company" disabled>', unsafe_allow_html=True)
         ins_company = c8.text_input(label="Insurance Company", key=f"{prefix}_ins_company", label_visibility="collapsed")
         c7.markdown('<input class="label-input" type="text" value="Policy #" disabled>', unsafe_allow_html=True)
@@ -228,9 +235,15 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
         submit_modal_button = c8.button("Submit", key=f"{prefix}_submit_modal")
         if submit_modal_button:
             if trade_value > 0:
-                template_pdf_path = 'docs/FIDocs1T.pdf'
+                if is_new:
+                    template_pdf_path = 'docs/FIDocs1T.pdf'
+                else:
+                    template_pdf_path = 'docs/FIDocs1TUsed.pdf'
             else:
-                template_pdf_path = 'docs/FIDocs.pdf'
+                if is_new:
+                    template_pdf_path = 'docs/FIDocs.pdf'
+                else:
+                    template_pdf_path = 'docs/FIDocsUsed.pdf'
             words = customer.split()
             if len(words) >= 2:
                 formatted_customer = ''.join(words[:2]).lower()
@@ -240,6 +253,20 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
             bos_stock2 = ""
             if trade_value > 0:
                 bos_stock2 = modify_stocknum(stocknum)
+            quotes = {}
+            for i in range(3):
+                term_payments = {}
+                for j in range(3):
+                    if is_lease:
+                        residual_value = market_value * residual_values[i]
+                        monthly_payment = calculate_lease_payment(market_value, doc_fee, non_tax_fees, 0, down_payments[j], 0, rates[i], terms[i], residual_values[i], trade_value, trade_payoff, discount)
+                    else:
+                        monthly_payment = calc_payment_func(balance, down_payments[j], rates[i], terms[i])
+                    term_payments[down_payments[j]] = round(float(monthly_payment), 2)
+                quotes[terms[i]] = term_payments
+            final_monthly_payment = calc_payment_func(balance, down_payments[0], rates[0], terms[0])
+            final_total_amount_paid = monthly_payment * terms[0]
+            #lawfinancecharge = final_total_amount_paid - (balance - down_payments[0])
             data = {
                 "bos_date": datetime.today().strftime('%m/%d/%Y'),
                 "bos_salesperson": consultant,
@@ -346,12 +373,13 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "Zip Code_2": "",
                 "Insurance Company authorized in NC": ins_company,
                 "Policy Number": policy,
-                "Purchase Date": "",
-                "From Whom Purchased Name and Address": "",
+                "Purchase Date": datetime.today().strftime('%m/%d/%Y'),
+                "From Whom Purchased Name and Address": f"{dealer}\n{dealer_names[dealer].split(',')[0].strip()}\n{dealer_names[dealer].split(',')[1].strip()} {dealer_names[dealer].split(',')[2].strip()}",
                 "NC Dealer No": "",
+                "No_2": True,
                 "Equipment": "",
-                "mvr1cbNew": mvr1cbNew,
-                "mvr1cbUsed": mvr1cbUsed,
+                "mvr1_cb_New": bos_cb_new,
+                "mvr1_cb_Used": bos_cb_used,
                 "I We would like the personal information contained in this application to be available for disclosure": "",
                 "Date": "",
                 "County": "",
@@ -525,6 +553,46 @@ def render_tab(calc_payment_func, prefix, is_lease=False):
                 "CPMAKE": st.session_state["finance_trade_make_1"],
                 "CPMODEL": st.session_state["finance_trade_model_1"],
                 "CPPAYOFFAMT": str("  ${:,.2f}".format(st.session_state["finance_trade_payoff_1"])),
+                "vinverifystock": stocknum,
+                "vinverifyvin": vin,
+                "vinverifymiles": odometer,
+                "vinverifytradevin": st.session_state["finance_trade_vin_1"],
+                "vinverifytrademiles": st.session_state["finance_trade_miles_1"],
+                "guidemake": make,
+                "guidemodel": model,
+                "guideyear": year,
+                "guidevin": vin,
+                "guidestock": stocknum,
+                "guidecb1": True,
+                "guidedealer": dealer,
+                "guideaddress": f"{dealer_names[dealer].split(',')[0].strip()}, {dealer_names[dealer].split(',')[1].strip()}, {dealer_names[dealer].split(',')[2].strip()}",
+                "guidedate": datetime.today().strftime('%m/%d/%Y'),
+                "LAWBUYER": f'{customer}\n{address}\n{city}, {state} {zipcode}',
+                "LAWBUYCELL": phone_num,
+                "LAWBUYEMAIL": email_address,
+                "SellerCreditor Name and Address": f"{dealer}\n{dealer_names[dealer].split(',')[0].strip()}\n{dealer_names[dealer].split(',')[1].strip()} {dealer_names[dealer].split(',')[2].strip()}",
+                "LAWNEWSUSED": "NEW" if is_new else "USED",
+                "LAWYEAR": year,
+                "LAWMAKEMODEL": f"{make} {model}",
+                "LAWVIN": vin,
+                "LAWRATE": f"{rates[0]:.2f}",
+                "LAWFINANCECHARGE": '',
+                "LAWAMTFINANCED": '',
+                "LAWTOTALPAY": '',
+                "LAWDOWNPAY": "{:.2f}".format(value1),
+                "LAWTOTALCOST": '',
+                "LAWNUMPAYMENTS": '',
+                "LAWMONTHLYPAY": '',
+                "When Payments Are Due": 'Monthly',
+                "LAWBEGINPAY": '',
+                "LAWSALESTAX": "{:.2f}".format(taxes),
+                "LAWCASHPRICE": '',
+                "LAWTRADEYEAR": st.session_state["finance_trade_year_1"],
+                "LAWTRADEMAKE": st.session_state["finance_trade_make_1"],
+                "LAWTRADEMODEL": st.session_state["finance_trade_model_1"],
+                "LAWGROSSTRADE": '',
+                "Less Pay Off Made By Seller to": '',
+                "LAWCASHDOWNPAY": "{:.2f}".format(value1),
             }
 
             fill_fi_pdf(template_pdf_path, output_pdf_path, data)
