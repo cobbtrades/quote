@@ -17,13 +17,15 @@ def update_lienholder_details(lienholder_name):
     if lienholder_name in banks:
         return banks[lienholder_name]["address"], banks[lienholder_name]["city"], banks[lienholder_name]["state"], banks[lienholder_name]["zip"]
     return "", "", "", ""
+def text_input_with_label(col, label, key, **kwargs):
+    col.markdown(f'<input class="label-input" type="text" value="{label}" disabled>', unsafe_allow_html=True)
+    return col.text_input(label=label, key=key, label_visibility="collapsed", **kwargs)
 
 def render_tab(calc_payment_func, prefix, is_lease=False):
     fc, sc, tc = st.columns([3, 3, 2])
     with fc:
         fc1, sc1 = st.columns([.6,4])
-        fc1.markdown('<input class="label-input" type="text" value="Customer" disabled>', unsafe_allow_html=True)
-        customer = sc1.text_input(label="Customer", key=f"{prefix}_cust", label_visibility='collapsed')
+        customer = text_input_with_label(fc1, "Customer", key=f"{prefix}_cust")
         fc1.markdown('<input class="label-input" type="text" value="Address" disabled>', unsafe_allow_html=True)
         address = sc1.text_input(label="Address", key=f"{prefix}_addr", label_visibility="collapsed")
         fc2, sc2, tc2, fr2, ft2, st2 = st.columns([.6, 2.5, .5, .5, .5, 1])
